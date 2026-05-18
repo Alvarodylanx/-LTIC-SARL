@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Target, Globe2, ShieldCheck, Lightbulb, Leaf, TrendingUp } from 'lucide-react';
+import { CheckCircle2, Target, Globe2, ShieldCheck, Lightbulb, Leaf, TrendingUp, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
@@ -138,6 +138,38 @@ export default function AboutPage() {
               <motion.div key={stat.value} variants={scaleIn}>
                 <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
                 <div className="text-sidebar-foreground/80 text-sm font-medium uppercase tracking-wider">{L(stat)}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Team / Leadership */}
+      <section className="bg-background py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
+            <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Our Team', fr: 'Notre Équipe' })}</p>
+            <h2 className="text-4xl font-bold tracking-tight mb-4">{L({ en: 'Professional Expertise at Every Level', fr: 'Expertise Professionnelle à Chaque Niveau' })}</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              {L({ en: 'Our team combines deep expertise across logistics, international trade, industrial supply, and strategic consulting — ensuring every client receives world-class service.', fr: "Notre équipe combine une expertise approfondie en logistique, commerce international, fournitures industrielles et conseil stratégique — garantissant un service de classe mondiale à chaque client." })}
+            </p>
+          </motion.div>
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { role: { en: 'Operations Director', fr: 'Directeur des Opérations' }, desc: { en: 'Over 15 years managing international freight, customs operations, and multi-modal logistics across Africa and Europe.', fr: "Plus de 15 ans à gérer le fret international, les opérations douanières et la logistique multimodale en Afrique et en Europe." } },
+              { role: { en: 'Trade Manager', fr: 'Responsable Commercial' }, desc: { en: 'Specialist in global sourcing, import/export compliance, and building strategic trade partnerships across 30+ markets.', fr: "Spécialiste en approvisionnement mondial, conformité import/export, et développement de partenariats commerciaux stratégiques dans 30+ marchés." } },
+              { role: { en: 'Supply Chain Consultant', fr: 'Consultant en Chaîne Logistique' }, desc: { en: 'Expert in supply chain design, procurement optimization, and industrial supply solutions for complex operational environments.', fr: "Expert en conception de chaîne logistique, optimisation des achats et solutions de fournitures industrielles pour environnements complexes." } },
+            ].map((member, i) => (
+              <motion.div key={i} variants={scaleIn}
+                whileHover={{ y: -6, boxShadow: '0 20px 40px -12px rgba(0,0,0,0.12)' }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="bg-card border rounded-2xl p-8 text-center hover:border-primary/40 transition-colors">
+                <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
+                  <User className="h-10 w-10" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">{L(member.role)}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{L(member.desc)}</p>
               </motion.div>
             ))}
           </motion.div>

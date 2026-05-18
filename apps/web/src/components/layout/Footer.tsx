@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Globe, Facebook, Twitter, Linkedin, Instagram, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail, Globe, Facebook, Twitter, Linkedin, Instagram, Youtube, Music2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -16,10 +16,11 @@ export function Footer() {
 
   const socialLinks = [
     { key: 'social_facebook', icon: Facebook, label: 'Facebook', color: 'hover:text-blue-400' },
-    { key: 'social_twitter', icon: Twitter, label: 'Twitter', color: 'hover:text-sky-400' },
+    { key: 'social_twitter', icon: Twitter, label: 'Twitter / X', color: 'hover:text-sky-400' },
     { key: 'social_linkedin', icon: Linkedin, label: 'LinkedIn', color: 'hover:text-blue-500' },
     { key: 'social_instagram', icon: Instagram, label: 'Instagram', color: 'hover:text-pink-400' },
     { key: 'social_youtube', icon: Youtube, label: 'YouTube', color: 'hover:text-red-400' },
+    { key: 'social_tiktok', icon: Music2, label: 'TikTok', color: 'hover:text-foreground' },
   ];
 
   const year = new Date().getFullYear();

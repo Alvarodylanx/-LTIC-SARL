@@ -48,7 +48,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Category filter */}
-      <div className="sticky top-16 z-40 bg-background/98 border-b backdrop-blur-md py-4 shadow-sm">
+      <div className="sticky top-16 z-40 bg-muted/40 border-b py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">

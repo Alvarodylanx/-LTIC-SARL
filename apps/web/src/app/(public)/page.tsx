@@ -8,7 +8,6 @@ import { ArrowRight, Globe2, Ship, Factory, BarChart3, Handshake, TreePine, Shie
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useUser } from '@/contexts/UserContext';
 import { api } from '@/lib/api';
 import { fadeInUp, fadeInLeft, fadeInRight, fadeIn, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
 
@@ -41,7 +40,6 @@ const industries = [
 
 export default function HomePage() {
   const { L } = useLanguage();
-  const { user, openAuth } = useUser();
   const { data: featuredProducts, isLoading } = useQuery<any[]>({
     queryKey: ['products', 'featured'],
     queryFn: () => api.get('/api/products/featured'),
@@ -82,17 +80,15 @@ export default function HomePage() {
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button asChild size="lg" variant="outline" className="text-base px-8 border-sidebar-foreground/40 text-sidebar-foreground hover:bg-sidebar-foreground/10">
+                <Button asChild size="lg" variant="outline" className="text-base px-8 border-white/40 text-white hover:bg-white/10">
                   <Link href="/services">{L({ en: 'Explore Services', fr: 'Voir nos Services' })}</Link>
                 </Button>
               </motion.div>
-              {!user && (
-                <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                  <Button size="lg" variant="ghost" onClick={() => openAuth('register')} className="text-base px-8 text-sidebar-foreground hover:bg-sidebar-foreground/10">
-                    {L({ en: 'Create Free Account', fr: 'Créer un Compte Gratuit' })}
-                  </Button>
-                </motion.div>
-              )}
+              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Button asChild size="lg" variant="ghost" className="text-base px-8 text-white hover:bg-white/10">
+                  <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
+                </Button>
+              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -291,13 +287,6 @@ export default function HomePage() {
                 <Link href="/quote">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}</Link>
               </Button>
             </motion.div>
-            {!user && (
-              <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button size="lg" onClick={() => openAuth('register')} className="bg-white/10 text-white border border-white/30 hover:bg-white/20 shadow-lg">
-                  {L({ en: 'Create Account & Get Updates', fr: 'Créer un Compte & Recevoir des Mises à Jour' })}
-                </Button>
-              </motion.div>
-            )}
             <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
               <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                 <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
