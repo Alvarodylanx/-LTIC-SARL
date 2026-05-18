@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+apps/web/.next/
+apps/api/dist/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Drizzle generated migrations (optional — remove line to track migrations)
+# packages/db/drizzle/
+
+# Test coverage
+coverage/
