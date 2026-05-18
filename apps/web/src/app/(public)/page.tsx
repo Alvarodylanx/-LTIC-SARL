@@ -2,17 +2,20 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Globe2, Ship, Factory, BarChart3, Handshake, TreePine, Shield, Zap, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useUser } from '@/contexts/UserContext';
 import { api } from '@/lib/api';
+import { fadeInUp, fadeInLeft, fadeInRight, fadeIn, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
 
 const stats = [
   { value: '30+', en: 'Countries Served', fr: 'Pays Desservis' },
   { value: '500+', en: 'Clients Worldwide', fr: 'Clients Mondiaux' },
-  { value: '15+', en: 'Years of Experience', fr: 'Années d\'Expérience' },
+  { value: '15+', en: 'Years of Experience', fr: "Années d'Expérience" },
   { value: '10K+', en: 'Shipments Completed', fr: 'Expéditions Réalisées' },
 ];
 
@@ -20,9 +23,9 @@ const services = [
   { icon: Ship, en: 'Logistics & Transit', fr: 'Logistique & Transit', descEn: 'End-to-end freight forwarding, customs clearance, and international transit across air, sea and road.', descFr: 'Freight forwarding complet, dédouanement et transit international aérien, maritime et routier.' },
   { icon: Globe2, en: 'Import & Export', fr: 'Import & Export', descEn: 'Seamless global trade facilitation with compliance, documentation and strategic sourcing expertise.', descFr: 'Facilitation du commerce mondial avec conformité, documentation et expertise en sourcing stratégique.' },
   { icon: Factory, en: 'Industrial Supply', fr: 'Fourniture Industrielle', descEn: 'Generators, lubricants, filters, and heavy industrial materials delivered to specification.', descFr: 'Générateurs, lubrifiants, filtres et matériaux industriels lourds livrés selon spécifications.' },
-  { icon: TreePine, en: 'Timber & Trade', fr: 'Bois & Commerce', descEn: 'Premium certified tropical timber and logs for international construction and woodworking markets.', descFr: 'Bois tropicaux certifiés premium pour la construction internationale et les marchés du bois.' },
-  { icon: BarChart3, en: 'Supply Chain Consulting', fr: 'Conseil Chaîne d\'Approvisionnement', descEn: 'Strategic procurement and logistics optimization for enterprises operating in complex markets.', descFr: 'Optimisation stratégique des achats et de la logistique pour entreprises sur marchés complexes.' },
-  { icon: Handshake, en: 'Commercial Representation', fr: 'Représentation Commerciale', descEn: 'Brand and market representation, joint ventures, and strategic business partnerships.', descFr: 'Représentation de marque, coentreprises et partenariats commerciaux stratégiques.' },
+  { icon: TreePine, en: 'Timber & Trade', fr: 'Bois & Commerce', descEn: 'Premium certified tropical timber and logs for international construction and woodworking markets.', descFr: "Bois tropicaux certifiés premium pour la construction internationale et les marchés du bois." },
+  { icon: BarChart3, en: 'Supply Chain Consulting', fr: "Conseil Chaîne d'Approvisionnement", descEn: 'Strategic procurement and logistics optimization for enterprises operating in complex markets.', descFr: "Optimisation stratégique des achats et de la logistique pour entreprises sur marchés complexes." },
+  { icon: Handshake, en: 'Commercial Representation', fr: 'Représentation Commerciale', descEn: 'Brand and market representation, joint ventures, and strategic business partnerships.', descFr: "Représentation de marque, coentreprises et partenariats commerciaux stratégiques." },
 ];
 
 const industries = [
@@ -38,6 +41,7 @@ const industries = [
 
 export default function HomePage() {
   const { L } = useLanguage();
+  const { user, openAuth } = useUser();
   const { data: featuredProducts, isLoading } = useQuery<any[]>({
     queryKey: ['products', 'featured'],
     queryFn: () => api.get('/api/products/featured'),
@@ -45,242 +49,261 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero */}
+      {/* ─── Hero ─── */}
       <section className="relative min-h-[92vh] bg-sidebar flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1800&auto=format&fit=crop&q=70"
-            alt="Logistics hero"
-            fill
-            className="object-cover opacity-20"
-            priority
+            alt="Logistics hero" fill className="object-cover opacity-20" priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-sidebar via-sidebar/90 to-sidebar/60" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm mb-8">
+            <motion.div variants={fadeIn} initial="hidden" animate="show"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-primary text-sm mb-8">
               <Globe2 className="h-4 w-4" />
-              {L({ en: 'Multinational Business Solutions Provider', fr: 'Fournisseur de Solutions d\'Affaires Multinationales' })}
-            </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-sidebar-foreground mb-6 leading-[1.1]">
+              {L({ en: 'Multinational Business Solutions Provider', fr: "Fournisseur de Solutions d'Affaires Multinationales" })}
+            </motion.div>
+            <motion.h1 variants={fadeInUp} initial="hidden" animate="show"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-sidebar-foreground mb-6 leading-[1.1]">
               {L({ en: 'Driving Global Trade Through', fr: 'Propulser le Commerce Mondial via une' })}{' '}
-              <span className="text-primary">
-                {L({ en: 'Reliable Logistics', fr: 'Logistique Fiable' })}
-              </span>{' '}
+              <span className="text-primary">{L({ en: 'Reliable Logistics', fr: 'Logistique Fiable' })}</span>{' '}
               {L({ en: '& Industrial Solutions', fr: '& des Solutions Industrielles' })}
-            </h1>
-            <p className="text-xl text-sidebar-foreground/80 mb-10 max-w-2xl leading-relaxed">
-              {L({
-                en: 'LTIC SARL connects markets, industries and opportunities worldwide — delivering end-to-end logistics, industrial supply, and international trade solutions with precision and reliability.',
-                fr: 'LTIC SARL connecte marchés, industries et opportunités dans le monde entier — offrant des solutions logistiques complètes, de fournitures industrielles et de commerce international.',
-              })}
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button asChild size="lg" className="text-base px-8">
-                <Link href="/quote">
-                  {L({ en: 'Request a Quote', fr: 'Demander un Devis' })}
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="text-base px-8 border-sidebar-foreground/40 text-sidebar-foreground hover:bg-sidebar-foreground/10">
-                <Link href="/services">{L({ en: 'Explore Services', fr: 'Voir nos Services' })}</Link>
-              </Button>
-              <Button asChild size="lg" variant="ghost" className="text-base px-8 text-sidebar-foreground hover:bg-sidebar-foreground/10">
-                <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
-              </Button>
-            </div>
+            </motion.h1>
+            <motion.p variants={fadeInUp} initial="hidden" animate="show" transition={{ delay: 0.1 }}
+              className="text-xl text-sidebar-foreground/80 mb-10 max-w-2xl leading-relaxed">
+              {L({ en: 'LTIC SARL connects markets, industries and opportunities worldwide — delivering end-to-end logistics, industrial supply, and international trade solutions with precision and reliability.', fr: 'LTIC SARL connecte marchés, industries et opportunités dans le monde entier — offrant des solutions logistiques complètes, de fournitures industrielles et de commerce international.' })}
+            </motion.p>
+            <motion.div variants={fadeInUp} initial="hidden" animate="show" transition={{ delay: 0.18 }} className="flex flex-wrap gap-4">
+              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Button asChild size="lg" className="text-base px-8 shadow-lg shadow-primary/30">
+                  <Link href="/quote">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}<ArrowRight className="h-5 w-5 ml-2" /></Link>
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Button asChild size="lg" variant="outline" className="text-base px-8 border-sidebar-foreground/40 text-sidebar-foreground hover:bg-sidebar-foreground/10">
+                  <Link href="/services">{L({ en: 'Explore Services', fr: 'Voir nos Services' })}</Link>
+                </Button>
+              </motion.div>
+              {!user && (
+                <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                  <Button size="lg" variant="ghost" onClick={() => openAuth('register')} className="text-base px-8 text-sidebar-foreground hover:bg-sidebar-foreground/10">
+                    {L({ en: 'Create Free Account', fr: 'Créer un Compte Gratuit' })}
+                  </Button>
+                </motion.div>
+              )}
+            </motion.div>
           </div>
         </div>
+        {/* Floating decorative orbs */}
+        <motion.div animate={{ y: [0, -18, 0] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
+          className="absolute right-10 top-1/3 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <motion.div animate={{ y: [0, 14, 0] }} transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut', delay: 1 }}
+          className="absolute right-40 bottom-20 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
       </section>
 
-      {/* Stats */}
+      {/* ─── Stats ─── */}
       <section className="bg-primary py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat) => (
-              <div key={stat.value}>
+              <motion.div key={stat.value} variants={scaleIn}>
                 <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">{stat.value}</div>
                 <div className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wider">{L(stat)}</div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Services */}
+      {/* ─── Services ─── */}
       <section className="bg-background py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
-              {L({ en: 'What We Do', fr: 'Ce Que Nous Faisons' })}
-            </p>
-            <h2 className="text-4xl font-bold tracking-tight text-foreground mb-4">
-              {L({ en: 'Comprehensive Business Solutions', fr: 'Solutions d\'Affaires Complètes' })}
-            </h2>
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
+            <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'What We Do', fr: 'Ce Que Nous Faisons' })}</p>
+            <h2 className="text-4xl font-bold tracking-tight text-foreground mb-4">{L({ en: 'Comprehensive Business Solutions', fr: "Solutions d'Affaires Complètes" })}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              {L({ en: 'From freight forwarding to industrial supply and strategic partnerships — we cover the full spectrum of global business operations.', fr: 'Du freight forwarding à la fourniture industrielle et aux partenariats stratégiques — nous couvrons tout le spectre des opérations mondiales.' })}
+              {L({ en: 'From freight forwarding to industrial supply and strategic partnerships — we cover the full spectrum of global business operations.', fr: "Du freight forwarding à la fourniture industrielle et aux partenariats stratégiques — nous couvrons tout le spectre des opérations mondiales." })}
             </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          </motion.div>
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {services.map(({ icon: Icon, ...svc }) => (
-              <div key={svc.en} className="group bg-card border rounded-xl p-8 hover:shadow-xl hover:border-primary/40 transition-all duration-300 cursor-default">
-                <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <motion.div key={svc.en} variants={fadeInUp}
+                whileHover={{ y: -6, boxShadow: '0 20px 40px -12px rgba(0,0,0,0.15)' }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="group bg-card border rounded-xl p-8 hover:border-primary/40 transition-colors duration-300 cursor-default">
+                <motion.div whileHover={{ scale: 1.1, rotate: 5 }} transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                   <Icon className="h-7 w-7" />
-                </div>
+                </motion.div>
                 <h3 className="text-xl font-bold mb-3">{L({ en: svc.en, fr: svc.fr })}</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">{L({ en: svc.descEn, fr: svc.descFr })}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
-          <div className="text-center">
-            <Button asChild variant="outline" size="lg">
-              <Link href="/services">{L({ en: 'View All Services', fr: 'Voir Tous les Services' })}</Link>
-            </Button>
-          </div>
+          </motion.div>
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center">
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild variant="outline" size="lg">
+                <Link href="/services">{L({ en: 'View All Services', fr: 'Voir Tous les Services' })}</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Why Choose Us */}
+      {/* ─── Why Choose Us ─── */}
       <section className="bg-muted/40 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
-                {L({ en: 'Why LTIC SARL', fr: 'Pourquoi LTIC SARL' })}
-              </p>
-              <h2 className="text-4xl font-bold tracking-tight mb-6">
-                {L({ en: 'Your Strategic Partner for Global Operations', fr: 'Votre Partenaire Stratégique pour les Opérations Mondiales' })}
-              </h2>
+            <motion.div variants={fadeInLeft} initial="hidden" whileInView="show" viewport={viewportOnce}>
+              <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Why LTIC SARL', fr: 'Pourquoi LTIC SARL' })}</p>
+              <h2 className="text-4xl font-bold tracking-tight mb-6">{L({ en: 'Your Strategic Partner for Global Operations', fr: 'Votre Partenaire Stratégique pour les Opérations Mondiales' })}</h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                {L({ en: 'LTIC SARL is more than a logistics company — we are a multinational business solutions provider with the networks, expertise, and operational capacity to handle your most complex international requirements.', fr: 'LTIC SARL est plus qu\'une société de logistique — nous sommes un fournisseur de solutions d\'affaires multinationales avec les réseaux, l\'expertise et la capacité opérationnelle pour gérer vos exigences internationales les plus complexes.' })}
+                {L({ en: 'LTIC SARL is more than a logistics company — we are a multinational business solutions provider with the networks, expertise, and operational capacity to handle your most complex international requirements.', fr: "LTIC SARL est plus qu'une société de logistique — nous sommes un fournisseur de solutions d'affaires multinationales avec les réseaux, l'expertise et la capacité opérationnelle." })}
               </p>
               <ul className="space-y-3">
                 {[
-                  { en: 'Multinational trade network across Africa, Europe, Middle East & Americas', fr: 'Réseau commercial multinational en Afrique, Europe, Moyen-Orient & Amériques' },
-                  { en: 'Full-spectrum logistics: freight, customs, warehousing, last-mile delivery', fr: 'Logistique complète: fret, douane, entreposage, livraison dernier kilomètre' },
-                  { en: 'Certified industrial supply partners — Total, Shell and leading OEM brands', fr: 'Partenaires certifiés — Total, Shell et grandes marques OEM' },
-                  { en: 'Dedicated account management and 24/7 shipment tracking', fr: 'Gestion de compte dédiée et suivi d\'expédition 24h/7j' },
-                  { en: 'Phytosanitary treatment and regulatory compliance services', fr: 'Services de traitement phytosanitaire et conformité réglementaire' },
-                  { en: 'Transparent pricing, structured documentation, on-time delivery', fr: 'Tarification transparente, documentation structurée, livraison à temps' },
+                  { en: 'Multinational trade network across Africa, Europe, Middle East & Americas', fr: "Réseau commercial multinational en Afrique, Europe, Moyen-Orient & Amériques" },
+                  { en: 'Full-spectrum logistics: freight, customs, warehousing, last-mile delivery', fr: "Logistique complète: fret, douane, entreposage, livraison dernier kilomètre" },
+                  { en: 'Certified industrial supply partners — Total, Shell and leading OEM brands', fr: "Partenaires certifiés — Total, Shell et grandes marques OEM" },
+                  { en: 'Dedicated account management and 24/7 shipment tracking', fr: "Gestion de compte dédiée et suivi d'expédition 24h/7j" },
+                  { en: 'Phytosanitary treatment and regulatory compliance services', fr: "Services de traitement phytosanitaire et conformité réglementaire" },
+                  { en: 'Transparent pricing, structured documentation, on-time delivery', fr: "Tarification transparente, documentation structurée, livraison à temps" },
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <motion.li key={i} variants={fadeInLeft} initial="hidden" whileInView="show" viewport={viewportOnce}
+                    transition={{ delay: i * 0.07 }} className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span className="text-muted-foreground text-sm">{L(item)}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+            </motion.div>
+            <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce} className="grid grid-cols-2 gap-4">
               {[
                 { icon: Shield, en: 'Reliability', fr: 'Fiabilité', descEn: 'On-time delivery backed by structured documentation and tracking.', descFr: 'Livraison à temps avec documentation structurée et suivi.' },
                 { icon: Globe2, en: 'Global Network', fr: 'Réseau Mondial', descEn: 'Established connections across 30+ countries and key trade corridors.', descFr: 'Connexions établies dans 30+ pays et corridors commerciaux clés.' },
-                { icon: Zap, en: 'Efficiency', fr: 'Efficacité', descEn: 'Optimized supply chains reducing cost and transit time.', descFr: 'Chaînes d\'approvisionnement optimisées réduisant coûts et délais.' },
-                { icon: TrendingUp, en: 'Growth', fr: 'Croissance', descEn: 'Strategic partnerships that open new markets and opportunities.', descFr: 'Partenariats stratégiques ouvrant de nouveaux marchés et opportunités.' },
+                { icon: Zap, en: 'Efficiency', fr: 'Efficacité', descEn: 'Optimized supply chains reducing cost and transit time.', descFr: "Chaînes d'approvisionnement optimisées réduisant coûts et délais." },
+                { icon: TrendingUp, en: 'Growth', fr: 'Croissance', descEn: 'Strategic partnerships that open new markets and opportunities.', descFr: "Partenariats stratégiques ouvrant de nouveaux marchés et opportunités." },
               ].map(({ icon: Icon, ...card }) => (
-                <div key={card.en} className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow">
+                <motion.div key={card.en} variants={scaleIn}
+                  whileHover={{ y: -4, boxShadow: '0 12px 30px -8px rgba(0,0,0,0.12)' }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className="bg-card border rounded-xl p-6">
                   <Icon className="h-8 w-8 text-primary mb-3" />
                   <h4 className="font-bold mb-2 text-sm">{L({ en: card.en, fr: card.fr })}</h4>
                   <p className="text-muted-foreground text-xs leading-relaxed">{L({ en: card.descEn, fr: card.descFr })}</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* ─── Featured Products ─── */}
       <section className="bg-background py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
-              {L({ en: 'Industrial Catalog', fr: 'Catalogue Industriel' })}
-            </p>
-            <h2 className="text-4xl font-bold tracking-tight mb-4">
-              {L({ en: 'Featured Products', fr: 'Produits en Vedette' })}
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
+            <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Industrial Catalog', fr: 'Catalogue Industriel' })}</p>
+            <h2 className="text-4xl font-bold tracking-tight mb-4">{L({ en: 'Featured Products', fr: 'Produits en Vedette' })}</h2>
+          </motion.div>
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {isLoading
               ? Array(8).fill(0).map((_, i) => (
                   <div key={i} className="bg-card border rounded-xl overflow-hidden">
                     <Skeleton className="aspect-[4/3] w-full" />
-                    <div className="p-4 space-y-2">
-                      <Skeleton className="h-4 w-16" />
-                      <Skeleton className="h-5 w-full" />
-                    </div>
+                    <div className="p-4 space-y-2"><Skeleton className="h-4 w-16" /><Skeleton className="h-5 w-full" /></div>
                   </div>
                 ))
               : featuredProducts?.map((product) => (
-                  <Link
-                    key={product.id}
-                    href={`/products/${product.slug}`}
-                    className="group bg-card border rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/40 transition-all duration-300"
-                  >
-                    <div className="aspect-[4/3] relative bg-muted overflow-hidden">
-                      {product.imageUrl && (
-                        <Image
-                          src={product.imageUrl}
-                          alt={L({ en: product.nameEn, fr: product.nameFr })}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
-                    </div>
-                    <div className="p-4">
-                      {product.categoryName && (
-                        <span className="inline-block bg-primary/10 text-primary text-xs rounded-full px-2 py-0.5 mb-2">
-                          {product.categoryName}
-                        </span>
-                      )}
-                      <h3 className="font-bold text-sm leading-tight group-hover:text-primary transition-colors">
-                        {L({ en: product.nameEn, fr: product.nameFr })}
-                      </h3>
-                    </div>
-                  </Link>
+                  <motion.div key={product.id} variants={fadeInUp}
+                    whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+                    <Link href={`/products/${product.slug}`}
+                      className="group bg-card border rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/40 transition-all duration-300 block">
+                      <div className="aspect-[4/3] relative bg-muted overflow-hidden">
+                        {product.imageUrl && (
+                          <Image src={product.imageUrl} alt={L({ en: product.nameEn, fr: product.nameFr })} fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </div>
+                      <div className="p-4">
+                        {product.categoryName && (
+                          <span className="inline-block bg-primary/10 text-primary text-xs rounded-full px-2 py-0.5 mb-2">{product.categoryName}</span>
+                        )}
+                        <h3 className="font-bold text-sm leading-tight group-hover:text-primary transition-colors">
+                          {L({ en: product.nameEn, fr: product.nameFr })}
+                        </h3>
+                      </div>
+                    </Link>
+                  </motion.div>
                 ))}
-          </div>
-          <div className="text-center">
-            <Button asChild variant="outline" size="lg">
-              <Link href="/products">{L({ en: 'Browse Full Catalog', fr: 'Parcourir le Catalogue' })}</Link>
-            </Button>
-          </div>
+          </motion.div>
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center">
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild variant="outline" size="lg">
+                <Link href="/products">{L({ en: 'Browse Full Catalog', fr: 'Parcourir le Catalogue' })}</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Industries */}
+      {/* ─── Industries ─── */}
       <section className="bg-muted/40 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold tracking-tight mb-12">
+          <motion.h2 variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="text-4xl font-bold tracking-tight mb-12">
             {L({ en: 'Industries We Serve', fr: 'Secteurs que Nous Servons' })}
-          </h2>
-          <div className="flex flex-wrap justify-center gap-3">
+          </motion.h2>
+          <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="flex flex-wrap justify-center gap-3">
             {industries.map((ind) => (
-              <span key={ind.en} className="bg-primary/10 text-primary border border-primary/20 rounded-full px-4 py-2 text-sm font-medium">
+              <motion.span key={ind.en} variants={scaleIn}
+                whileHover={{ scale: 1.08, y: -2 }} whileTap={{ scale: 0.95 }}
+                className="bg-primary/10 text-primary border border-primary/20 rounded-full px-4 py-2 text-sm font-medium cursor-default">
                 {L(ind)}
-              </span>
+              </motion.span>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-primary py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold tracking-tight text-primary-foreground mb-4">
+      {/* ─── CTA ─── */}
+      <section className="bg-primary py-20 relative overflow-hidden">
+        <motion.div animate={{ x: [0, 30, 0], y: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 8, ease: 'easeInOut' }}
+          className="absolute -right-20 -top-20 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+          <motion.h2 variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="text-4xl font-bold tracking-tight text-primary-foreground mb-4">
             {L({ en: 'Ready to Optimize Your Global Operations?', fr: 'Prêt à Optimiser Vos Opérations Mondiales ?' })}
-          </h2>
-          <p className="text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
-            {L({ en: 'Join 500+ businesses that trust LTIC SARL for their logistics, supply, and international trade needs.', fr: 'Rejoignez 500+ entreprises qui font confiance à LTIC SARL pour leurs besoins en logistique, fournitures et commerce international.' })}
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
-              <Link href="/quote">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
-            </Button>
-          </div>
+          </motion.h2>
+          <motion.p variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
+            {L({ en: 'Join 500+ businesses that trust LTIC SARL for their logistics, supply, and international trade needs.', fr: "Rejoignez 500+ entreprises qui font confiance à LTIC SARL pour leurs besoins en logistique, fournitures et commerce international." })}
+          </motion.p>
+          <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce} className="flex flex-wrap gap-4 justify-center">
+            <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg">
+                <Link href="/quote">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}</Link>
+              </Button>
+            </motion.div>
+            {!user && (
+              <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <Button size="lg" onClick={() => openAuth('register')} className="bg-white/10 text-white border border-white/30 hover:bg-white/20 shadow-lg">
+                  {L({ en: 'Create Account & Get Updates', fr: 'Créer un Compte & Recevoir des Mises à Jour' })}
+                </Button>
+              </motion.div>
+            )}
+            <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </>

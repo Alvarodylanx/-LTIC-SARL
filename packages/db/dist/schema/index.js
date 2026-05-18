@@ -21,3 +21,5 @@ __exportStar(require("./orders"), exports);
 __exportStar(require("./contacts"), exports);
 __exportStar(require("./news"), exports);
 __exportStar(require("./settings"), exports);
+__exportStar(require("./users"), exports);
+__exportStar(require("./notifications"), exports);

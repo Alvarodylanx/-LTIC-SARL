@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { eq, and, ilike, sql, desc } from 'drizzle-orm';
+import { eq, and, ilike, desc } from 'drizzle-orm';
 import { DB_TOKEN } from '../db/db.module';
-import { products, categories } from '@ltic/db';
+import { products, categories, users, notifications } from '@ltic/db';
 
 @Injectable()
 export class ProductsService {
@@ -57,7 +57,9 @@ export class ProductsService {
 
   async create(data: any) {
     const [p] = await this.db.insert(products).values(data).returning();
-    return this.findOne(p.id);
+    const created = await this.findOne(p.id);
+    await this.broadcastProductNotification(created);
+    return created;
   }
 
   async update(id: number, data: any) {
@@ -70,5 +72,22 @@ export class ProductsService {
     const [p] = await this.db.delete(products).where(eq(products.id, id)).returning();
     if (!p) throw new NotFoundException('Product not found');
     return { deleted: true };
+  }
+
+  private async broadcastProductNotification(product: any) {
+    try {
+      const subs = await this.db.select().from(users).where(eq(users.notifyProducts, true));
+      if (!subs.length) return;
+      const rows = subs.map((u: any) => ({
+        userId: u.id,
+        type: 'product',
+        titleEn: 'New Product Available',
+        titleFr: 'Nouveau Produit Disponible',
+        messageEn: `${product.nameEn} has been added to our catalog.`,
+        messageFr: `${product.nameFr} a été ajouté à notre catalogue.`,
+        link: `/products/${product.slug}`,
+      }));
+      await this.db.insert(notifications).values(rows);
+    } catch {}
   }
 }

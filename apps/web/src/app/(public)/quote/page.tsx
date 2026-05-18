@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Clock, Shield, Globe2, CheckCircle2, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Clock, Shield, Globe2, CheckCircle2, Loader2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { Suspense } from 'react';
+import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, viewportOnce } from '@/components/motion/variants';
 
 const schema = z.object({
   companyName: z.string().min(1),
@@ -47,7 +49,7 @@ function QuoteForm() {
       reset();
     } catch {
       toast.error(L({ en: 'Error', fr: 'Erreur' }), {
-        description: L({ en: 'There was a problem sending your request.', fr: 'Un problème est survenu lors de l\'envoi de votre demande.' }),
+        description: L({ en: 'There was a problem sending your request.', fr: "Un problème est survenu lors de l'envoi de votre demande." }),
       });
     }
   };
@@ -56,7 +58,7 @@ function QuoteForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="companyName">{L({ en: 'Company Name', fr: 'Nom de l\'Entreprise' })} *</Label>
+          <Label htmlFor="companyName">{L({ en: "Company Name", fr: "Nom de l'Entreprise" })} *</Label>
           <Input id="companyName" {...register('companyName')} className="mt-1" />
           {errors.companyName && <p className="text-destructive text-xs mt-1">{L({ en: 'Required', fr: 'Requis' })}</p>}
         </div>
@@ -82,7 +84,7 @@ function QuoteForm() {
         <Input id="country" {...register('country')} className="mt-1" />
       </div>
       <div>
-        <Label htmlFor="productInterest">{L({ en: 'Product / Service of Interest', fr: 'Produit / Service d\'Intérêt' })} *</Label>
+        <Label htmlFor="productInterest">{L({ en: "Product / Service of Interest", fr: "Produit / Service d'Intérêt" })} *</Label>
         <Input id="productInterest" {...register('productInterest')} className="mt-1" />
         {errors.productInterest && <p className="text-destructive text-xs mt-1">{L({ en: 'Required', fr: 'Requis' })}</p>}
       </div>
@@ -94,10 +96,12 @@ function QuoteForm() {
         <Label htmlFor="message">{L({ en: 'Additional Information', fr: 'Informations Supplémentaires' })}</Label>
         <Textarea id="message" {...register('message')} rows={4} className="mt-1" />
       </div>
-      <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
-        {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-        {L({ en: 'Submit Quote Request', fr: 'Envoyer la Demande de Devis' })}
-      </Button>
+      <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+        <Button type="submit" size="lg" disabled={isSubmitting} className="w-full shadow-sm">
+          {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+          {L({ en: 'Submit Quote Request', fr: 'Envoyer la Demande de Devis' })}
+        </Button>
+      </motion.div>
     </form>
   );
 }
@@ -114,42 +118,59 @@ export default function QuotePage() {
 
   return (
     <>
-      <section className="relative bg-sidebar py-16 overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl font-bold tracking-tight text-sidebar-foreground mb-4">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}</h1>
-          <p className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
-            {L({ en: 'Get a tailored quote for any logistics, industrial supply, or trade requirement.', fr: 'Obtenez un devis personnalisé pour tout besoin logistique, fourniture industrielle ou commercial.' })}
-          </p>
+      <section className="relative bg-sidebar py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <Image src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&auto=format&fit=crop&q=50"
+            alt="Quote" fill className="object-cover opacity-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-sidebar/70 to-sidebar/80" />
         </div>
+        <motion.div variants={stagger} initial="hidden" animate="show"
+          className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
+            {L({ en: 'Get a Quote', fr: 'Obtenir un Devis' })}
+          </motion.p>
+          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-4">
+            {L({ en: 'Request a Quote', fr: 'Demander un Devis' })}
+          </motion.h1>
+          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
+            {L({ en: 'Get a tailored quote for any logistics, industrial supply, or trade requirement.', fr: 'Obtenez un devis personnalisé pour tout besoin logistique, fourniture industrielle ou commercial.' })}
+          </motion.p>
+        </motion.div>
       </section>
 
       <section className="bg-background py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Highlights */}
-            <div className="space-y-4">
-              {highlights.map(({ icon: Icon, en, fr }) => (
-                <div key={en} className="bg-card border rounded-xl p-6 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+            <motion.div variants={fadeInLeft} initial="hidden" whileInView="show" viewport={viewportOnce}
+              className="space-y-4">
+              {highlights.map(({ icon: Icon, en, fr }, i) => (
+                <motion.div key={en} variants={fadeInLeft} initial="hidden" whileInView="show" viewport={viewportOnce}
+                  transition={{ delay: i * 0.08 }}
+                  whileHover={{ x: 4 }} className="bg-card border rounded-xl p-6 flex items-start gap-4 group">
+                  <motion.div whileHover={{ scale: 1.15, rotate: 8 }} transition={{ type: 'spring', stiffness: 400 }}
+                    className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                     <Icon className="h-5 w-5" />
-                  </div>
+                  </motion.div>
                   <p className="font-medium text-sm leading-relaxed pt-1.5">{L({ en, fr })}</p>
-                </div>
+                </motion.div>
               ))}
-              <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mt-6">
+              <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
+                className="bg-primary/5 border border-primary/20 rounded-xl p-6 mt-6">
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {L({ en: 'Our team of specialists will review your requirements and provide a comprehensive, customized quote with competitive pricing and delivery timelines.', fr: 'Notre équipe de spécialistes examinera vos besoins et fournira un devis complet et personnalisé avec des prix compétitifs et des délais de livraison.' })}
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Form */}
-            <div className="lg:col-span-2 bg-card border rounded-xl p-8">
+            <motion.div variants={fadeInRight} initial="hidden" whileInView="show" viewport={viewportOnce}
+              className="lg:col-span-2 bg-card border rounded-2xl p-8 shadow-sm">
               <h2 className="text-2xl font-bold mb-6">{L({ en: 'Your Quote Details', fr: 'Détails de Votre Devis' })}</h2>
               <Suspense>
                 <QuoteForm />
               </Suspense>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

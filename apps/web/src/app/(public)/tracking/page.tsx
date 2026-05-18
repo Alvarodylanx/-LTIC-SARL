@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Loader2, Package, AlertCircle, MapPin, Calendar, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Loader2, Package, AlertCircle, MapPin, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { format } from 'date-fns';
+import { fadeInUp, scaleIn, stagger, viewportOnce } from '@/components/motion/variants';
 
 const statusColors: Record<string, string> = {
   processing: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -53,58 +55,78 @@ export default function TrackingPage() {
 
   return (
     <>
-      <section className="relative bg-sidebar py-16 overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl font-bold tracking-tight text-sidebar-foreground mb-4">{L({ en: 'Track Your Shipment', fr: 'Suivre Votre Expédition' })}</h1>
-          <p className="text-xl text-sidebar-foreground/80 mb-8 max-w-xl mx-auto">
+      <section className="relative bg-sidebar py-20 overflow-hidden">
+        <motion.div animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ repeat: Infinity, duration: 7 }}
+          className="absolute left-1/4 top-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <motion.div variants={stagger} initial="hidden" animate="show"
+          className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
+            {L({ en: 'Real-Time Tracking', fr: 'Suivi en Temps Réel' })}
+          </motion.p>
+          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-4">
+            {L({ en: 'Track Your Shipment', fr: 'Suivre Votre Expédition' })}
+          </motion.h1>
+          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 mb-10 max-w-xl mx-auto">
             {L({ en: 'Enter your tracking number to get real-time updates on your cargo.', fr: 'Entrez votre numéro de suivi pour obtenir des mises à jour en temps réel sur votre cargaison.' })}
-          </p>
-          <form onSubmit={handleTrack} className="max-w-xl mx-auto flex gap-3">
+          </motion.p>
+          <motion.form variants={fadeInUp} onSubmit={handleTrack} className="max-w-xl mx-auto flex gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
+              <Input value={trackingNumber} onChange={(e) => setTrackingNumber(e.target.value)}
                 placeholder={L({ en: 'Enter tracking number (e.g., TRK-2024-001)', fr: 'Entrez le numéro de suivi (ex: TRK-2024-001)' })}
-                className="pl-10 h-12 text-foreground bg-background border-border"
-              />
+                className="pl-10 h-12 text-foreground bg-background border-border" />
             </div>
-            <Button type="submit" size="lg" disabled={isLoading || !trackingNumber.trim()}>
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : L({ en: 'Track', fr: 'Suivre' })}
-            </Button>
-          </form>
-        </div>
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+              <Button type="submit" size="lg" disabled={isLoading || !trackingNumber.trim()} className="h-12">
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : L({ en: 'Track', fr: 'Suivre' })}
+              </Button>
+            </motion.div>
+          </motion.form>
+        </motion.div>
       </section>
 
-      {searched && (
-        <section className="bg-background py-12">
-          <div className="max-w-3xl mx-auto px-4">
-            {isLoading && (
-              <div className="flex flex-col items-center gap-4 py-16">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="text-muted-foreground">{L({ en: 'Locating your shipment...', fr: 'Localisation de votre expédition...' })}</p>
-              </div>
+      <section className="bg-background py-12 min-h-[40vh]">
+        <div className="max-w-3xl mx-auto px-4">
+          <AnimatePresence mode="wait">
+            {!searched && (
+              <motion.div key="idle" variants={fadeInUp} initial="hidden" animate="show" exit={{ opacity: 0, y: -16 }}
+                className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+                <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}>
+                  <Package className="h-20 w-20 text-muted-foreground/30" />
+                </motion.div>
+                <p className="text-muted-foreground">
+                  {L({ en: 'Enter your tracking number above to see shipment status and timeline.', fr: "Entrez votre numéro de suivi ci-dessus pour voir l'état de l'expédition et la chronologie." })}
+                </p>
+              </motion.div>
             )}
 
-            {error && !isLoading && (
-              <div className="border border-destructive/40 bg-destructive/5 rounded-xl p-8 text-center">
+            {searched && isLoading && (
+              <motion.div key="loading" variants={fadeInUp} initial="hidden" animate="show" exit={{ opacity: 0 }}
+                className="flex flex-col items-center gap-4 py-16">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                <p className="text-muted-foreground">{L({ en: 'Locating your shipment...', fr: 'Localisation de votre expédition...' })}</p>
+              </motion.div>
+            )}
+
+            {searched && error && !isLoading && (
+              <motion.div key="error" variants={scaleIn} initial="hidden" animate="show"
+                className="border border-destructive/40 bg-destructive/5 rounded-2xl p-8 text-center">
                 <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
                 <h2 className="text-xl font-bold text-destructive mb-2">{error}</h2>
                 <p className="text-muted-foreground">
-                  {L({ en: 'The tracking number you entered was not found. Please check the number and try again.', fr: 'Le numéro de suivi que vous avez entré n\'a pas été trouvé. Veuillez vérifier le numéro et réessayer.' })}
+                  {L({ en: "The tracking number you entered was not found. Please check the number and try again.", fr: "Le numéro de suivi que vous avez entré n'a pas été trouvé. Veuillez vérifier le numéro et réessayer." })}
                 </p>
-              </div>
+              </motion.div>
             )}
 
-            {order && !isLoading && (
-              <div className="space-y-6">
-                <div className="bg-card border rounded-xl p-6">
+            {searched && order && !isLoading && (
+              <motion.div key="result" variants={stagger} initial="hidden" animate="show" className="space-y-6">
+                <motion.div variants={scaleIn} className="bg-card border rounded-2xl p-6 shadow-sm">
                   <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-                    <div>
-                      <span className="bg-primary/10 text-primary text-sm font-mono font-bold px-3 py-1 rounded-full">
-                        {order.trackingNumber}
-                      </span>
-                    </div>
+                    <span className="bg-primary/10 text-primary text-sm font-mono font-bold px-3 py-1 rounded-full">
+                      {order.trackingNumber}
+                    </span>
                     <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}>
                       {L(statusLabels[order.status] || { en: order.status, fr: order.status })}
                     </span>
@@ -127,13 +149,16 @@ export default function TrackingPage() {
 
                   {order.timeline && order.timeline.length > 0 && (
                     <div>
-                      <h3 className="font-bold mb-4">{L({ en: 'Shipment Timeline', fr: 'Chronologie de l\'Expédition' })}</h3>
+                      <h3 className="font-bold mb-4">{L({ en: 'Shipment Timeline', fr: "Chronologie de l'Expédition" })}</h3>
                       <div className="space-y-4">
                         {[...(order.timeline as any[])].reverse().map((event: any, idx: number) => (
-                          <div key={idx} className={`flex gap-4 ${idx === 0 ? 'opacity-100' : 'opacity-70'}`}>
+                          <motion.div key={idx} variants={fadeInUp}
+                            className={`flex gap-4 ${idx === 0 ? 'opacity-100' : 'opacity-70'}`}>
                             <div className="flex flex-col items-center">
-                              <div className={`w-3 h-3 rounded-full mt-1 ${idx === 0 ? 'bg-primary' : 'bg-muted-foreground/40'}`} />
-                              {idx < (order.timeline.length - 1) && <div className="w-0.5 h-full bg-muted-foreground/20 mt-1" />}
+                              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                                transition={{ delay: idx * 0.08, type: 'spring', stiffness: 400 }}
+                                className={`w-3 h-3 rounded-full mt-1 ${idx === 0 ? 'bg-primary ring-4 ring-primary/20' : 'bg-muted-foreground/40'}`} />
+                              {idx < (order.timeline.length - 1) && <div className="w-0.5 flex-1 bg-muted-foreground/20 mt-1 mb-0" />}
                             </div>
                             <div className="pb-4">
                               <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -160,28 +185,17 @@ export default function TrackingPage() {
                                 )}
                               </div>
                             </div>
-                          </div>
+                          </motion.div>
                         ))}
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             )}
-          </div>
-        </section>
-      )}
-
-      {!searched && (
-        <section className="bg-muted/40 py-16">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <Package className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
-            <p className="text-muted-foreground">
-              {L({ en: 'Enter your tracking number above to see shipment status and timeline.', fr: 'Entrez votre numéro de suivi ci-dessus pour voir l\'état de l\'expédition et la chronologie.' })}
-            </p>
-          </div>
-        </section>
-      )}
+          </AnimatePresence>
+        </div>
+      </section>
     </>
   );
 }

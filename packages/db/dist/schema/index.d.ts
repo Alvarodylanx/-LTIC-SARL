@@ -5,4 +5,6 @@ export * from './orders';
 export * from './contacts';
 export * from './news';
 export * from './settings';
+export * from './users';
+export * from './notifications';
 //# sourceMappingURL=index.d.ts.map

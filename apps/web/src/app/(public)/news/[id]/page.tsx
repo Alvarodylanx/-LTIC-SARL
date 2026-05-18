@@ -3,12 +3,14 @@
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { format } from 'date-fns';
+import { fadeInUp, fadeInLeft, stagger, viewportOnce } from '@/components/motion/variants';
 
 export default function NewsArticlePage() {
   const { id } = useParams<{ id: string }>();
@@ -43,19 +45,27 @@ export default function NewsArticlePage() {
 
   return (
     <div className="bg-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link href="/news" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors">
-          <ArrowLeft className="h-4 w-4" />
-          {L({ en: 'Back to News', fr: 'Retour aux Actualités' })}
-        </Link>
+      <motion.div variants={stagger} initial="hidden" animate="show"
+        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <motion.div variants={fadeInLeft}>
+          <Link href="/news" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors group">
+            <motion.span whileHover={{ x: -3 }} transition={{ type: 'spring', stiffness: 400 }}>
+              <ArrowLeft className="h-4 w-4" />
+            </motion.span>
+            {L({ en: 'Back to News', fr: 'Retour aux Actualités' })}
+          </Link>
+        </motion.div>
 
         {article.imageUrl && (
-          <div className="relative aspect-video rounded-xl overflow-hidden mb-8">
-            <Image src={article.imageUrl} alt={L({ en: article.titleEn, fr: article.titleFr })} fill className="object-cover" />
-          </div>
+          <motion.div variants={fadeInUp}
+            className="relative aspect-video rounded-2xl overflow-hidden mb-8 group">
+            <Image src={article.imageUrl} alt={L({ en: article.titleEn, fr: article.titleFr })} fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </motion.div>
         )}
 
-        <div className="flex items-center gap-3 mb-4">
+        <motion.div variants={fadeInUp} className="flex items-center gap-3 mb-4">
           {article.category && (
             <span className="bg-primary/10 text-primary text-xs rounded-full px-3 py-1 font-medium">{article.category}</span>
           )}
@@ -63,13 +73,13 @@ export default function NewsArticlePage() {
             <Calendar className="h-4 w-4" />
             {format(new Date(article.publishedAt), 'dd MMMM yyyy')}
           </span>
-        </div>
+        </motion.div>
 
-        <h1 className="text-4xl font-bold tracking-tight mb-8">
+        <motion.h1 variants={fadeInUp} className="text-4xl font-bold tracking-tight mb-8">
           {L({ en: article.titleEn, fr: article.titleFr })}
-        </h1>
+        </motion.h1>
 
-        <div className="prose prose-slate max-w-none">
+        <motion.div variants={fadeInUp} className="prose prose-slate max-w-none">
           {(L({ en: article.contentEn || article.summaryEn || '', fr: article.contentFr || article.summaryFr || '' }))
             .split('\n\n')
             .map((para: string, i: number) => (
@@ -85,8 +95,8 @@ export default function NewsArticlePage() {
                 <p key={i} className="text-muted-foreground leading-relaxed mb-4">{para}</p>
               )
             ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

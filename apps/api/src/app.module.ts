@@ -10,6 +10,8 @@ import { NewsModule } from './news/news.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { SettingsModule } from './settings/settings.module';
 import { StatsModule } from './stats/stats.module';
+import { UsersModule } from './users/users.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { StatsModule } from './stats/stats.module';
     ContactsModule,
     SettingsModule,
     StatsModule,
+    UsersModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
