@@ -80,12 +80,12 @@ export default function HomePage() {
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button asChild size="lg" variant="outline" className="text-base px-8 border-white/40 text-white hover:bg-white/10">
+                <Button asChild size="lg" variant="outline" className="text-base px-8 bg-transparent border-white/50 text-white hover:bg-white/10 hover:text-white">
                   <Link href="/services">{L({ en: 'Explore Services', fr: 'Voir nos Services' })}</Link>
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button asChild size="lg" variant="ghost" className="text-base px-8 text-white hover:bg-white/10">
+                <Button asChild size="lg" variant="ghost" className="text-base px-8 text-white/80 hover:bg-white/10 hover:text-white">
                   <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
                 </Button>
               </motion.div>
