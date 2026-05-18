@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { Package, Filter, ArrowRight } from 'lucide-react';
+import { Package, Filter, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -21,9 +21,11 @@ export default function ProductsPage() {
     queryFn: () => api.get('/api/categories'),
   });
 
-  const { data: products, isLoading } = useQuery<any[]>({
+  const { data: products, isLoading, isError, refetch } = useQuery<any[]>({
     queryKey: ['products', selectedCategory],
     queryFn: () => api.get(`/api/products${selectedCategory ? `?categoryId=${selectedCategory}` : ''}`),
+    retry: 2,
+    staleTime: 2 * 60 * 1000,
   });
 
   return (
@@ -72,7 +74,7 @@ export default function ProductsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array(12).fill(0).map((_, i) => (
+              {Array(8).fill(0).map((_, i) => (
                 <div key={i} className="border rounded-xl overflow-hidden">
                   <Skeleton className="aspect-[4/3] w-full" />
                   <div className="p-4 space-y-2">
@@ -81,6 +83,17 @@ export default function ProductsPage() {
                 </div>
               ))}
             </div>
+          ) : isError ? (
+            <motion.div variants={fadeInUp} initial="hidden" animate="show"
+              className="flex flex-col items-center justify-center py-24 gap-4">
+              <AlertCircle className="h-16 w-16 text-destructive/40" />
+              <p className="text-muted-foreground text-lg font-medium">{L({ en: 'Unable to load products', fr: 'Impossible de charger les produits' })}</p>
+              <p className="text-muted-foreground/70 text-sm">{L({ en: 'Please check your connection and try again.', fr: 'Veuillez vérifier votre connexion et réessayer.' })}</p>
+              <Button variant="outline" onClick={() => refetch()} className="mt-2 gap-2">
+                <RefreshCw className="h-4 w-4" />
+                {L({ en: 'Retry', fr: 'Réessayer' })}
+              </Button>
+            </motion.div>
           ) : !products?.length ? (
             <motion.div variants={fadeInUp} initial="hidden" animate="show"
               className="flex flex-col items-center justify-center py-24 gap-4">

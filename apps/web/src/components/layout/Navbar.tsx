@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Menu, X, ArrowRight, User, LogOut, ChevronDown, Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Globe, Menu, X, User, LogOut, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUser } from '@/contexts/UserContext';
@@ -144,14 +143,6 @@ export function Navbar() {
             </motion.button>
           )}
 
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-            <Button asChild size="sm" className="shadow-sm">
-              <Link href="/quote">
-                {L({ en: 'Request Quote', fr: 'Demander un Devis' })}
-                <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
-            </Button>
-          </motion.div>
         </div>
 
         {/* Mobile hamburger */}
@@ -213,9 +204,6 @@ export function Navbar() {
                     {L({ en: 'Sign In', fr: 'Connexion' })}
                   </button>
                 )}
-                <Button asChild size="sm" className="flex-1">
-                  <Link href="/quote">{L({ en: 'Request Quote', fr: 'Demander un Devis' })}</Link>
-                </Button>
               </div>
             </div>
           </motion.div>

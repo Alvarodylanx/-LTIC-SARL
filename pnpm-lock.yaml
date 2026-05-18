@@ -38,6 +38,9 @@ importers:
       '@types/bcryptjs':
         specifier: ^3.0.0
         version: 3.0.0
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -56,6 +59,9 @@ importers:
       express-session:
         specifier: ^1.18.0
         version: 1.19.0
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
       passport:
         specifier: ^0.7.0
         version: 0.7.0
