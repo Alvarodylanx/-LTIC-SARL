@@ -84,11 +84,6 @@ export default function HomePage() {
                   <Link href="/services">{L({ en: 'Explore Services', fr: 'Voir nos Services' })}</Link>
                 </Button>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button asChild size="lg" variant="ghost" className="text-base px-8 text-white/80 hover:bg-white/10 hover:text-white">
-                  <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
-                </Button>
-              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -268,30 +263,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── CTA ─── */}
-      <section className="bg-primary py-20 relative overflow-hidden">
-        <motion.div animate={{ x: [0, 30, 0], y: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 8, ease: 'easeInOut' }}
-          className="absolute -right-20 -top-20 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+      {/* ─── Brand Statement ─── */}
+      <section className="bg-sidebar py-24 relative overflow-hidden">
+        {/* Decorative rings */}
+        <motion.div animate={{ scale: [1, 1.15, 1], opacity: [0.06, 0.12, 0.06] }}
+          transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut' }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/10 pointer-events-none" />
+        <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.04, 0.08, 0.04] }}
+          transition={{ repeat: Infinity, duration: 10, ease: 'easeInOut', delay: 1.5 }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-white/5 pointer-events-none" />
+
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.p variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="text-primary font-semibold text-sm uppercase tracking-widest mb-6">
+            LTIC SARL
+          </motion.p>
           <motion.h2 variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
-            className="text-4xl font-bold tracking-tight text-primary-foreground mb-4">
-            {L({ en: 'Ready to Optimize Your Global Operations?', fr: 'Prêt à Optimiser Vos Opérations Mondiales ?' })}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6 leading-tight">
+            {L({ en: 'Global Logistics, Industrial Solutions', fr: 'Logistique Mondiale, Solutions Industrielles' })}
+            <span className="block text-primary">{L({ en: '& International Trade Excellence', fr: '& Excellence du Commerce International' })}</span>
           </motion.h2>
           <motion.p variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
-            className="text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
-            {L({ en: 'Join 500+ businesses that trust LTIC SARL for their logistics, supply, and international trade needs.', fr: "Rejoignez 500+ entreprises qui font confiance à LTIC SARL pour leurs besoins en logistique, fournitures et commerce international." })}
+            className="text-sidebar-foreground/60 text-lg max-w-3xl mx-auto leading-relaxed mb-16">
+            {L({ en: 'Trusted by 500+ businesses across 30+ countries — delivering precision, reliability, and global reach in every operation.', fr: "Approuvé par 500+ entreprises dans 30+ pays — offrant précision, fiabilité et portée mondiale dans chaque opération." })}
           </motion.p>
-          <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce} className="flex flex-wrap gap-4 justify-center">
-            <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg">
-                <Link href="/quote">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}</Link>
-              </Button>
-            </motion.div>
-            <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
-              </Button>
-            </motion.div>
+
+          {/* Info grid */}
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10">
+            {[
+              { label: { en: 'Headquarters', fr: 'Siège Social' }, value: 'Douala, Cameroon' },
+              { label: { en: 'Email', fr: 'Email' }, value: 'contact@lticsarl.com' },
+              { label: { en: 'Coverage', fr: 'Couverture' }, value: L({ en: 'Africa · Europe · Americas · Asia', fr: 'Afrique · Europe · Amériques · Asie' }) },
+            ].map((item, i) => (
+              <motion.div key={i} variants={fadeInUp}
+                className="bg-sidebar-accent/30 px-8 py-8 text-center">
+                <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-2">{L(item.label)}</p>
+                <p className="text-sidebar-foreground font-medium">{item.value}</p>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
