@@ -1,5 +1,12 @@
-﻿import { Injectable, NotFoundException } from "@nestjs/common";
+﻿import { Injectable, NotFoundException, BadRequestException, ConflictException } from "@nestjs/common";
 import { getPool } from "../db.provider";
+
+function pgError(e: any): never {
+  if (e.code === "23505") throw new ConflictException("A product with this slug already exists");
+  if (e.code === "23502") throw new BadRequestException(`Missing required field: ${e.column}`);
+  if (e.code === "23503") throw new BadRequestException("Invalid category — please select a valid category");
+  throw e;
+}
 
 @Injectable()
 export class ProductsService {
@@ -46,14 +53,20 @@ export class ProductsService {
   }
 
   async create(data: any) {
-    const res = await this.db.query(
-      `INSERT INTO products (name_en, name_fr, slug, description_en, description_fr, category_id, image_url, images, specifications, featured, available)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
-      [data.nameEn, data.nameFr, data.slug, data.descriptionEn, data.descriptionFr,
-       data.categoryId, data.imageUrl, JSON.stringify(data.images || []),
-       data.specifications, data.featured ?? false, data.available ?? true]
-    );
-    return this.mapRow(res.rows[0]);
+    if (!data.categoryId) throw new BadRequestException("Category is required");
+    if (!data.nameEn && !data.nameFr) throw new BadRequestException("Product name is required");
+    const slug = data.slug?.trim() || (data.nameEn || data.nameFr).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    try {
+      const res = await this.db.query(
+        `INSERT INTO products (name_en, name_fr, slug, description_en, description_fr, category_id, image_url, images, specifications, featured, available)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+        [data.nameEn || data.nameFr, data.nameFr || data.nameEn, slug,
+         data.descriptionEn, data.descriptionFr, data.categoryId,
+         data.imageUrl, JSON.stringify(data.images || []),
+         data.specifications, data.featured ?? false, data.available ?? true]
+      );
+      return this.mapRow(res.rows[0]);
+    } catch (e: any) { pgError(e); }
   }
 
   async update(id: number, data: any) {

@@ -19,21 +19,38 @@ import { MediaUpload } from '@/components/admin/MediaUpload';
 import { translateText } from '@/lib/translate';
 import { format } from 'date-fns';
 
+function slugify(text: string) {
+  return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 function ProductForm({ product, categories, onSuccess }: { product?: any; categories: any[]; onSuccess: () => void }) {
-  const { register, handleSubmit, setValue, watch, formState: { isSubmitting } } = useForm({
+  const { register, handleSubmit, setValue, watch, formState: { isSubmitting, errors } } = useForm({
     defaultValues: product || { featured: false, available: true },
   });
   const qc = useQueryClient();
   const { L, language } = useLanguage();
   const [translating, setTranslating] = useState(false);
+  const [categoryError, setCategoryError] = useState('');
 
   const srcLang = language as 'en' | 'fr';
   const dstLang = language === 'en' ? 'fr' : 'en';
 
   const nameField = language === 'en' ? 'nameEn' : 'nameFr';
   const descField = language === 'en' ? 'descriptionEn' : 'descriptionFr';
+  const watchedName = watch(nameField) || '';
+  const watchedCategory = watch('categoryId');
+
+  // Auto-fill slug from name when creating
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!product) setValue('slug', slugify(e.target.value));
+  };
 
   const onSubmit = async (data: any) => {
+    if (!data.categoryId) {
+      setCategoryError(L({ en: 'Please select a category', fr: 'Veuillez sélectionner une catégorie' }));
+      return;
+    }
+    setCategoryError('');
     setTranslating(true);
     try {
       const [translatedName, translatedDesc] = await Promise.all([
@@ -43,13 +60,9 @@ function ProductForm({ product, categories, onSuccess }: { product?: any; catego
       if (language === 'en') {
         data.nameFr = translatedName;
         data.descriptionFr = translatedDesc;
-        data.nameEn = data.nameEn;
-        data.descriptionEn = data.descriptionEn;
       } else {
         data.nameEn = translatedName;
         data.descriptionEn = translatedDesc;
-        data.nameFr = data.nameFr;
-        data.descriptionFr = data.descriptionFr;
       }
     } finally {
       setTranslating(false);
@@ -57,15 +70,15 @@ function ProductForm({ product, categories, onSuccess }: { product?: any; catego
     try {
       if (product) {
         await api.patch(`/api/products/${product.id}`, data);
-        toast.success('Product updated');
+        toast.success(L({ en: 'Product updated', fr: 'Produit mis à jour' }));
       } else {
         await api.post('/api/products', data);
-        toast.success('Product created');
+        toast.success(L({ en: 'Product created', fr: 'Produit créé' }));
       }
       qc.invalidateQueries({ queryKey: ['admin-products'] });
       onSuccess();
     } catch (e: any) {
-      toast.error(e.message || 'Failed to save product');
+      toast.error(e.message || L({ en: 'Failed to save product', fr: 'Échec de l\'enregistrement' }));
     }
   };
 
@@ -75,7 +88,12 @@ function ProductForm({ product, categories, onSuccess }: { product?: any; catego
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <Label>{language === 'en' ? 'Product Name (English)' : 'Nom du produit (Français)'} *</Label>
-        <Input {...register(nameField, { required: true })} className="mt-1" />
+        <Input
+          {...register(nameField, { required: true })}
+          onChange={(e) => { register(nameField).onChange(e); handleNameChange(e); }}
+          className={`mt-1 ${errors[nameField] ? 'border-destructive' : ''}`}
+        />
+        {errors[nameField] && <p className="text-xs text-destructive mt-1">{L({ en: 'Name is required', fr: 'Le nom est requis' })}</p>}
         <p className="text-xs text-muted-foreground mt-1">
           {language === 'en'
             ? 'The French version will be auto-translated on save.'
@@ -83,19 +101,24 @@ function ProductForm({ product, categories, onSuccess }: { product?: any; catego
         </p>
       </div>
       <div>
-        <Label>Slug *</Label>
-        <Input {...register('slug', { required: true })} className="mt-1" />
+        <Label>Slug</Label>
+        <Input {...register('slug')} className="mt-1" placeholder={watchedName ? slugify(watchedName) : 'auto-generated'} />
+        <p className="text-xs text-muted-foreground mt-1">{L({ en: 'Auto-generated from name. Edit to customise.', fr: 'Généré automatiquement. Modifiez pour personnaliser.' })}</p>
       </div>
       <div>
         <Label>{L({ en: 'Category', fr: 'Catégorie' })} *</Label>
-        <Select onValueChange={(v) => setValue('categoryId', Number(v))} defaultValue={product?.categoryId?.toString()}>
-          <SelectTrigger className="mt-1">
+        <Select
+          onValueChange={(v) => { setValue('categoryId', Number(v)); setCategoryError(''); }}
+          defaultValue={product?.categoryId?.toString()}
+        >
+          <SelectTrigger className={`mt-1 ${categoryError ? 'border-destructive' : ''}`}>
             <SelectValue placeholder={L({ en: 'Select category', fr: 'Sélectionner une catégorie' })} />
           </SelectTrigger>
           <SelectContent>
             {categories.map((c) => <SelectItem key={c.id} value={c.id.toString()}>{L({ en: c.nameEn, fr: c.nameFr })}</SelectItem>)}
           </SelectContent>
         </Select>
+        {categoryError && <p className="text-xs text-destructive mt-1">{categoryError}</p>}
       </div>
       <div>
         <Label>{L({ en: 'Image / Video', fr: 'Image / Vidéo' })}</Label>
