@@ -93,3 +93,4 @@ pnpm dev
 ## Admin Credentials
 - Username: `admin`
 - Password: `ltic2024!`
+# -LTIC-SARL
