@@ -19,6 +19,8 @@ import { StatsModule } from "./stats/stats.module";
 import { HealthModule } from "./health/health.module";
 import { AuthModule } from "./auth/auth.module";
 import { VersionModule } from "./version/version.module";
+import { UploadModule } from "./upload/upload.module";
+import { NotificationsModule } from "./notifications/notifications.module";
 
 export const DB_PROVIDER = "DB_POOL";
 
@@ -44,6 +46,8 @@ export const DB_PROVIDER = "DB_POOL";
     HealthModule,
     CustomersModule,
     VersionModule,
+    UploadModule,
+    NotificationsModule,
   ],
   providers: [
     {

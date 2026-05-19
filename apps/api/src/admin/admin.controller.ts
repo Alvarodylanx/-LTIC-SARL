@@ -23,21 +23,21 @@ export class AdminController {
   ) {}
 
   @Post("login")
-  async login(@Body() body: { username: string; password: string }) {
-    const expectedUser = process.env.ADMIN_USERNAME || "admin";
-    const expectedPass = process.env.ADMIN_PASSWORD || "ltic2024!";
-
-    if (body.username !== expectedUser || body.password !== expectedPass) {
-      throw new UnauthorizedException("Invalid credentials");
+  async login(@Body() body: { email: string; password: string }) {
+    if (!body.email || !body.password) {
+      throw new UnauthorizedException("Email and password are required");
     }
 
+    const valid = await this.adminProfileService.validateCredentials(body.email, body.password);
+    if (!valid) throw new UnauthorizedException("Invalid email or password");
+
     const token = await this.jwtService.signAsync(
-      { username: body.username },
+      { email: body.email },
       { secret: process.env.SESSION_SECRET || "ltic-secret", expiresIn: "24h" }
     );
     validTokens.add(token);
 
-    return { authenticated: true, username: body.username, token };
+    return { authenticated: true, username: body.email, token };
   }
 
   @UseGuards(AuthGuard)
@@ -50,8 +50,9 @@ export class AdminController {
 
   @UseGuards(AuthGuard)
   @Get("me")
-  me(@Req() req: Request & { user: any }) {
-    return { authenticated: true, username: req.user?.username };
+  async me() {
+    const profile = await this.adminProfileService.getProfile();
+    return { authenticated: true, username: profile.name, email: profile.email };
   }
 
   @UseGuards(AuthGuard)

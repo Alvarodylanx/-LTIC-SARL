@@ -9,16 +9,8 @@ export class AdminProfileService {
   constructor(@Inject(DB_TOKEN) private db: any) {}
 
   async getProfile() {
-    const rows = await this.db.select().from(adminProfile).limit(1);
-    if (rows.length === 0) {
-      const [created] = await this.db
-        .insert(adminProfile)
-        .values({ name: "Administrator", email: process.env.ADMIN_USERNAME || "admin@ltic-sarl.com" })
-        .returning();
-      const { passwordHash, ...rest } = created;
-      return rest;
-    }
-    const { passwordHash, ...rest } = rows[0];
+    const profile = await this.ensureProfile();
+    const { passwordHash, ...rest } = profile;
     return rest;
   }
 
@@ -66,12 +58,34 @@ export class AdminProfileService {
     return rest;
   }
 
+  /**
+   * Validates email + password against the admin_profile row.
+   * Falls back to ADMIN_PASSWORD env var if no passwordHash is set yet.
+   */
+  async validateCredentials(email: string, password: string): Promise<boolean> {
+    const profile = await this.ensureProfile();
+    const rows = await this.db.select().from(adminProfile).where(eq(adminProfile.id, profile.id)).limit(1);
+    const row = rows[0];
+
+    // Email must match (case-insensitive)
+    if (row.email.toLowerCase() !== email.toLowerCase()) return false;
+
+    // Password check
+    if (row.passwordHash) {
+      return bcrypt.compare(password, row.passwordHash);
+    }
+    // Fallback to env var before a password has been set via UI
+    const envPass = process.env.ADMIN_PASSWORD || "ltic2024!";
+    return password === envPass;
+  }
+
   private async ensureProfile() {
     const rows = await this.db.select().from(adminProfile).limit(1);
     if (rows.length === 0) {
+      const defaultEmail = process.env.ADMIN_EMAIL || "admin@ltic-sarl.com";
       const [created] = await this.db
         .insert(adminProfile)
-        .values({ name: "Administrator", email: process.env.ADMIN_USERNAME || "admin@ltic-sarl.com" })
+        .values({ name: "Administrator", email: defaultEmail })
         .returning();
       return created;
     }

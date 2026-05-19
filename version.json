@@ -1,7 +1,123 @@
 {
-  "version": "1.3.4",
-  "releaseDate": "2026-05-19",
+  "version": "1.7.0",
+  "releaseDate": "2026-05-18",
   "changelog": [
+    {
+      "version": "1.7.0",
+      "date": "2026-05-18",
+      "type": "minor",
+      "summary": "Admin email+password login via DB profile, auto-push workflow, CLAUDE.md",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Admin login now accepts email + password validated against admin_profile table (bcrypt); falls back to ADMIN_PASSWORD env var until a password is set via the Profile page"
+        },
+        {
+          "type": "feature",
+          "description": "Admin login page: username field replaced with email field (with Mail icon); helpful hint pointing to Profile page for credential changes"
+        },
+        {
+          "type": "feature",
+          "description": "GET /api/admin/me now returns the admin's display name from admin_profile instead of the raw token claim"
+        },
+        {
+          "type": "feature",
+          "description": "ADMIN_EMAIL env var seeds the initial admin_profile email on first startup (default: admin@ltic-sarl.com)"
+        },
+        {
+          "type": "feature",
+          "description": "CLAUDE.md added — instructs future Claude sessions to auto-push changes to GitHub with version control after every task"
+        }
+      ]
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-05-18",
+      "type": "minor",
+      "summary": "Auto-translation in admin forms + admin email and dashboard notifications",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Admin forms (Products, Categories, News) now show a single-language input — the other language is auto-translated via MyMemory API on save"
+        },
+        {
+          "type": "feature",
+          "description": "Translating spinner shown while the translation is in progress; admin language is determined by the sidebar language toggle"
+        },
+        {
+          "type": "feature",
+          "description": "New admin_notifications table created automatically on API startup (no migration step needed)"
+        },
+        {
+          "type": "feature",
+          "description": "New quote requests and contact messages now create a dashboard notification and optionally send an email to the admin"
+        },
+        {
+          "type": "feature",
+          "description": "Email notifications via nodemailer — configure MAIL_HOST, MAIL_USER, MAIL_PASS, ADMIN_EMAIL in .env; email is silently skipped if not configured"
+        },
+        {
+          "type": "feature",
+          "description": "Notifications page at /admin/notifications: unread badge, mark as read, mark all read, delete, 30-second auto-refresh"
+        },
+        {
+          "type": "feature",
+          "description": "AdminSidebar: Bell icon with live red unread count badge, polling every 30 seconds"
+        }
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-05-18",
+      "type": "minor",
+      "summary": "Media upload from device in admin panel for products, categories, and news",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "New POST /api/upload endpoint (admin-protected) — accepts images (JPG, PNG, GIF, WebP, SVG) and videos (MP4, MOV, AVI, MKV, WebM) up to 100 MB, stored in uploads/media/"
+        },
+        {
+          "type": "feature",
+          "description": "MediaUpload component: two tabs — 'Upload from device' (drag-and-drop or click to browse) and 'Paste URL'; shows live image/video preview with clear button"
+        },
+        {
+          "type": "feature",
+          "description": "Admin products form: Image URL text field replaced with MediaUpload component"
+        },
+        {
+          "type": "feature",
+          "description": "Admin categories form: Image URL text field replaced with MediaUpload component"
+        },
+        {
+          "type": "feature",
+          "description": "Admin news form: Image URL text field replaced with MediaUpload component"
+        }
+      ]
+    },
+    {
+      "version": "1.4.0",
+      "date": "2026-05-19",
+      "type": "minor",
+      "summary": "Auto-translation in admin panel - product and category names follow website language",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "AdminSidebar: EN/FR language toggle button added at the bottom - switches language for the entire admin panel"
+        },
+        {
+          "type": "feature",
+          "description": "Admin products table: product name and availability status now display in the current language (EN/FR)"
+        },
+        {
+          "type": "feature",
+          "description": "Admin products form: category dropdown shows category names in current language"
+        },
+        {
+          "type": "feature",
+          "description": "Admin categories table: Name column shows current language, Translation column shows the other language"
+        }
+      ]
+    },
     {
       "version": "1.3.4",
       "date": "2026-05-19",

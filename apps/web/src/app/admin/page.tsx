@@ -6,15 +6,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { ShieldAlert, Loader2 } from 'lucide-react';
+import { ShieldAlert, Loader2, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { checkAuth, login } from '@/lib/auth';
 
 const schema = z.object({
-  username: z.string().min(1),
-  password: z.string().min(1),
+  email: z.string().email('Enter a valid email'),
+  password: z.string().min(1, 'Password is required'),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await login(data.username, data.password);
+      const res = await login(data.email, data.password);
       if (res.authenticated) {
         router.push('/admin/dashboard');
       } else {
@@ -67,20 +67,44 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" {...register('username')} className="mt-1" autoComplete="username" />
-            {errors.username && <p className="text-destructive text-xs mt-1">Required</p>}
+            <Label htmlFor="email">Email Address</Label>
+            <div className="relative mt-1">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="email"
+                type="email"
+                {...register('email')}
+                className="pl-9"
+                autoComplete="email"
+                placeholder="admin@ltic-sarl.com"
+              />
+            </div>
+            {errors.email && <p className="text-destructive text-xs mt-1">{errors.email.message}</p>}
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" {...register('password')} className="mt-1" autoComplete="current-password" />
-            {errors.password && <p className="text-destructive text-xs mt-1">Required</p>}
+            <div className="relative mt-1">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="password"
+                type="password"
+                {...register('password')}
+                className="pl-9"
+                autoComplete="current-password"
+                placeholder="••••••••"
+              />
+            </div>
+            {errors.password && <p className="text-destructive text-xs mt-1">{errors.password.message}</p>}
           </div>
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             Sign In
           </Button>
         </form>
+
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          You can update your email and password from the Profile page after signing in.
+        </p>
       </div>
     </div>
   );

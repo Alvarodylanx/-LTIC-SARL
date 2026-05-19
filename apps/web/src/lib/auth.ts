@@ -17,9 +17,9 @@ export async function checkAuth(): Promise<{ authenticated: boolean; username?: 
   return api.get('/api/admin/me');
 }
 
-export async function login(username: string, password: string) {
+export async function login(email: string, password: string) {
   const res = await api.post<{ authenticated: boolean; username: string; token: string }>(
-    '/api/admin/login', { username, password }
+    '/api/admin/login', { email, password }
   );
   if (res.authenticated && res.token) setAdminToken(res.token);
   return res;
