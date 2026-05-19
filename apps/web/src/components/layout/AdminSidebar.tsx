@@ -14,16 +14,16 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 
 const NAV = [
-  { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/admin/products', icon: Package, label: 'Products' },
-  { href: '/admin/categories', icon: Tag, label: 'Categories' },
-  { href: '/admin/quotes', icon: FileText, label: 'Quotes' },
-  { href: '/admin/orders', icon: Truck, label: 'Orders' },
-  { href: '/admin/news', icon: Newspaper, label: 'News' },
-  { href: '/admin/contacts', icon: MessageSquare, label: 'Contacts' },
-  { href: '/admin/settings', icon: Settings, label: 'Settings' },
-  { href: '/admin/changelog', icon: GitBranch, label: 'Changelog' },
-  { href: '/admin/profile', icon: UserCircle, label: 'My Profile' },
+  { href: '/admin/dashboard',     icon: LayoutDashboard, label: { en: 'Dashboard',  fr: 'Tableau de bord' } },
+  { href: '/admin/products',      icon: Package,         label: { en: 'Products',   fr: 'Produits' } },
+  { href: '/admin/categories',    icon: Tag,             label: { en: 'Categories', fr: 'Catégories' } },
+  { href: '/admin/quotes',        icon: FileText,        label: { en: 'Quotes',     fr: 'Devis' } },
+  { href: '/admin/orders',        icon: Truck,           label: { en: 'Orders',     fr: 'Commandes' } },
+  { href: '/admin/news',          icon: Newspaper,       label: { en: 'News',       fr: 'Actualités' } },
+  { href: '/admin/contacts',      icon: MessageSquare,   label: { en: 'Contacts',   fr: 'Contacts' } },
+  { href: '/admin/settings',      icon: Settings,        label: { en: 'Settings',   fr: 'Paramètres' } },
+  { href: '/admin/changelog',     icon: GitBranch,       label: { en: 'Changelog',  fr: 'Historique' } },
+  { href: '/admin/profile',       icon: UserCircle,      label: { en: 'My Profile', fr: 'Mon profil' } },
 ];
 
 export function AdminSidebar() {
@@ -31,7 +31,7 @@ export function AdminSidebar() {
   const router = useRouter();
   const [username, setUsername] = useState<string>('');
   const [unread, setUnread] = useState(0);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, L } = useLanguage();
 
   useEffect(() => {
     checkAuth().then((res) => {
@@ -40,7 +40,6 @@ export function AdminSidebar() {
     });
   }, [router]);
 
-  // Poll unread notifications every 30 s
   useEffect(() => {
     const fetchCount = () =>
       api.get('/api/notifications/unread-count')
@@ -63,8 +62,12 @@ export function AdminSidebar() {
           <ShieldAlert className="h-5 w-5 text-primary" />
           <span className="font-bold">LTIC SARL</span>
         </div>
-        <p className="text-xs text-sidebar-foreground/60">Admin Panel</p>
-        {username && <p className="text-xs text-sidebar-foreground/60 mt-1">Logged in as <span className="text-sidebar-foreground">{username}</span></p>}
+        <p className="text-xs text-sidebar-foreground/60">{L({ en: 'Admin Panel', fr: 'Panneau admin' })}</p>
+        {username && (
+          <p className="text-xs text-sidebar-foreground/60 mt-1">
+            {L({ en: 'Logged in as', fr: 'Connecté en tant que' })} <span className="text-sidebar-foreground">{username}</span>
+          </p>
+        )}
       </div>
 
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -80,7 +83,7 @@ export function AdminSidebar() {
             )}
           >
             <Icon className="h-4 w-4" />
-            {label}
+            {L(label)}
           </Link>
         ))}
 
@@ -95,7 +98,7 @@ export function AdminSidebar() {
           )}
         >
           <Bell className="h-4 w-4" />
-          <span className="flex-1">Notifications</span>
+          <span className="flex-1">{L({ en: 'Notifications', fr: 'Notifications' })}</span>
           {unread > 0 && (
             <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
               {unread > 99 ? '99+' : unread}
@@ -120,7 +123,7 @@ export function AdminSidebar() {
           className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors w-full"
         >
           <LogOut className="h-4 w-4" />
-          Logout
+          {L({ en: 'Logout', fr: 'Déconnexion' })}
         </button>
       </div>
     </div>

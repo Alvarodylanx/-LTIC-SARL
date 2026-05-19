@@ -5,12 +5,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function AdminContactsPage() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const qc = useQueryClient();
+  const { L } = useLanguage();
 
   const { data: contacts, isLoading } = useQuery<any[]>({
     queryKey: ['admin-contacts'],
@@ -25,8 +27,8 @@ export default function AdminContactsPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Contact Inquiries</h1>
-        <p className="text-muted-foreground mt-1">Manage incoming contact messages</p>
+        <h1 className="text-3xl font-bold">{L({ en: 'Contact Inquiries', fr: 'Messages de contact' })}</h1>
+        <p className="text-muted-foreground mt-1">{L({ en: 'Manage incoming contact messages', fr: 'Gérez les messages de contact entrants' })}</p>
       </div>
 
       {isLoading ? <div className="space-y-3">{Array(8).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div> : (
@@ -58,8 +60,16 @@ export default function AdminContactsPage() {
               {expanded === contact.id && (
                 <div className="px-6 pb-5 bg-muted/10">
                   <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                    <div><span className="text-muted-foreground">Email: </span><a href={`mailto:${contact.email}`} className="text-primary hover:underline">{contact.email}</a></div>
-                    {contact.phone && <div><span className="text-muted-foreground">Phone: </span>{contact.phone}</div>}
+                    <div>
+                      <span className="text-muted-foreground">{L({ en: 'Email', fr: 'E-mail' })}: </span>
+                      <a href={`mailto:${contact.email}`} className="text-primary hover:underline">{contact.email}</a>
+                    </div>
+                    {contact.phone && (
+                      <div>
+                        <span className="text-muted-foreground">{L({ en: 'Phone', fr: 'Téléphone' })}: </span>
+                        {contact.phone}
+                      </div>
+                    )}
                   </div>
                   <div className="bg-background rounded-lg p-4 border">
                     <p className="text-sm leading-relaxed">{contact.message}</p>
@@ -68,13 +78,13 @@ export default function AdminContactsPage() {
                     onClick={() => markReadMutation.mutate({ id: contact.id, read: !contact.read })}
                     className="mt-3 text-xs text-primary hover:underline"
                   >
-                    {contact.read ? 'Mark as Unread' : 'Mark as Read'}
+                    {contact.read ? L({ en: 'Mark as Unread', fr: 'Marquer comme non lu' }) : L({ en: 'Mark as Read', fr: 'Marquer comme lu' })}
                   </button>
                 </div>
               )}
             </div>
           ))}
-          {!contacts?.length && <p className="text-center text-muted-foreground py-12">No contact messages yet</p>}
+          {!contacts?.length && <p className="text-center text-muted-foreground py-12">{L({ en: 'No contact messages yet', fr: 'Aucun message de contact pour l\'instant' })}</p>}
         </div>
       )}
     </div>

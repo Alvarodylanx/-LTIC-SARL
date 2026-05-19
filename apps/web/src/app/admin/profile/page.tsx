@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getAdminToken } from '@/lib/auth';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -62,15 +63,14 @@ function PasswordInput({ id, value, onChange, placeholder, autoComplete }: {
 }
 
 export default function AdminProfilePage() {
+  const { L } = useLanguage();
   const fileRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<AdminProfile | null>(null);
 
-  // Form states
   const [nameForm, setNameForm] = useState({ name: '' });
   const [emailForm, setEmailForm] = useState({ email: '', currentPassword: '' });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 
-  // Loading states
   const [savingName, setSavingName] = useState(false);
   const [savingEmail, setSavingEmail] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
@@ -84,7 +84,6 @@ export default function AdminProfilePage() {
     }).catch(() => {});
   }, []);
 
-  // ── Save display name ────────────────────────────────────────────────────────
   const handleSaveName = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nameForm.name.trim()) return;
@@ -95,7 +94,7 @@ export default function AdminProfilePage() {
         body: JSON.stringify({ name: nameForm.name }),
       });
       setProfile(updated);
-      toast.success('Display name updated');
+      toast.success(L({ en: 'Display name updated', fr: 'Nom d\'affichage mis à jour' }));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -103,16 +102,15 @@ export default function AdminProfilePage() {
     }
   };
 
-  // ── Change email ─────────────────────────────────────────────────────────────
   const handleChangeEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (!emailRegex.test(emailForm.email)) {
-      toast.error('Please enter a valid email address');
+      toast.error(L({ en: 'Please enter a valid email address', fr: 'Veuillez entrer une adresse e-mail valide' }));
       return;
     }
     if (!emailForm.currentPassword) {
-      toast.error('Current password is required to change email');
+      toast.error(L({ en: 'Current password is required to change email', fr: 'Le mot de passe actuel est requis pour changer l\'e-mail' }));
       return;
     }
     setSavingEmail(true);
@@ -123,7 +121,7 @@ export default function AdminProfilePage() {
       });
       setProfile(updated);
       setEmailForm({ email: updated.email, currentPassword: '' });
-      toast.success('Email address updated — use your new email to log in next time');
+      toast.success(L({ en: 'Email address updated — use your new email to log in next time', fr: 'E-mail mis à jour — utilisez votre nouvel e-mail pour vous connecter' }));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -131,15 +129,14 @@ export default function AdminProfilePage() {
     }
   };
 
-  // ── Change password ──────────────────────────────────────────────────────────
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error('New passwords do not match');
+      toast.error(L({ en: 'New passwords do not match', fr: 'Les nouveaux mots de passe ne correspondent pas' }));
       return;
     }
     if (passwordForm.newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error(L({ en: 'Password must be at least 8 characters', fr: 'Le mot de passe doit comporter au moins 8 caractères' }));
       return;
     }
     setSavingPassword(true);
@@ -152,7 +149,7 @@ export default function AdminProfilePage() {
         }),
       });
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      toast.success('Password changed successfully');
+      toast.success(L({ en: 'Password changed successfully', fr: 'Mot de passe modifié avec succès' }));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -160,7 +157,6 @@ export default function AdminProfilePage() {
     }
   };
 
-  // ── Avatar upload ────────────────────────────────────────────────────────────
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -174,10 +170,10 @@ export default function AdminProfilePage() {
         headers: { Authorization: `Bearer ${token || ''}` },
         body: formData,
       });
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) throw new Error(L({ en: 'Upload failed', fr: 'Échec de l\'envoi' }));
       const updated = await res.json();
       setProfile(updated);
-      toast.success('Profile picture updated');
+      toast.success(L({ en: 'Profile picture updated', fr: 'Photo de profil mise à jour' }));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -195,25 +191,21 @@ export default function AdminProfilePage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">My Profile</h1>
-        <p className="text-muted-foreground mt-1">Manage your admin account credentials and settings</p>
+        <h1 className="text-2xl font-bold">{L({ en: 'My Profile', fr: 'Mon profil' })}</h1>
+        <p className="text-muted-foreground mt-1">{L({ en: 'Manage your admin account credentials and settings', fr: 'Gérez vos identifiants et paramètres du compte administrateur' })}</p>
       </div>
 
       <div className="space-y-6">
 
-        {/* ── Avatar ─────────────────────────────────────────────────────────── */}
+        {/* Avatar */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="bg-card border rounded-2xl p-6">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <UserCircle className="h-4 w-4" /> Profile Picture
+            <UserCircle className="h-4 w-4" /> {L({ en: 'Profile Picture', fr: 'Photo de profil' })}
           </h3>
           <div className="flex items-center gap-4">
             <div className="relative">
               {profile.avatarUrl ? (
-                <img
-                  src={`${API_URL}${profile.avatarUrl}`}
-                  alt={profile.name}
-                  className="w-20 h-20 rounded-full object-cover border-4 border-background shadow-lg"
-                />
+                <img src={`${API_URL}${profile.avatarUrl}`} alt={profile.name} className="w-20 h-20 rounded-full object-cover border-4 border-background shadow-lg" />
               ) : (
                 <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center border-4 border-background shadow-lg">
                   <span className="text-white text-2xl font-bold">{profile.name[0]?.toUpperCase()}</span>
@@ -228,44 +220,44 @@ export default function AdminProfilePage() {
             <div>
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
               <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={uploadingAvatar} className="flex items-center gap-2">
-                <Camera className="h-4 w-4" /> Change Photo
+                <Camera className="h-4 w-4" /> {L({ en: 'Change Photo', fr: 'Changer la photo' })}
               </Button>
-              <p className="text-xs text-muted-foreground mt-1.5">JPG, PNG — max 5 MB</p>
+              <p className="text-xs text-muted-foreground mt-1.5">{L({ en: 'JPG, PNG — max 5 MB', fr: 'JPG, PNG — 5 Mo max' })}</p>
             </div>
           </div>
         </motion.div>
 
-        {/* ── Display Name ───────────────────────────────────────────────────── */}
+        {/* Display Name */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }} className="bg-card border rounded-2xl p-6">
-          <h3 className="font-semibold mb-1">Display Name</h3>
-          <p className="text-xs text-muted-foreground mb-4">Shown in the admin sidebar and dashboard</p>
+          <h3 className="font-semibold mb-1">{L({ en: 'Display Name', fr: 'Nom d\'affichage' })}</h3>
+          <p className="text-xs text-muted-foreground mb-4">{L({ en: 'Shown in the admin sidebar and dashboard', fr: 'Affiché dans la barre latérale et le tableau de bord' })}</p>
           <form onSubmit={handleSaveName} className="flex gap-3">
             <Input
               value={nameForm.name}
               onChange={(e) => setNameForm({ name: e.target.value })}
-              placeholder="Administrator"
+              placeholder={L({ en: 'Administrator', fr: 'Administrateur' })}
               required
               className="flex-1"
             />
             <Button type="submit" disabled={savingName} className="flex items-center gap-2 flex-shrink-0">
               {savingName ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              Save
+              {L({ en: 'Save', fr: 'Enregistrer' })}
             </Button>
           </form>
         </motion.div>
 
-        {/* ── Email Address ──────────────────────────────────────────────────── */}
+        {/* Email Address */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-card border rounded-2xl p-6">
           <h3 className="font-semibold mb-1 flex items-center gap-2">
-            <Mail className="h-4 w-4" /> Email Address
+            <Mail className="h-4 w-4" /> {L({ en: 'Email Address', fr: 'Adresse e-mail' })}
           </h3>
           <p className="text-xs text-muted-foreground mb-4">
-            Current: <span className="font-medium text-foreground">{profile.email}</span>
-            &nbsp;— Your current password is required to change this.
+            {L({ en: 'Current', fr: 'Actuel' })}: <span className="font-medium text-foreground">{profile.email}</span>
+            &nbsp;— {L({ en: 'Your current password is required to change this.', fr: 'Votre mot de passe actuel est requis pour modifier ceci.' })}
           </p>
           <form onSubmit={handleChangeEmail} className="space-y-3">
             <div>
-              <Label htmlFor="newEmail">New Email Address</Label>
+              <Label htmlFor="newEmail">{L({ en: 'New Email Address', fr: 'Nouvelle adresse e-mail' })}</Label>
               <Input
                 id="newEmail"
                 type="email"
@@ -277,7 +269,7 @@ export default function AdminProfilePage() {
               />
             </div>
             <div>
-              <Label htmlFor="emailPassword">Current Password (required)</Label>
+              <Label htmlFor="emailPassword">{L({ en: 'Current Password (required)', fr: 'Mot de passe actuel (requis)' })}</Label>
               <PasswordInput
                 id="emailPassword"
                 value={emailForm.currentPassword}
@@ -288,21 +280,21 @@ export default function AdminProfilePage() {
             <div className="flex justify-end">
               <Button type="submit" disabled={savingEmail} className="flex items-center gap-2">
                 {savingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
-                Update Email
+                {L({ en: 'Update Email', fr: 'Mettre à jour l\'e-mail' })}
               </Button>
             </div>
           </form>
         </motion.div>
 
-        {/* ── Change Password ────────────────────────────────────────────────── */}
+        {/* Change Password */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="bg-card border rounded-2xl p-6">
           <h3 className="font-semibold mb-1 flex items-center gap-2">
-            <Lock className="h-4 w-4" /> Change Password
+            <Lock className="h-4 w-4" /> {L({ en: 'Change Password', fr: 'Changer le mot de passe' })}
           </h3>
-          <p className="text-xs text-muted-foreground mb-4">Minimum 8 characters. Use a strong, unique password.</p>
+          <p className="text-xs text-muted-foreground mb-4">{L({ en: 'Minimum 8 characters. Use a strong, unique password.', fr: 'Minimum 8 caractères. Utilisez un mot de passe fort et unique.' })}</p>
           <form onSubmit={handleChangePassword} className="space-y-3">
             <div>
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword">{L({ en: 'Current Password', fr: 'Mot de passe actuel' })}</Label>
               <PasswordInput
                 id="currentPassword"
                 value={passwordForm.currentPassword}
@@ -312,7 +304,7 @@ export default function AdminProfilePage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="newPassword">New Password</Label>
+                <Label htmlFor="newPassword">{L({ en: 'New Password', fr: 'Nouveau mot de passe' })}</Label>
                 <PasswordInput
                   id="newPassword"
                   value={passwordForm.newPassword}
@@ -321,7 +313,7 @@ export default function AdminProfilePage() {
                 />
               </div>
               <div>
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Label htmlFor="confirmPassword">{L({ en: 'Confirm New Password', fr: 'Confirmer le nouveau mot de passe' })}</Label>
                 <PasswordInput
                   id="confirmPassword"
                   value={passwordForm.confirmPassword}
@@ -332,25 +324,25 @@ export default function AdminProfilePage() {
             </div>
             {passwordForm.newPassword && passwordForm.confirmPassword &&
               passwordForm.newPassword !== passwordForm.confirmPassword && (
-                <p className="text-xs text-destructive">Passwords do not match</p>
+                <p className="text-xs text-destructive">{L({ en: 'Passwords do not match', fr: 'Les mots de passe ne correspondent pas' })}</p>
               )}
             <div className="flex justify-end">
               <Button type="submit" disabled={savingPassword} className="flex items-center gap-2">
                 {savingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
-                Update Password
+                {L({ en: 'Update Password', fr: 'Mettre à jour le mot de passe' })}
               </Button>
             </div>
           </form>
         </motion.div>
 
-        {/* ── Security note ──────────────────────────────────────────────────── */}
+        {/* Security note */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="bg-muted/40 border rounded-2xl p-5 flex gap-3">
           <ShieldCheck className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
           <div className="text-sm text-muted-foreground space-y-1">
-            <p className="font-medium text-foreground">Security reminders</p>
-            <p>Passwords are hashed with bcrypt (cost 12) — never stored in plain text.</p>
-            <p>Changing your email or password requires your current password as verification.</p>
-            <p>After changing email, use the new address to log in on all devices.</p>
+            <p className="font-medium text-foreground">{L({ en: 'Security reminders', fr: 'Rappels de sécurité' })}</p>
+            <p>{L({ en: 'Passwords are hashed with bcrypt (cost 12) — never stored in plain text.', fr: 'Les mots de passe sont hachés avec bcrypt (coût 12) — jamais en clair.' })}</p>
+            <p>{L({ en: 'Changing your email or password requires your current password as verification.', fr: 'La modification de l\'e-mail ou du mot de passe nécessite votre mot de passe actuel.' })}</p>
+            <p>{L({ en: 'After changing email, use the new address to log in on all devices.', fr: 'Après avoir changé l\'e-mail, utilisez la nouvelle adresse sur tous vos appareils.' })}</p>
           </div>
         </motion.div>
 

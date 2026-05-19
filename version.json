@@ -1,7 +1,43 @@
 {
-  "version": "1.8.2",
+  "version": "1.8.3",
   "releaseDate": "2026-05-19",
   "changelog": [
+    {
+      "version": "1.8.3",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Full EN/FR translation across all admin pages",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Admin sidebar nav labels (Dashboard, Products, Categories, Quotes, Orders, News, Contacts, Settings, Changelog, My Profile, Notifications, Logout) now switch language with the EN/FR toggle"
+        },
+        {
+          "type": "fix",
+          "description": "Quotes page: all text translated (title, column headers, status options, empty state)"
+        },
+        {
+          "type": "fix",
+          "description": "Orders page: all text translated (title, column headers, status options, empty state)"
+        },
+        {
+          "type": "fix",
+          "description": "Contacts page: all text translated (title, Email/Phone labels, Mark as Read/Unread, empty state)"
+        },
+        {
+          "type": "fix",
+          "description": "Settings page: all text translated (title, section header, button labels, toast messages)"
+        },
+        {
+          "type": "fix",
+          "description": "Changelog page: all text translated (title, stats labels, type badges Feature/Fix/Improvement/Breaking, Latest badge, New Release form)"
+        },
+        {
+          "type": "fix",
+          "description": "Profile page: all text translated (section titles, field labels, button labels, security reminder card)"
+        }
+      ]
+    },
     {
       "version": "1.8.2",
       "date": "2026-05-19",

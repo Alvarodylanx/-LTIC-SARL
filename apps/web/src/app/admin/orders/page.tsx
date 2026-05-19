@@ -5,19 +5,13 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { format } from 'date-fns';
-
-const statusColors: Record<string, string> = {
-  processing: 'bg-blue-100 text-blue-700',
-  'customs-cleared': 'bg-yellow-100 text-yellow-700',
-  shipped: 'bg-indigo-100 text-indigo-700',
-  'in-transit': 'bg-purple-100 text-purple-700',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
-};
 
 export default function AdminOrdersPage() {
   const qc = useQueryClient();
+  const { L } = useLanguage();
+
   const { data: orders, isLoading } = useQuery<any[]>({
     queryKey: ['admin-orders'],
     queryFn: () => api.get('/api/orders?limit=100'),
@@ -25,15 +19,25 @@ export default function AdminOrdersPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: string }) => api.patch(`/api/orders/${id}`, { status }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-orders'] }); toast.success('Order updated'); },
-    onError: () => toast.error('Failed to update'),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-orders'] }); toast.success(L({ en: 'Order updated', fr: 'Commande mise à jour' })); },
+    onError: () => toast.error(L({ en: 'Failed to update', fr: 'Échec de la mise à jour' })),
   });
+
+  const headers = [
+    L({ en: 'Tracking #', fr: 'N° suivi' }),
+    L({ en: 'Client', fr: 'Client' }),
+    L({ en: 'Origin', fr: 'Origine' }),
+    L({ en: 'Destination', fr: 'Destination' }),
+    L({ en: 'Status', fr: 'Statut' }),
+    L({ en: 'Est. Delivery', fr: 'Livraison prévue' }),
+    L({ en: 'Created', fr: 'Créé le' }),
+  ];
 
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Orders & Shipments</h1>
-        <p className="text-muted-foreground mt-1">Manage shipment tracking and order status</p>
+        <h1 className="text-3xl font-bold">{L({ en: 'Orders & Shipments', fr: 'Commandes & Expéditions' })}</h1>
+        <p className="text-muted-foreground mt-1">{L({ en: 'Manage shipment tracking and order status', fr: 'Gérez le suivi des expéditions et le statut des commandes' })}</p>
       </div>
 
       {isLoading ? <div className="space-y-3">{Array(8).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div> : (
@@ -41,7 +45,7 @@ export default function AdminOrdersPage() {
           <table className="w-full min-w-[900px]">
             <thead className="bg-muted/50 border-b">
               <tr>
-                {['Tracking #', 'Client', 'Origin', 'Destination', 'Status', 'Est. Delivery', 'Created'].map((h) => (
+                {headers.map((h) => (
                   <th key={h} className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4 py-3">{h}</th>
                 ))}
               </tr>
@@ -59,12 +63,12 @@ export default function AdminOrdersPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="processing">Processing</SelectItem>
-                        <SelectItem value="customs-cleared">Customs Cleared</SelectItem>
-                        <SelectItem value="shipped">Shipped</SelectItem>
-                        <SelectItem value="in-transit">In Transit</SelectItem>
-                        <SelectItem value="delivered">Delivered</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                        <SelectItem value="processing">{L({ en: 'Processing', fr: 'En traitement' })}</SelectItem>
+                        <SelectItem value="customs-cleared">{L({ en: 'Customs Cleared', fr: 'Dédouané' })}</SelectItem>
+                        <SelectItem value="shipped">{L({ en: 'Shipped', fr: 'Expédié' })}</SelectItem>
+                        <SelectItem value="in-transit">{L({ en: 'In Transit', fr: 'En transit' })}</SelectItem>
+                        <SelectItem value="delivered">{L({ en: 'Delivered', fr: 'Livré' })}</SelectItem>
+                        <SelectItem value="cancelled">{L({ en: 'Cancelled', fr: 'Annulé' })}</SelectItem>
                       </SelectContent>
                     </Select>
                   </td>
@@ -74,7 +78,7 @@ export default function AdminOrdersPage() {
               ))}
             </tbody>
           </table>
-          {!orders?.length && <p className="text-center text-muted-foreground py-12">No orders yet</p>}
+          {!orders?.length && <p className="text-center text-muted-foreground py-12">{L({ en: 'No orders yet', fr: 'Aucune commande pour l\'instant' })}</p>}
         </div>
       )}
     </div>

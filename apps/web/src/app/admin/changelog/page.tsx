@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getAdminToken } from '@/lib/auth';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -33,19 +34,6 @@ interface VersionData {
   changelog: VersionEntry[];
 }
 
-const typeConfig = {
-  feature:     { label: 'Feature',     icon: Zap,           color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  fix:         { label: 'Fix',         icon: Wrench,         color: 'text-green-600 bg-green-50 border-green-200' },
-  improvement: { label: 'Improvement', icon: TrendingUp,     color: 'text-purple-600 bg-purple-50 border-purple-200' },
-  breaking:    { label: 'Breaking',    icon: AlertTriangle,  color: 'text-red-600 bg-red-50 border-red-200' },
-};
-
-const releaseConfig = {
-  major: { label: 'Major', color: 'bg-red-100 text-red-700 border-red-200' },
-  minor: { label: 'Minor', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-  patch: { label: 'Patch', color: 'bg-green-100 text-green-700 border-green-200' },
-};
-
 async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getAdminToken();
   const headers: Record<string, string> = {
@@ -63,6 +51,21 @@ async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T
 
 function VersionCard({ entry, index }: { entry: VersionEntry; index: number }) {
   const [expanded, setExpanded] = useState(index === 0);
+  const { L } = useLanguage();
+
+  const typeConfig = {
+    feature:     { label: L({ en: 'Feature',     fr: 'Fonctionnalité' }), icon: Zap,           color: 'text-blue-600 bg-blue-50 border-blue-200' },
+    fix:         { label: L({ en: 'Fix',         fr: 'Correction' }),     icon: Wrench,         color: 'text-green-600 bg-green-50 border-green-200' },
+    improvement: { label: L({ en: 'Improvement', fr: 'Amélioration' }),   icon: TrendingUp,     color: 'text-purple-600 bg-purple-50 border-purple-200' },
+    breaking:    { label: L({ en: 'Breaking',    fr: 'Rupture' }),         icon: AlertTriangle,  color: 'text-red-600 bg-red-50 border-red-200' },
+  };
+
+  const releaseConfig = {
+    major: { label: L({ en: 'Major', fr: 'Majeur' }), color: 'bg-red-100 text-red-700 border-red-200' },
+    minor: { label: L({ en: 'Minor', fr: 'Mineur' }), color: 'bg-blue-100 text-blue-700 border-blue-200' },
+    patch: { label: L({ en: 'Patch', fr: 'Patch' }),  color: 'bg-green-100 text-green-700 border-green-200' },
+  };
+
   const rel = releaseConfig[entry.type] || releaseConfig.patch;
 
   return (
@@ -88,7 +91,7 @@ function VersionCard({ entry, index }: { entry: VersionEntry; index: number }) {
               </span>
               {index === 0 && (
                 <span className="text-xs bg-primary text-white px-2 py-0.5 rounded-full font-medium">
-                  Latest
+                  {L({ en: 'Latest', fr: 'Dernière' })}
                 </span>
               )}
             </div>
@@ -100,7 +103,7 @@ function VersionCard({ entry, index }: { entry: VersionEntry; index: number }) {
             <Calendar className="h-3.5 w-3.5" />{entry.date}
           </span>
           <span className="text-xs text-muted-foreground">
-            {entry.changes.length} {entry.changes.length === 1 ? 'change' : 'changes'}
+            {entry.changes.length} {entry.changes.length === 1 ? L({ en: 'change', fr: 'changement' }) : L({ en: 'changes', fr: 'changements' })}
           </span>
           {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
         </div>
@@ -144,9 +147,14 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
   const [loading, setLoading] = useState(false);
   const [releaseType, setReleaseType] = useState<'major' | 'minor' | 'patch'>('patch');
   const [summary, setSummary] = useState('');
-  const [changes, setChanges] = useState<ChangeEntry[]>([
-    { type: 'feature', description: '' },
-  ]);
+  const [changes, setChanges] = useState<ChangeEntry[]>([{ type: 'feature', description: '' }]);
+  const { L } = useLanguage();
+
+  const releaseConfig = {
+    major: { label: L({ en: 'Major', fr: 'Majeur' }), color: 'bg-red-100 text-red-700 border-red-200' },
+    minor: { label: L({ en: 'Minor', fr: 'Mineur' }), color: 'bg-blue-100 text-blue-700 border-blue-200' },
+    patch: { label: L({ en: 'Patch', fr: 'Patch' }),  color: 'bg-green-100 text-green-700 border-green-200' },
+  };
 
   const addChange = () => setChanges((prev) => [...prev, { type: 'feature', description: '' }]);
   const removeChange = (i: number) => setChanges((prev) => prev.filter((_, idx) => idx !== i));
@@ -157,7 +165,7 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
     e.preventDefault();
     const validChanges = changes.filter((c) => c.description.trim());
     if (!summary.trim() || validChanges.length === 0) {
-      toast.error('Summary and at least one change are required');
+      toast.error(L({ en: 'Summary and at least one change are required', fr: 'Le résumé et au moins un changement sont requis' }));
       return;
     }
     setLoading(true);
@@ -166,7 +174,7 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
         method: 'POST',
         body: JSON.stringify({ type: releaseType, summary, changes: validChanges }),
       });
-      toast.success(`Version ${result.version} released!`);
+      toast.success(L({ en: `Version ${result.version} released!`, fr: `Version ${result.version} publiée !` }));
       setSummary('');
       setChanges([{ type: 'feature', description: '' }]);
       setOpen(false);
@@ -182,7 +190,7 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
     <div>
       <Button onClick={() => setOpen(!open)} className="flex items-center gap-2">
         <Plus className="h-4 w-4" />
-        New Release
+        {L({ en: 'New Release', fr: 'Nouvelle version' })}
       </Button>
 
       <AnimatePresence>
@@ -194,11 +202,10 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
             transition={{ duration: 0.2 }}
             className="mt-4 bg-card border rounded-2xl p-6"
           >
-            <h3 className="font-bold mb-4">Create New Release</h3>
+            <h3 className="font-bold mb-4">{L({ en: 'Create New Release', fr: 'Créer une nouvelle version' })}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Release type */}
               <div className="space-y-1.5">
-                <Label>Release Type</Label>
+                <Label>{L({ en: 'Release Type', fr: 'Type de version' })}</Label>
                 <div className="flex gap-2">
                   {(['patch', 'minor', 'major'] as const).map((t) => (
                     <button
@@ -214,30 +221,28 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {releaseType === 'patch' && 'Bug fixes and minor corrections (x.x.+1)'}
-                  {releaseType === 'minor' && 'New features, backwards compatible (x.+1.0)'}
-                  {releaseType === 'major' && 'Breaking changes or major redesigns (+1.0.0)'}
+                  {releaseType === 'patch' && L({ en: 'Bug fixes and minor corrections (x.x.+1)', fr: 'Corrections de bugs (x.x.+1)' })}
+                  {releaseType === 'minor' && L({ en: 'New features, backwards compatible (x.+1.0)', fr: 'Nouvelles fonctionnalités (x.+1.0)' })}
+                  {releaseType === 'major' && L({ en: 'Breaking changes or major redesigns (+1.0.0)', fr: 'Changements majeurs (+1.0.0)' })}
                 </p>
               </div>
 
-              {/* Summary */}
               <div className="space-y-1.5">
-                <Label htmlFor="summary">Release Summary</Label>
+                <Label htmlFor="summary">{L({ en: 'Release Summary', fr: 'Résumé de la version' })}</Label>
                 <Input
                   id="summary"
-                  placeholder="Short description of this release..."
+                  placeholder={L({ en: 'Short description of this release...', fr: 'Courte description de cette version...' })}
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
                   required
                 />
               </div>
 
-              {/* Changes */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label>Changes</Label>
+                  <Label>{L({ en: 'Changes', fr: 'Changements' })}</Label>
                   <button type="button" onClick={addChange} className="text-xs text-primary hover:underline flex items-center gap-1">
-                    <Plus className="h-3 w-3" /> Add change
+                    <Plus className="h-3 w-3" /> {L({ en: 'Add change', fr: 'Ajouter un changement' })}
                   </button>
                 </div>
                 <div className="space-y-2">
@@ -248,13 +253,13 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
                         onChange={(e) => updateChange(i, 'type', e.target.value)}
                         className="flex h-10 rounded-md border border-input bg-background px-2 py-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
-                        <option value="feature">Feature</option>
-                        <option value="fix">Fix</option>
-                        <option value="improvement">Improvement</option>
-                        <option value="breaking">Breaking</option>
+                        <option value="feature">{L({ en: 'Feature', fr: 'Fonctionnalité' })}</option>
+                        <option value="fix">{L({ en: 'Fix', fr: 'Correction' })}</option>
+                        <option value="improvement">{L({ en: 'Improvement', fr: 'Amélioration' })}</option>
+                        <option value="breaking">{L({ en: 'Breaking', fr: 'Rupture' })}</option>
                       </select>
                       <Input
-                        placeholder="Describe the change..."
+                        placeholder={L({ en: 'Describe the change...', fr: 'Décrivez le changement...' })}
                         value={change.description}
                         onChange={(e) => updateChange(i, 'description', e.target.value)}
                         className="flex-1 text-sm"
@@ -270,10 +275,10 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
               </div>
 
               <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>{L({ en: 'Cancel', fr: 'Annuler' })}</Button>
                 <Button type="submit" disabled={loading} className="flex items-center gap-2">
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                  Publish Release
+                  {L({ en: 'Publish Release', fr: 'Publier la version' })}
                 </Button>
               </div>
             </form>
@@ -287,6 +292,7 @@ function NewReleaseForm({ onCreated }: { onCreated: () => void }) {
 export default function ChangelogPage() {
   const [data, setData] = useState<VersionData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { L } = useLanguage();
 
   const load = () => {
     fetch(`${API_URL}/api/version`)
@@ -306,11 +312,10 @@ export default function ChangelogPage() {
 
   return (
     <div className="p-8 max-w-4xl">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold">Changelog</h1>
+            <h1 className="text-2xl font-bold">{L({ en: 'Changelog', fr: 'Journal des modifications' })}</h1>
             {data && (
               <span className="text-sm font-mono bg-primary text-white px-3 py-1 rounded-full">
                 v{data.version}
@@ -318,19 +323,18 @@ export default function ChangelogPage() {
             )}
           </div>
           <p className="text-muted-foreground text-sm">
-            Version history and release notes for LTIC SARL platform
+            {L({ en: 'Version history and release notes for LTIC SARL platform', fr: 'Historique des versions de la plateforme LTIC SARL' })}
           </p>
         </div>
         <NewReleaseForm onCreated={load} />
       </div>
 
-      {/* Stats */}
       {data && (
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { label: 'Current Version', value: `v${data.version}` },
-            { label: 'Total Releases', value: data.changelog.length.toString() },
-            { label: 'Latest Release', value: data.releaseDate },
+            { label: L({ en: 'Current Version', fr: 'Version actuelle' }), value: `v${data.version}` },
+            { label: L({ en: 'Total Releases', fr: 'Total des versions' }), value: data.changelog.length.toString() },
+            { label: L({ en: 'Latest Release', fr: 'Dernière version' }), value: data.releaseDate },
           ].map((s) => (
             <div key={s.label} className="bg-card border rounded-xl p-4 text-center">
               <p className="text-lg font-bold font-mono">{s.value}</p>
@@ -340,7 +344,6 @@ export default function ChangelogPage() {
         </div>
       )}
 
-      {/* Timeline */}
       <div className="space-y-4">
         {data?.changelog.map((entry, i) => (
           <VersionCard key={entry.version} entry={entry} index={i} />
