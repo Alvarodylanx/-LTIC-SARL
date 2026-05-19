@@ -1,7 +1,19 @@
 {
-  "version": "1.8.4",
+  "version": "1.8.5",
   "releaseDate": "2026-05-19",
   "changelog": [
+    {
+      "version": "1.8.5",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Fix next/image error for uploaded media from local API",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Added localhost:4000/uploads/** to next.config.mjs remotePatterns so uploaded product/category/news images render correctly without crashing"
+        }
+      ]
+    },
     {
       "version": "1.8.4",
       "date": "2026-05-19",
