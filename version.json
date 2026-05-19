@@ -1,7 +1,27 @@
 {
-  "version": "1.8.5",
+  "version": "1.8.6",
   "releaseDate": "2026-05-19",
   "changelog": [
+    {
+      "version": "1.8.6",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Fix blank product detail page — fetch by slug directly, sanitize slugs",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Product detail page now fetches the product directly by slug via GET /api/products/:slug instead of loading all 200 products and searching client-side — eliminates blank page when slug has spaces or encoding differences"
+        },
+        {
+          "type": "fix",
+          "description": "Products API: sanitizeSlug() now normalizes slugs on both create and update — spaces, accents, and special characters are converted to dashes automatically"
+        },
+        {
+          "type": "fix",
+          "description": "Fixed product id=24 in DB: bad slug 'the art of the year' (with spaces) corrected to 'african-iroko-timber-2'"
+        }
+      ]
+    },
     {
       "version": "1.8.5",
       "date": "2026-05-19",

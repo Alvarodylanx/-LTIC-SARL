@@ -22,9 +22,10 @@ export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { L } = useLanguage();
 
-  const { data: allProducts, isLoading } = useQuery<any[]>({
-    queryKey: ['products', 'all'],
-    queryFn: () => api.get('/api/products?limit=200'),
+  const { data: product, isLoading, isError } = useQuery<any>({
+    queryKey: ['product', slug],
+    queryFn: () => api.get(`/api/products/${encodeURIComponent(slug)}`),
+    retry: 1,
   });
 
   const { data: settings } = useQuery<Record<string, string>>({
@@ -32,8 +33,6 @@ export default function ProductDetailPage() {
     queryFn: () => api.get('/api/settings'),
     staleTime: 5 * 60 * 1000,
   });
-
-  const product = allProducts?.find((p) => p.slug === slug);
 
   const { data: relatedProducts } = useQuery<any[]>({
     queryKey: ['products', 'related', product?.categoryId],
@@ -58,14 +57,13 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (!product) {
+  if (isError || (!isLoading && !product)) {
     return (
-      <motion.div variants={fadeInUp} initial="hidden" animate="show"
-        className="max-w-7xl mx-auto px-4 py-24 text-center">
+      <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <Package className="h-16 w-16 text-muted-foreground/40 mx-auto mb-4" />
         <h1 className="text-2xl font-bold mb-4">{L({ en: 'Product Not Found', fr: 'Produit Introuvable' })}</h1>
         <Button asChild><Link href="/products">{L({ en: 'Back to Products', fr: 'Retour aux Produits' })}</Link></Button>
-      </motion.div>
+      </div>
     );
   }
 
