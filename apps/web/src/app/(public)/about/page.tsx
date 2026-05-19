@@ -190,12 +190,7 @@ export default function AboutPage() {
           </motion.p>
           <motion.div variants={staggerFast} className="flex flex-wrap gap-4 justify-center">
             <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg">
-                <Link href="/quote">{L({ en: 'Request a Quote', fr: 'Demander un Devis' })}</Link>
-              </Button>
-            </motion.div>
-            <motion.div variants={scaleIn} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold">
                 <Link href="/contact">{L({ en: 'Contact Our Team', fr: 'Contacter Notre Équipe' })}</Link>
               </Button>
             </motion.div>

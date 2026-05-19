@@ -1,39 +1,34 @@
-import 'reflect-metadata';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+import "reflect-metadata";
+import * as dotenv from "dotenv";
+import * as path from "path";
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const cookieParser = require('cookie-parser');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const session = require('express-session');
+import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { AppModule } from "./app.module";
+import * as fs from "fs";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: ['error', 'warn', 'log'] });
-
-  app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      process.env.CORS_ORIGIN || 'http://localhost:3000',
-    ],
-    credentials: true,
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ["error", "warn", "log"],
   });
 
-  app.use(cookieParser());
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'ltic-session-secret',
-      resave: false,
-      saveUninitialized: false,
-      cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 },
-    })
-  );
+  app.setGlobalPrefix("api");
 
-  const port = process.env.PORT ? Number(process.env.PORT) : 4000;
+  const uploadsDir = path.join(__dirname, "../../../uploads");
+  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+  app.useStaticAssets(uploadsDir, { prefix: "/uploads" });
+
+  app.enableCors({
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  });
+
+  const port = process.env.PORT || 4000;
   await app.listen(port);
-  console.log(`LTIC SARL API running on http://localhost:${port}`);
+  console.log(`LTIC SARL API running on http://localhost:${port}/api`);
 }
 
 bootstrap();

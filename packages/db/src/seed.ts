@@ -1,386 +1,344 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as dotenv from 'dotenv';
-import path from 'path';
-import { categories, products, orders, news, settings } from './schema/index';
+﻿import { db } from "./index";
+import { categories, products, orders, news, settings } from "./schema";
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+async function seed() {
+  console.log("Seeding database...");
 
-async function main() {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-  const db = drizzle(pool);
+  // Settings
+  const settingsData = [
+    { key: "social_facebook", value: "https://facebook.com/lticsarl" },
+    { key: "social_twitter", value: "https://twitter.com/lticsarl" },
+    { key: "social_linkedin", value: "https://linkedin.com/company/lticsarl" },
+    { key: "social_instagram", value: "https://instagram.com/lticsarl" },
+    { key: "social_youtube", value: "" },
+    { key: "social_whatsapp", value: "https://wa.me/2376XXXXXXXX" },
+    { key: "social_tiktok", value: "" },
+  ];
 
-  console.log('Seeding database...');
+  for (const s of settingsData) {
+    await db.insert(settings).values(s).onConflictDoNothing();
+  }
+  console.log("Settings seeded");
 
   // Categories
   const cats = await db.insert(categories).values([
     {
-      nameEn: 'Timber & Logs',
-      nameFr: 'Bois & Grumes',
-      slug: 'timber-logs',
-      descriptionEn: 'Premium certified tropical timber and logs for international markets',
-      descriptionFr: 'Bois tropicaux certifiés premium pour les marchés internationaux',
-      imageUrl: 'https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70',
+      nameEn: "Timber & Logs",
+      nameFr: "Bois & Grumes",
+      slug: "timber-logs",
+      descriptionEn: "Premium certified tropical timber and logs for international markets",
+      descriptionFr: "Bois tropicaux certifiés premium et grumes pour les marchés internationaux",
+      imageUrl: "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70",
     },
     {
-      nameEn: 'Industrial Generators',
-      nameFr: 'Générateurs Industriels',
-      slug: 'generators',
-      descriptionEn: 'Diesel and gas generators for industrial and commercial use',
-      descriptionFr: 'Générateurs diesel et gaz pour usage industriel et commercial',
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
+      nameEn: "Industrial Generators",
+      nameFr: "Groupes Électrogènes",
+      slug: "generators",
+      descriptionEn: "Diesel and gas generators for industrial and commercial use",
+      descriptionFr: "Groupes électrogènes diesel et gaz pour usage industriel et commercial",
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
     },
     {
-      nameEn: 'Lubricants',
-      nameFr: 'Lubrifiants',
-      slug: 'lubricants',
-      descriptionEn: 'Total, Shell and OEM-grade industrial lubricants',
-      descriptionFr: 'Lubrifiants industriels Total, Shell et OEM',
-      imageUrl: 'https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70',
+      nameEn: "Lubricants",
+      nameFr: "Lubrifiants",
+      slug: "lubricants",
+      descriptionEn: "Total, Shell and OEM-grade industrial lubricants",
+      descriptionFr: "Lubrifiants industriels Total, Shell et de qualité OEM",
+      imageUrl: "https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70",
     },
     {
-      nameEn: 'Filters',
-      nameFr: 'Filtres',
-      slug: 'filters',
-      descriptionEn: 'Oil, air and industrial filters for all equipment types',
+      nameEn: "Filters",
+      nameFr: "Filtres",
+      slug: "filters",
+      descriptionEn: "Oil, air and industrial filters for all equipment types",
       descriptionFr: "Filtres à huile, à air et industriels pour tous types d'équipements",
-      imageUrl: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70',
+      imageUrl: "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70",
     },
     {
-      nameEn: 'General Industrial',
-      nameFr: 'Industriel Général',
-      slug: 'general-industrial',
-      descriptionEn: 'Heavy industrial materials and miscellaneous equipment',
-      descriptionFr: 'Matériaux industriels lourds et équipements divers',
-      imageUrl: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70',
+      nameEn: "General Industrial",
+      nameFr: "Industriel Général",
+      slug: "general-industrial",
+      descriptionEn: "Heavy industrial materials and miscellaneous equipment",
+      descriptionFr: "Matériaux industriels lourds et équipements divers",
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
     },
   ]).returning();
+  console.log("Categories seeded:", cats.length);
 
-  const [timber, generators, lubricants, filters, general] = cats;
+  const [timberCat, genCat, lubCat, filterCat, genIndustrial] = cats;
 
   // Products
   await db.insert(products).values([
     // Timber
     {
-      nameEn: 'African Iroko Timber',
-      nameFr: 'Bois Iroko Africain',
-      slug: 'african-iroko-timber',
-      descriptionEn: 'Premium grade African Iroko timber, kiln-dried and certified for international export. Ideal for high-end construction, furniture, and flooring applications.',
-      descriptionFr: "Bois Iroko africain de première qualité, séché au four et certifié pour l'export international.",
-      categoryId: timber.id,
-      imageUrl: 'https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Grade: Export A\nMoisture Content: < 12%\nLength: 3-6m\nCertification: PEFC/FSC',
+      nameEn: "African Iroko Timber",
+      nameFr: "Bois Iroko Africain",
+      slug: "african-iroko-timber",
+      descriptionEn: "High-quality African Iroko timber, ideal for construction and furniture manufacturing. Available in various dimensions.",
+      descriptionFr: "Bois Iroko africain de haute qualité, idéal pour la construction et la fabrication de meubles.",
+      categoryId: timberCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70",
       featured: true,
       available: true,
     },
     {
-      nameEn: 'Tropical Hardwood Logs',
-      nameFr: 'Grumes de Bois Dur Tropical',
-      slug: 'tropical-hardwood-logs',
-      descriptionEn: 'Round logs of certified tropical hardwood species, suitable for sawmilling, veneer production, and export.',
-      descriptionFr: 'Grumes rondes d\'essences tropicales certifiées pour scierie, placage et export.',
-      categoryId: timber.id,
-      imageUrl: 'https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Species: Mixed tropical hardwoods\nMinimum diameter: 40cm\nCertification: FLEGT',
+      nameEn: "Tropical Hardwood Logs",
+      nameFr: "Grumes de Bois Dur Tropical",
+      slug: "tropical-hardwood-logs",
+      descriptionEn: "Premium tropical hardwood logs sourced from sustainably managed forests. Suitable for timber processing and export.",
+      descriptionFr: "Grumes de bois dur tropical issues de forêts gérées durablement.",
+      categoryId: timberCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70",
       featured: false,
       available: true,
     },
     {
-      nameEn: 'Teak Planks Export Grade',
-      nameFr: 'Planches de Teck Export',
-      slug: 'teak-planks-export',
-      descriptionEn: 'High-quality teak planks, sawn and dressed for export. Suitable for marine, outdoor furniture, and luxury flooring.',
-      descriptionFr: 'Planches de teck de haute qualité, sciées et rabotées pour l\'export.',
-      categoryId: timber.id,
-      imageUrl: 'https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Grade: Prime\nThickness: 25mm, 50mm\nWidth: 100-300mm',
-      featured: false,
+      nameEn: "Teak Planks Export Grade",
+      nameFr: "Planches de Teck Export",
+      slug: "teak-planks-export",
+      descriptionEn: "Export-grade teak planks, kiln-dried and treated. Ideal for marine, outdoor furniture, and luxury construction.",
+      descriptionFr: "Planches de teck de qualité export, séchées au four et traitées.",
+      categoryId: timberCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70",
+      featured: true,
       available: true,
     },
     // Generators
     {
-      nameEn: '50kVA Diesel Generator',
-      nameFr: 'Groupe Électrogène Diesel 50kVA',
-      slug: '50kva-diesel-generator',
-      descriptionEn: 'Industrial-grade 50kVA diesel generator with automatic voltage regulation, suitable for commercial and light industrial use.',
-      descriptionFr: 'Groupe électrogène diesel industriel 50kVA avec régulation automatique de tension.',
-      categoryId: generators.id,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Power Output: 50kVA / 40kW\nFuel Type: Diesel\nVoltage: 400V / 230V\nFrequency: 50Hz\nNoise Level: 72dB',
+      nameEn: "50kVA Diesel Generator",
+      nameFr: "Groupe Électrogène Diesel 50kVA",
+      slug: "50kva-diesel-generator",
+      descriptionEn: "Industrial-grade 50kVA diesel generator. Reliable power solution for commercial and industrial applications.",
+      descriptionFr: "Groupe électrogène diesel 50kVA de qualité industrielle. Solution d'alimentation fiable.",
+      categoryId: genCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
       featured: true,
       available: true,
     },
     {
-      nameEn: '100kVA Industrial Generator',
-      nameFr: 'Groupe Électrogène Industriel 100kVA',
-      slug: '100kva-industrial-generator',
-      descriptionEn: 'Heavy-duty 100kVA industrial generator for continuous power supply in demanding environments.',
-      descriptionFr: 'Groupe électrogène industriel robuste 100kVA pour alimentation continue.',
-      categoryId: generators.id,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Power Output: 100kVA / 80kW\nFuel Type: Diesel\nRuntime: 8h at 75% load\nCooling: Liquid-cooled',
+      nameEn: "100kVA Industrial Generator",
+      nameFr: "Groupe Électrogène Industriel 100kVA",
+      slug: "100kva-industrial-generator",
+      descriptionEn: "Heavy-duty 100kVA industrial generator with automatic transfer switch. Perfect for medium-scale operations.",
+      descriptionFr: "Groupe électrogène industriel 100kVA robuste avec commutateur de transfert automatique.",
+      categoryId: genCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
       featured: false,
       available: true,
     },
     {
-      nameEn: '200kVA Standby Generator',
-      nameFr: 'Groupe Électrogène de Secours 200kVA',
-      slug: '200kva-standby-generator',
-      descriptionEn: 'Enterprise-grade 200kVA standby generator with automatic transfer switch for critical installations.',
-      descriptionFr: 'Groupe électrogène de secours 200kVA avec commutateur automatique pour installations critiques.',
-      categoryId: generators.id,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Power Output: 200kVA / 160kW\nAutomatic Transfer Switch: Included\nFuel Tank: 500L\nEmissions: Stage IIIA',
+      nameEn: "200kVA Standby Generator",
+      nameFr: "Groupe Électrogène de Secours 200kVA",
+      slug: "200kva-standby-generator",
+      descriptionEn: "200kVA standby power generator with sound-attenuated enclosure. Ideal for hospitals, data centers, and large facilities.",
+      descriptionFr: "Groupe électrogène de secours 200kVA avec enceinte atténuée. Idéal pour hôpitaux et centres de données.",
+      categoryId: genCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
       featured: true,
       available: true,
     },
     // Lubricants
     {
-      nameEn: 'Total Rubia TIR 10W-40',
-      nameFr: 'Total Rubia TIR 10W-40',
-      slug: 'total-rubia-tir-10w40',
-      descriptionEn: 'Premium heavy-duty engine oil for diesel engines in trucks and buses. Total authorized distributor.',
-      descriptionFr: 'Huile moteur premium pour moteurs diesel lourds. Distributeur Total agréé.',
-      categoryId: lubricants.id,
-      imageUrl: 'https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Viscosity: 10W-40\nAPI: CI-4/SL\nAEAS: E7\nPackaging: 20L, 208L drums',
+      nameEn: "Total Quartz Engine Oil 5W-40",
+      nameFr: "Huile Moteur Total Quartz 5W-40",
+      slug: "total-quartz-5w40",
+      descriptionEn: "Premium synthetic engine oil for maximum engine protection. Suitable for petrol and diesel engines.",
+      descriptionFr: "Huile moteur synthétique premium pour une protection maximale du moteur.",
+      categoryId: lubCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70",
       featured: true,
       available: true,
     },
     {
-      nameEn: 'Shell Rimula R6 M 10W-40',
-      nameFr: 'Shell Rimula R6 M 10W-40',
-      slug: 'shell-rimula-r6-m-10w40',
-      descriptionEn: 'Shell fully synthetic heavy-duty diesel engine oil for demanding applications.',
-      descriptionFr: 'Huile moteur diesel synthétique Shell pour applications intensives.',
-      categoryId: lubricants.id,
-      imageUrl: 'https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Viscosity: 10W-40\nBase: Full synthetic\nAPI: CK-4\nPackaging: 5L, 20L, 208L',
+      nameEn: "Shell Rimula Heavy Duty Diesel Oil",
+      nameFr: "Huile Diesel Shell Rimula",
+      slug: "shell-rimula-diesel-oil",
+      descriptionEn: "Shell Rimula heavy-duty diesel engine oil. Provides superior protection for commercial vehicles and industrial engines.",
+      descriptionFr: "Huile moteur diesel Shell Rimula. Protection supérieure pour véhicules commerciaux.",
+      categoryId: lubCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70",
       featured: false,
       available: true,
     },
     {
-      nameEn: 'Industrial Hydraulic Oil ISO 46',
-      nameFr: 'Huile Hydraulique Industrielle ISO 46',
-      slug: 'industrial-hydraulic-oil-iso46',
-      descriptionEn: 'High-performance hydraulic oil for industrial machinery, mining, and construction equipment.',
-      descriptionFr: 'Huile hydraulique haute performance pour machines industrielles.',
-      categoryId: lubricants.id,
-      imageUrl: 'https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70',
-      specifications: 'ISO Grade: 46\nViscosity Index: > 100\nAnti-wear: ZDDP-based\nPackaging: 20L, 208L',
+      nameEn: "Industrial Hydraulic Oil",
+      nameFr: "Huile Hydraulique Industrielle",
+      slug: "industrial-hydraulic-oil",
+      descriptionEn: "High-performance hydraulic oil for industrial machinery and equipment. Available in ISO VG grades.",
+      descriptionFr: "Huile hydraulique haute performance pour machines industrielles.",
+      categoryId: lubCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1635859890085-ec8cb5466806?w=800&auto=format&fit=crop&q=70",
       featured: false,
       available: true,
     },
     // Filters
     {
-      nameEn: 'Heavy Duty Oil Filter HF-150',
-      nameFr: 'Filtre à Huile Robuste HF-150',
-      slug: 'heavy-duty-oil-filter-hf150',
-      descriptionEn: 'OEM-equivalent heavy-duty oil filter for diesel engines in construction and mining equipment.',
-      descriptionFr: 'Filtre à huile robuste équivalent OEM pour moteurs diesel.',
-      categoryId: filters.id,
-      imageUrl: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Type: Spin-on\nThread: 3/4"-16\nMedia: Synthetic blend\nMicron: 25\nCompatibility: CAT, Komatsu, Volvo',
-      featured: true,
-      available: true,
-    },
-    {
-      nameEn: 'Industrial Air Filter AF-200',
-      nameFr: 'Filtre à Air Industriel AF-200',
-      slug: 'industrial-air-filter-af200',
-      descriptionEn: 'High-capacity radial seal air filter for heavy equipment engines in dusty environments.',
-      descriptionFr: 'Filtre à air à joint radial pour moteurs en environnement poussiéreux.',
-      categoryId: filters.id,
-      imageUrl: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Type: Primary air filter\nEfficiency: 99.9%\nService Life: 500 hours\nApplication: Generators, Excavators',
+      nameEn: "OEM Engine Oil Filter",
+      nameFr: "Filtre à Huile Moteur OEM",
+      slug: "oem-engine-oil-filter",
+      descriptionEn: "OEM-specification engine oil filters compatible with major diesel and petrol engines. Bulk supply available.",
+      descriptionFr: "Filtres à huile moteur de spécification OEM compatibles avec les principaux moteurs.",
+      categoryId: filterCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70",
       featured: false,
       available: true,
     },
     {
-      nameEn: 'Fuel Filter Set FF-300',
-      nameFr: 'Kit Filtre à Carburant FF-300',
-      slug: 'fuel-filter-set-ff300',
-      descriptionEn: 'Complete fuel filtration set including primary and secondary filters for diesel engines.',
-      descriptionFr: 'Kit complet de filtration carburant primaire et secondaire pour moteurs diesel.',
-      categoryId: filters.id,
-      imageUrl: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Includes: Primary + Secondary filter\nMicron: 10 (primary), 2 (secondary)\nWater separator: Yes',
+      nameEn: "Industrial Air Filter Element",
+      nameFr: "Élément de Filtre à Air Industriel",
+      slug: "industrial-air-filter",
+      descriptionEn: "Heavy-duty air filter elements for generators, compressors, and industrial engines. Multi-brand compatibility.",
+      descriptionFr: "Éléments de filtre à air robustes pour groupes électrogènes et compresseurs.",
+      categoryId: filterCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70",
+      featured: false,
+      available: true,
+    },
+    {
+      nameEn: "Fuel Filter Assembly",
+      nameFr: "Ensemble Filtre à Carburant",
+      slug: "fuel-filter-assembly",
+      descriptionEn: "Complete fuel filter assemblies for commercial vehicles and industrial equipment. Includes housing and element.",
+      descriptionFr: "Ensembles complets de filtres à carburant pour véhicules commerciaux et équipements industriels.",
+      categoryId: filterCat.id,
+      imageUrl: "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=70",
       featured: false,
       available: true,
     },
     // General Industrial
     {
-      nameEn: 'Industrial Safety Equipment Kit',
-      nameFr: 'Kit Équipements de Sécurité Industrielle',
-      slug: 'industrial-safety-equipment-kit',
-      descriptionEn: 'Comprehensive industrial safety equipment package including PPE, signage, and safety tools for construction and industrial sites.',
-      descriptionFr: 'Kit complet d\'équipements de sécurité industrielle incluant EPI et outils de sécurité.',
-      categoryId: general.id,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Contents: Hard hats, Safety vests, Gloves, Safety boots, Goggles\nStandard: EN ISO 20345\nQuantity: 10-person kit',
+      nameEn: "Industrial Safety Equipment",
+      nameFr: "Équipements de Sécurité Industrielle",
+      slug: "industrial-safety-equipment",
+      descriptionEn: "Comprehensive industrial safety equipment including PPE, hard hats, safety gloves, and protective gear.",
+      descriptionFr: "Équipements de sécurité industrielle complets incluant EPI, casques et équipements de protection.",
+      categoryId: genIndustrial.id,
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
+      featured: false,
+      available: true,
+    },
+    {
+      nameEn: "Electrical Cable & Wire",
+      nameFr: "Câbles et Fils Électriques",
+      slug: "electrical-cable-wire",
+      descriptionEn: "Industrial-grade electrical cables and wiring solutions. Available in various gauges and insulation ratings.",
+      descriptionFr: "Câbles électriques industriels et solutions de câblage. Disponibles en différentes sections.",
+      categoryId: genIndustrial.id,
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
+      featured: false,
+      available: true,
+    },
+    {
+      nameEn: "Industrial Pumps & Valves",
+      nameFr: "Pompes et Vannes Industrielles",
+      slug: "industrial-pumps-valves",
+      descriptionEn: "Centrifugal pumps, submersible pumps, and industrial valves for water, chemical, and petroleum applications.",
+      descriptionFr: "Pompes centrifuges, pompes submersibles et vannes industrielles pour applications eau et pétrole.",
+      categoryId: genIndustrial.id,
+      imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
       featured: true,
       available: true,
     },
-    {
-      nameEn: 'Steel Pipes & Fittings Bundle',
-      nameFr: 'Lot Tuyaux & Raccords en Acier',
-      slug: 'steel-pipes-fittings-bundle',
-      descriptionEn: 'Industrial-grade steel pipes and fittings for construction, oil & gas, and water infrastructure projects.',
-      descriptionFr: 'Tuyaux et raccords en acier industriel pour construction et infrastructures.',
-      categoryId: general.id,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Material: Carbon steel ASTM A106\nDiameters: 1/2" to 12"\nPressure Rating: ANSI 150-600\nFinish: Black/galvanized',
-      featured: false,
-      available: true,
-    },
-    {
-      nameEn: 'Construction Aggregate Materials',
-      nameFr: 'Matériaux Granulats de Construction',
-      slug: 'construction-aggregate-materials',
-      descriptionEn: 'Crushed stone, gravel, and sand aggregates for civil engineering and construction projects.',
-      descriptionFr: 'Pierre concassée, gravier et sable pour projets de génie civil.',
-      categoryId: general.id,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      specifications: 'Types: Crushed limestone, River gravel, Washed sand\nGradations: 0/4, 4/8, 8/16, 16/32mm\nMin order: 20 tons',
-      featured: false,
-      available: true,
-    },
   ]);
+  console.log("Products seeded: 15");
 
-  // Sample order for tracking demo
-  await db.insert(orders).values([
-    {
-      trackingNumber: 'TRK-2024-001',
-      clientName: 'Demo Client International',
-      clientEmail: 'demo@example.com',
-      origin: 'Douala, Cameroon',
-      destination: 'Rotterdam, Netherlands',
-      description: 'Industrial generators and spare parts — 3 units 100kVA',
-      status: 'in-transit',
-      estimatedDelivery: '2024-02-15',
-      timeline: [
-        {
-          status: 'processing',
-          date: '2024-01-20T08:00:00Z',
-          description: 'Order received and processing initiated at LTIC SARL warehouse.',
-          location: 'Douala, Cameroon',
-        },
-        {
-          status: 'customs-cleared',
-          date: '2024-01-25T14:30:00Z',
-          description: 'Customs clearance completed. All documentation approved.',
-          location: 'Port of Douala, Cameroon',
-        },
-        {
-          status: 'in-transit',
-          date: '2024-01-28T06:00:00Z',
-          description: 'Cargo loaded aboard MV Atlantic Carrier. Vessel departed Port of Douala.',
-          location: 'Atlantic Ocean',
-        },
-      ],
-    },
-  ]);
+  // Demo order
+  await db.insert(orders).values({
+    trackingNumber: "TRK-2024-001",
+    clientName: "Demo Client",
+    clientEmail: "demo@example.com",
+    origin: "Douala, Cameroon",
+    destination: "Rotterdam, Netherlands",
+    description: "Timber logs — 40ft container, 25 MT",
+    status: "in-transit",
+    estimatedDelivery: "2024-12-20",
+    timeline: [
+      {
+        status: "processing",
+        date: "2024-11-15T08:00:00Z",
+        description: "Shipment registered and documentation prepared",
+        location: "Douala, Cameroon",
+      },
+      {
+        status: "customs-cleared",
+        date: "2024-11-18T14:30:00Z",
+        description: "Customs clearance completed, cargo loaded",
+        location: "Port of Douala",
+      },
+      {
+        status: "in-transit",
+        date: "2024-11-20T09:00:00Z",
+        description: "Vessel departed. ETA Rotterdam: Dec 20, 2024",
+        location: "Atlantic Ocean",
+      },
+    ],
+  });
+  console.log("Demo order seeded");
 
-  // Sample news articles
+  // News
   await db.insert(news).values([
     {
-      titleEn: 'LTIC SARL Expands Operations to 5 New Countries',
-      titleFr: 'LTIC SARL Étend ses Opérations dans 5 Nouveaux Pays',
-      slug: 'ltic-sarl-expands-operations',
-      summaryEn: 'LTIC SARL announces major expansion of its logistics network to 5 new markets across West and Central Africa, strengthening its position as a leading regional logistics provider.',
-      summaryFr: 'LTIC SARL annonce une expansion majeure de son réseau logistique vers 5 nouveaux marchés en Afrique de l\'Ouest et Centrale.',
-      contentEn: `LTIC SARL is proud to announce the expansion of its operational footprint to five new countries across West and Central Africa. This strategic move reinforces the company\'s commitment to providing seamless logistics solutions across the African continent.
+      titleEn: "LTIC SARL Expands Operations to 5 New Countries",
+      titleFr: "LTIC SARL Étend ses Activités à 5 Nouveaux Pays",
+      slug: "ltic-expands-5-new-countries",
+      summaryEn: "LTIC SARL announces strategic expansion into new markets in West Africa and Southeast Asia, reinforcing its position as a leading multinational logistics provider.",
+      summaryFr: "LTIC SARL annonce une expansion stratégique vers de nouveaux marchés en Afrique de l'Ouest et en Asie du Sud-Est.",
+      contentEn: `LTIC SARL is proud to announce the expansion of its operations into five new countries, including Senegal, Côte d'Ivoire, Ghana, Vietnam, and Indonesia. This strategic move reinforces the company's commitment to providing world-class logistics and industrial supply solutions across emerging markets.
 
-The new markets include Senegal, Ivory Coast, Democratic Republic of Congo, Niger, and Chad — all strategically positioned trade hubs that will enable LTIC SARL to serve a growing base of international clients requiring reliable logistics and industrial supply services in these regions.
+The expansion follows strong growth in existing markets and increasing demand from international clients seeking reliable logistics partners in these regions. LTIC SARL will establish dedicated offices and partner networks in each new market, ensuring local expertise combined with global operational standards.
 
-"This expansion represents a significant milestone in LTIC SARL\'s growth strategy," said the company\'s Operations Director. "We have established partnerships with local logistics operators and secured warehouse facilities in each new market to ensure we can deliver the same high standard of service our clients expect."
+"This expansion represents a significant milestone in LTIC SARL's growth journey," said the Operations Director. "We are committed to bringing our full suite of logistics, industrial supply, and trade facilitation services to businesses in these dynamic markets."
 
-The expansion was supported by significant investment in regional infrastructure, including new warehouse facilities, fleet additions, and the recruitment of over 50 logistics professionals across the five countries. LTIC SARL now operates in more than 35 countries across Africa, Europe, the Middle East, and North America.
+The new operations will focus on freight forwarding, customs clearance, industrial supply, and supply chain consulting services. LTIC SARL's established partnerships with Total, Shell, and leading OEM brands will be extended to these new markets, ensuring clients have access to premium industrial products and lubricants.`,
+      contentFr: `LTIC SARL est fière d'annoncer l'expansion de ses activités dans cinq nouveaux pays, dont le Sénégal, la Côte d'Ivoire, le Ghana, le Vietnam et l'Indonésie.
 
-Clients can expect expanded service coverage effective immediately, with full operational capacity in all new markets within Q2 2024.`,
-      contentFr: `LTIC SARL est fière d\'annoncer l\'extension de son empreinte opérationnelle à cinq nouveaux pays d\'Afrique de l\'Ouest et Centrale. Cette décision stratégique renforce l\'engagement de l\'entreprise à fournir des solutions logistiques fluides à travers le continent africain.
+Cette démarche stratégique renforce l'engagement de l'entreprise à fournir des solutions logistiques et d'approvisionnement industriel de classe mondiale sur les marchés émergents.
 
-Les nouveaux marchés comprennent le Sénégal, la Côte d\'Ivoire, la République Démocratique du Congo, le Niger et le Tchad — tous des pôles commerciaux stratégiquement positionnés.
-
-"Cette expansion représente une étape majeure dans la stratégie de croissance de LTIC SARL," a déclaré le Directeur des Opérations. "Nous avons établi des partenariats avec des opérateurs logistiques locaux et sécurisé des entrepôts dans chaque nouveau marché."`,
-      imageUrl: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&auto=format&fit=crop&q=70',
-      category: 'Company News',
+L'expansion fait suite à une forte croissance sur les marchés existants et à une demande croissante de la part de clients internationaux.`,
+      imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&auto=format&fit=crop&q=70",
+      category: "Company News",
       published: true,
     },
     {
-      titleEn: 'Understanding Phytosanitary Requirements for Timber Export',
-      titleFr: 'Comprendre les Exigences Phytosanitaires pour l\'Export de Bois',
-      slug: 'phytosanitary-requirements-timber-export',
-      summaryEn: 'A comprehensive guide to international phytosanitary regulations for timber and log exporters, covering ISPM 15 compliance, fumigation requirements, and certification processes.',
-      summaryFr: 'Guide complet des réglementations phytosanitaires internationales pour les exportateurs de bois et grumes.',
-      contentEn: `For companies involved in the international trade of timber and wood products, understanding and complying with phytosanitary regulations is not optional — it is essential for smooth customs clearance and maintaining market access.
+      titleEn: "Understanding Phytosanitary Requirements for Timber Export",
+      titleFr: "Comprendre les Exigences Phytosanitaires pour l'Export de Bois",
+      slug: "phytosanitary-requirements-timber-export",
+      summaryEn: "A comprehensive guide to international phytosanitary regulations for timber and wood products export, with practical compliance advice for exporters.",
+      summaryFr: "Un guide complet sur les réglementations phytosanitaires internationales pour l'exportation de bois et produits dérivés.",
+      contentEn: `International timber trade is subject to strict phytosanitary regulations designed to prevent the spread of pests, diseases, and invasive species across borders. Understanding and complying with these requirements is essential for successful timber export operations.
 
-**What Are Phytosanitary Requirements?**
+**Key Phytosanitary Requirements**
 
-Phytosanitary measures are regulations designed to protect plants and plant products from pests and diseases during international trade. For timber exporters, the key international standard is ISPM 15 (International Standards for Phytosanitary Measures No. 15), which governs the treatment of wood packaging materials.
+Most importing countries require that wood packaging material (WPM) and timber products meet the ISPM 15 standard, which requires heat treatment (HT) or methyl bromide fumigation (MB) to eliminate pests. Treatment must be carried out by authorized facilities and documented with official marking.
 
-**Key Compliance Requirements**
+**Documentation Requirements**
 
-1. **Heat Treatment (HT)**: Wood must be heated to a core temperature of 56°C for a minimum of 30 continuous minutes.
-2. **Methyl Bromide Fumigation (MB)**: An alternative treatment method, though increasingly restricted due to environmental concerns.
-3. **Dielectric Heating (DH)**: Treatment using microwave energy to achieve required temperature throughout the wood.
-4. **Official Marking**: Treated wood must bear the official IPPC mark (wheat sheaf symbol) with country code, producer/treatment provider code, and treatment type.
+Exporters must obtain a Phytosanitary Certificate from the national plant protection organization (NPPO) in the country of origin. This certificate confirms that the timber has been inspected and meets the phytosanitary requirements of the importing country.
 
-**LTIC SARL\'s Phytosanitary Services**
+**LTIC SARL's Compliance Services**
 
-LTIC SARL provides comprehensive phytosanitary treatment and certification services for timber and agricultural product exporters. Our team coordinates with accredited treatment facilities and national plant protection organizations to ensure full compliance with importing country requirements.
+LTIC SARL offers comprehensive phytosanitary treatment and certification services for timber exporters. Our team coordinates with authorized treatment facilities and national authorities to ensure full compliance with importing country requirements, minimizing delays and ensuring smooth cargo clearance.`,
+      contentFr: `Le commerce international du bois est soumis à des réglementations phytosanitaires strictes conçues pour prévenir la propagation de ravageurs et de maladies.
 
-Contact our team to learn how we can support your timber export compliance requirements.`,
-      contentFr: `Pour les entreprises impliquées dans le commerce international du bois et des produits du bois, comprendre et respecter les réglementations phytosanitaires est essentiel pour le dédouanement et le maintien de l\'accès aux marchés.
+**Principales exigences phytosanitaires**
 
-**Que sont les exigences phytosanitaires?**
+La plupart des pays importateurs exigent que les emballages en bois et les produits en bois répondent à la norme NIMP 15.
 
-Les mesures phytosanitaires sont des réglementations conçues pour protéger les plantes et les produits végétaux contre les ravageurs et les maladies lors du commerce international. Pour les exportateurs de bois, la norme internationale clé est la NIMP 15.
+**Services de conformité LTIC SARL**
 
-**Services phytosanitaires de LTIC SARL**
-
-LTIC SARL fournit des services complets de traitement phytosanitaire et de certification pour les exportateurs de bois. Notre équipe coordonne avec les installations de traitement agréées pour assurer la conformité complète avec les exigences des pays importateurs.`,
-      imageUrl: 'https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70',
-      category: 'Industry Insights',
-      published: true,
-    },
-    {
-      titleEn: 'LTIC SARL Partners with Leading OEM Brands for Industrial Supply',
-      titleFr: 'LTIC SARL Partenaire des Grandes Marques OEM pour la Fourniture Industrielle',
-      slug: 'ltic-sarl-oem-partnerships',
-      summaryEn: 'LTIC SARL strengthens its industrial supply portfolio through new authorized partnerships with leading OEM brands, including Total, Shell, and major equipment manufacturers.',
-      summaryFr: 'LTIC SARL renforce son portefeuille de fournitures industrielles avec de nouveaux partenariats autorisés avec Total, Shell et d\'autres fabricants OEM.',
-      contentEn: `LTIC SARL is pleased to announce the formalization of authorized distribution agreements with several leading industrial brands, further cementing its position as a trusted industrial supply partner across its markets.
-
-The new partnerships include distribution agreements for Total lubricants and specialty chemicals, Shell industrial products, and equipment from several major OEM manufacturers. These agreements provide LTIC SARL\'s clients with guaranteed access to genuine products with full manufacturer warranty coverage.
-
-"Quality assurance is at the core of our industrial supply offering," said the company\'s Supply Chain Director. "These authorized partnerships ensure our clients receive certified, genuine products — not substitutes — backed by the full support of the manufacturer."
-
-The company now maintains strategic stock of key industrial supplies across its warehouse network, enabling rapid fulfillment for urgent requirements in the mining, construction, oil & gas, and manufacturing sectors.`,
-      contentFr: `LTIC SARL est heureuse d\'annoncer la formalisation d\'accords de distribution autorisée avec plusieurs grandes marques industrielles, renforçant sa position de partenaire de fourniture industrielle de confiance.
-
-Les nouveaux partenariats comprennent des accords de distribution pour les lubrifiants Total, les produits industriels Shell et les équipements de plusieurs grands fabricants OEM.
-
-"La garantie de qualité est au cœur de notre offre de fournitures industrielles," a déclaré le Directeur de la Chaîne d\'Approvisionnement.`,
-      imageUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70',
-      category: 'Company News',
+LTIC SARL offre des services complets de traitement phytosanitaire et de certification pour les exportateurs de bois.`,
+      imageUrl: "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&auto=format&fit=crop&q=70",
+      category: "Industry Insights",
       published: true,
     },
   ]);
+  console.log("News articles seeded");
 
-  // Settings (social links)
-  await db.insert(settings).values([
-    { key: 'social_facebook', value: 'https://facebook.com/lticsarl' },
-    { key: 'social_twitter', value: 'https://twitter.com/lticsarl' },
-    { key: 'social_linkedin', value: 'https://linkedin.com/company/lticsarl' },
-    { key: 'social_instagram', value: 'https://instagram.com/lticsarl' },
-    { key: 'social_youtube', value: '' },
-    { key: 'social_whatsapp', value: 'https://wa.me/2376XXXXXXXX' },
-    { key: 'social_tiktok', value: '' },
-  ]);
-
-  console.log('Seed complete!');
-  await pool.end();
+  console.log("Database seeded successfully!");
+  process.exit(0);
 }
 
-main().catch(console.error);
+seed().catch((err) => {
+  console.error("Seed failed:", err);
+  process.exit(1);
+});

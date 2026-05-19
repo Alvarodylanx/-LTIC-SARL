@@ -1,13 +1,11 @@
-import type { Config } from 'drizzle-kit';
-import * as dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+﻿import type { Config } from "drizzle-kit";
+import * as dotenv from "dotenv";
+dotenv.config({ path: "../../.env" });
 
 export default {
-  schema: './src/schema/index.ts',
-  out: './drizzle',
-  driver: 'pg',
+  schema: "./src/schema/index.ts",
+  out: "./drizzle",
+  driver: "pg",
   dbCredentials: {
     connectionString: process.env.DATABASE_URL!,
   },

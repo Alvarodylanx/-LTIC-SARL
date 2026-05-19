@@ -1,19 +1,15 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as schema from './schema';
+﻿import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "./schema";
+import * as dotenv from "dotenv";
+import * as path from "path";
 
-export * from './schema';
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
-let _db: ReturnType<typeof drizzle> | null = null;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
-export function getDb(databaseUrl?: string) {
-  if (!_db) {
-    const pool = new Pool({
-      connectionString: databaseUrl || process.env.DATABASE_URL,
-    });
-    _db = drizzle(pool, { schema });
-  }
-  return _db;
-}
-
+export const db = drizzle(pool, { schema });
 export { schema };
+export * from "./schema";

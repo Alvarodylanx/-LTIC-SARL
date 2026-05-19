@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPi
 import { QuotesService } from './quotes.service';
 import { AuthGuard } from '../auth/auth.guard';
 
-@Controller('api/quotes')
+@Controller('quotes')
 export class QuotesController {
   constructor(private readonly svc: QuotesService) {}
 

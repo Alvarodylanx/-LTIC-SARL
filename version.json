@@ -1,0 +1,298 @@
+{
+  "version": "1.3.4",
+  "releaseDate": "2026-05-19",
+  "changelog": [
+    {
+      "version": "1.3.4",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Removed Request a Quote button from About page bottom CTA",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "About page: removed Request a Quote button from bottom CTA, leaving only the solid white Contact Our Team button"
+        }
+      ]
+    },
+    {
+      "version": "1.3.3",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Fixed Contact Our Team button on About page CTA",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "About page: Contact Our Team button replaced broken outline-white style with semi-transparent white background + white border, visually distinct from the solid white Request a Quote button"
+        }
+      ]
+    },
+    {
+      "version": "1.3.2",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Real flag images in country selector and phone input dial code dropdown",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "CountrySelect: replaced emoji flags with flagcdn.com images (w20/w40 srcset) - renders correctly on Windows"
+        },
+        {
+          "type": "fix",
+          "description": "PhoneInput: replaced emoji flags with flagcdn.com images in both the dial code button and the country search dropdown"
+        }
+      ]
+    },
+    {
+      "version": "1.3.1",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Country selector converted to searchable combobox with type-to-filter",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "CountrySelect is now a combobox: users can type to filter countries, select from dropdown, or clear with the X button"
+        },
+        {
+          "type": "fix",
+          "description": "Updated all 4 form call sites (register, profile, quote, contact) to match new onChange(value: string) signature"
+        }
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "date": "2026-05-19",
+      "type": "minor",
+      "summary": "Country-aware phone validation, email format indicator, and country select across all forms",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "New lib/countries.ts: 52 countries with dial codes, flag emojis, and phone regex patterns"
+        },
+        {
+          "type": "feature",
+          "description": "PhoneInput component: country dial code selector (searchable dropdown) + local number input with per-country format validation indicator"
+        },
+        {
+          "type": "feature",
+          "description": "CountrySelect component: reusable dropdown with flag emojis, EN/FR placeholder support"
+        },
+        {
+          "type": "feature",
+          "description": "EmailInput component: real-time email format validation with green check / red X indicator on blur"
+        },
+        {
+          "type": "feature",
+          "description": "Register form: EmailInput + CountrySelect + PhoneInput (dial code auto-synced with country)"
+        },
+        {
+          "type": "feature",
+          "description": "Account profile form: CountrySelect + PhoneInput replacing old plain inputs"
+        },
+        {
+          "type": "feature",
+          "description": "Quote form: CountrySelect dropdown replaces text input; PhoneInput with country sync via react-hook-form Controller"
+        },
+        {
+          "type": "feature",
+          "description": "Contact form: added CountrySelect + PhoneInput; EmailInput replaces plain email input"
+        }
+      ]
+    },
+    {
+      "version": "1.2.5",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "WhatsApp contact button on product detail page",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Added WhatsApp button on product detail page that opens a chat with a pre-filled message mentioning the product name"
+        }
+      ]
+    },
+    {
+      "version": "1.2.4",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Navbar Request Quote restored (hidden on landing page only) + services page CTA cleanup",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Request Quote button restored in navbar, visible on all pages except the landing page"
+        },
+        {
+          "type": "fix",
+          "description": "Removed Request Quote button from services page bottom CTA"
+        },
+        {
+          "type": "fix",
+          "description": "Services page bottom CTA: Contact Our Team changed to solid white button matching design system"
+        }
+      ]
+    },
+    {
+      "version": "1.2.3",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Removed Request Quote button from navbar on all pages",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Removed 'Request Quote' button from desktop navbar (unauthenticated state)"
+        },
+        {
+          "type": "fix",
+          "description": "Removed 'Request Quote' button from mobile navbar menu"
+        }
+      ]
+    },
+    {
+      "version": "1.2.2",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Landing page hero and CTA button cleanup",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Removed 'Contact Our Team' ghost button from hero section - hero now has two focused CTAs only"
+        },
+        {
+          "type": "fix",
+          "description": "Removed duplicate 'Request a Quote' button from bottom CTA section"
+        },
+        {
+          "type": "fix",
+          "description": "Fixed 'Contact Our Team' button at bottom CTA - replaced broken outline/white style with solid white button matching design system"
+        }
+      ]
+    },
+    {
+      "version": "1.2.1",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Cookie service TypeScript fix + server restart",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Fixed duplicate 'essential' key TypeScript error in saveConsent()"
+        }
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-05-18",
+      "type": "minor",
+      "summary": "Professional cookie consent system + version control",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Full cookie consent service with 4 categories (Essential, Functional, Analytics, Marketing)"
+        },
+        {
+          "type": "feature",
+          "description": "Cookie preferences modal with per-category toggles and detailed cookie listing"
+        },
+        {
+          "type": "feature",
+          "description": "Floating cookie settings button with confirmation feedback"
+        },
+        {
+          "type": "feature",
+          "description": "Live consent manager on /cookies policy page with withdraw support"
+        },
+        {
+          "type": "feature",
+          "description": "Version control system with semantic versioning and changelog"
+        },
+        {
+          "type": "feature",
+          "description": "Admin changelog page at /admin/changelog"
+        },
+        {
+          "type": "feature",
+          "description": "GET /api/version endpoint returning version info and full changelog"
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-05-18",
+      "type": "minor",
+      "summary": "Customer registration, authentication, and admin profile management",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Customer registration and login with JWT authentication"
+        },
+        {
+          "type": "feature",
+          "description": "Customer account area: dashboard, orders, quotes, profile settings"
+        },
+        {
+          "type": "feature",
+          "description": "Customer profile editing: name, phone, country, company, avatar upload"
+        },
+        {
+          "type": "feature",
+          "description": "Customer password change with current password verification"
+        },
+        {
+          "type": "feature",
+          "description": "Admin profile management: name, email, avatar upload, password change"
+        },
+        {
+          "type": "feature",
+          "description": "File upload service for profile pictures stored in /uploads/"
+        },
+        {
+          "type": "feature",
+          "description": "Navbar user menu with dropdown for authenticated customers"
+        },
+        {
+          "type": "fix",
+          "description": "Resolved root-level app/ directory conflict with src/app/ causing all pages to return 404"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-05-18",
+      "type": "major",
+      "summary": "Initial production release of LTIC SARL website",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Complete public website: Home, About, Services, Products, Categories, Quote, Tracking, News, Contact, Legal pages"
+        },
+        {
+          "type": "feature",
+          "description": "Full admin panel: Dashboard, Products, Categories, Quotes, Orders, News, Contacts, Settings"
+        },
+        {
+          "type": "feature",
+          "description": "Bilingual EN/FR support throughout all pages"
+        },
+        {
+          "type": "feature",
+          "description": "PostgreSQL database with Drizzle ORM — 7 core tables seeded with real data"
+        },
+        {
+          "type": "feature",
+          "description": "JWT admin authentication with secure session management"
+        },
+        {
+          "type": "feature",
+          "description": "NestJS REST API with 40+ endpoints"
+        },
+        {
+          "type": "fix",
+          "description": "Fixed controller prefix doubling (/api/api/ bug) on 6 controllers"
+        },
+        {
+          "type": "fix",
+          "description": "Fixed DbModule not wired into AppModule, making Drizzle ORM non-functional"
+        }
+      ]
+    }
+  ]
+}

@@ -1,16 +1,15 @@
 {
   "name": "ltic-sarl",
-  "version": "1.0.0",
   "private": true,
+  "version": "1.0.0",
   "scripts": {
-    "dev": "pnpm --filter @ltic/db build && concurrently \"pnpm --filter @ltic/web dev\" \"pnpm --filter @ltic/api dev\"",
-    "build": "pnpm --filter @ltic/db build && pnpm --filter @ltic/web build && pnpm --filter @ltic/api build",
-    "db:generate": "pnpm --filter @ltic/db generate",
-    "db:migrate": "pnpm --filter @ltic/db migrate",
+    "dev": "pnpm run dev:api & pnpm run dev:web",
+    "dev:api": "pnpm --filter api dev",
+    "dev:web": "pnpm --filter web dev",
+    "db:push": "pnpm --filter @ltic/db push",
     "db:seed": "pnpm --filter @ltic/db seed"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0",
     "typescript": "^5.4.0"
   }
 }

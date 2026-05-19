@@ -1,26 +1,26 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards, ParseIntPipe } from '@nestjs/common';
-import { CategoriesService } from './categories.service';
-import { AuthGuard } from '../auth/auth.guard';
+﻿import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from "@nestjs/common";
+import { CategoriesService } from "./categories.service";
+import { AuthGuard } from "../auth/auth.guard";
 
-@Controller('api/categories')
+@Controller("categories")
 export class CategoriesController {
-  constructor(private readonly svc: CategoriesService) {}
+  constructor(private svc: CategoriesService) {}
 
   @Get()
   findAll() { return this.svc.findAll(); }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) { return this.svc.findOne(id); }
+  @Get(":id")
+  findOne(@Param("id") id: string) { return this.svc.findOne(+id); }
 
-  @Post()
   @UseGuards(AuthGuard)
+  @Post()
   create(@Body() body: any) { return this.svc.create(body); }
 
-  @Patch(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) { return this.svc.update(id, body); }
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() body: any) { return this.svc.update(+id, body); }
 
-  @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(@Param('id', ParseIntPipe) id: number) { return this.svc.remove(id); }
+  @Delete(":id")
+  remove(@Param("id") id: string) { return this.svc.remove(+id); }
 }

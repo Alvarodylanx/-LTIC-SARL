@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -12,6 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { EmailInput } from '@/components/ui/EmailInput';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { Suspense } from 'react';
@@ -31,14 +34,23 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 function QuoteForm() {
-  const { L } = useLanguage();
+  const { L, language } = useLanguage();
   const searchParams = useSearchParams();
   const defaultProduct = searchParams.get('product') || '';
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { productInterest: defaultProduct },
+    defaultValues: { productInterest: defaultProduct, country: '', phone: '' },
   });
+
+  const selectedCountry = watch('country');
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -68,21 +80,63 @@ function QuoteForm() {
           {errors.contactName && <p className="text-destructive text-xs mt-1">{L({ en: 'Required', fr: 'Requis' })}</p>}
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="email">{L({ en: 'Email Address', fr: 'Adresse Email' })} *</Label>
-          <Input id="email" type="email" {...register('email')} className="mt-1" />
-          {errors.email && <p className="text-destructive text-xs mt-1">{L({ en: 'Valid email required', fr: 'Email valide requis' })}</p>}
-        </div>
-        <div>
-          <Label htmlFor="phone">{L({ en: 'Phone Number', fr: 'Numéro de Téléphone' })}</Label>
-          <Input id="phone" {...register('phone')} className="mt-1" />
-        </div>
+
+      {/* Email */}
+      <div>
+        <Label htmlFor="email">{L({ en: 'Email Address', fr: 'Adresse Email' })} *</Label>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <EmailInput
+              id="email"
+              placeholder="you@company.com"
+              className="mt-1"
+              {...field}
+            />
+          )}
+        />
+        {errors.email && <p className="text-destructive text-xs mt-1">{L({ en: 'Valid email required', fr: 'Email valide requis' })}</p>}
       </div>
+
+      {/* Country */}
       <div>
         <Label htmlFor="country">{L({ en: 'Country', fr: 'Pays' })}</Label>
-        <Input id="country" {...register('country')} className="mt-1" />
+        <Controller
+          name="country"
+          control={control}
+          render={({ field }) => (
+            <CountrySelect
+              id="country"
+              className="mt-1"
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              lang={language}
+              placeholderEn="Select your country…"
+              placeholderFr="Sélectionnez votre pays…"
+            />
+          )}
+        />
       </div>
+
+      {/* Phone — dial code synced with country */}
+      <div>
+        <Label htmlFor="phone">{L({ en: 'Phone Number', fr: 'Numéro de Téléphone' })}</Label>
+        <Controller
+          name="phone"
+          control={control}
+          render={({ field }) => (
+            <PhoneInput
+              id="phone"
+              value={field.value}
+              onChange={field.onChange}
+              syncCountry={selectedCountry}
+              className="mt-1"
+            />
+          )}
+        />
+      </div>
+
       <div>
         <Label htmlFor="productInterest">{L({ en: "Product / Service of Interest", fr: "Produit / Service d'Intérêt" })} *</Label>
         <Input id="productInterest" {...register('productInterest')} className="mt-1" />

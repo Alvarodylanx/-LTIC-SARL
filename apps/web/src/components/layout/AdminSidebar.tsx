@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Package, Tag, FileText, Truck, Newspaper, MessageSquare, Settings, LogOut, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Package, Tag, FileText, Truck, Newspaper, MessageSquare, Settings, LogOut, ShieldAlert, UserCircle, GitBranch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkAuth, logout } from '@/lib/auth';
 
@@ -16,6 +16,8 @@ const navItems = [
   { href: '/admin/news', icon: Newspaper, label: 'News' },
   { href: '/admin/contacts', icon: MessageSquare, label: 'Contacts' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
+  { href: '/admin/changelog', icon: GitBranch, label: 'Changelog' },
+  { href: '/admin/profile', icon: UserCircle, label: 'My Profile' },
 ];
 
 export function AdminSidebar() {

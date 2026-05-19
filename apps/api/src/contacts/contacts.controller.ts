@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPi
 import { ContactsService } from './contacts.service';
 import { AuthGuard } from '../auth/auth.guard';
 
-@Controller('api/contacts')
+@Controller('contacts')
 export class ContactsController {
   constructor(private readonly svc: ContactsService) {}
 

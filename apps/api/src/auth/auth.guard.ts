@@ -1,42 +1,27 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
-
-const validTokens = new Map<string, string>();
-
-export function storeToken(token: string, username: string) {
-  validTokens.set(token, username);
-}
-
-export function removeToken(token: string) {
-  validTokens.delete(token);
-}
-
-export function isValidToken(token: string): string | null {
-  return validTokens.get(token) ?? null;
-}
+﻿import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest<Request>();
-    const authHeader = req.headers.authorization;
+  constructor(private jwtService: JwtService) {}
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.slice(7);
-      const username = isValidToken(token);
-      if (username) {
-        (req as any).adminUser = username;
-        return true;
-      }
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const authHeader = request.headers["authorization"];
+
+    if (!authHeader?.startsWith("Bearer ")) {
+      throw new UnauthorizedException("No token provided");
     }
 
-    // Check session as fallback
-    const session = (req as any).session;
-    if (session?.authenticated && session?.username) {
-      (req as any).adminUser = session.username;
+    const token = authHeader.split(" ")[1];
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.SESSION_SECRET || "ltic-secret",
+      });
+      request.user = payload;
       return true;
+    } catch {
+      throw new UnauthorizedException("Invalid token");
     }
-
-    throw new UnauthorizedException('Authentication required');
   }
 }

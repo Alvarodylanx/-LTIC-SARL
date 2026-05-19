@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -11,14 +11,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { EmailInput } from '@/components/ui/EmailInput';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
-import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, viewportOnce } from '@/components/motion/variants';
+import { fadeInUp, fadeInLeft, fadeInRight, stagger, viewportOnce } from '@/components/motion/variants';
 
 const schema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().optional(),
+  country: z.string().optional(),
   company: z.string().optional(),
   subject: z.string().min(2),
   message: z.string().min(10),
@@ -26,10 +30,20 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function ContactPage() {
-  const { L } = useLanguage();
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+  const { L, language } = useLanguage();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: { country: '', phone: '' },
   });
+
+  const selectedCountry = watch('country');
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -101,6 +115,8 @@ export default function ContactPage() {
               className="lg:col-span-2 bg-card border rounded-2xl p-8 shadow-sm">
               <h2 className="text-2xl font-bold mb-6">{L({ en: 'Send Us a Message', fr: 'Envoyez-Nous un Message' })}</h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+
+                {/* Name + Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">{L({ en: 'Your Name', fr: 'Votre Nom' })} *</Label>
@@ -109,20 +125,66 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <Label htmlFor="email">{L({ en: 'Email Address', fr: 'Adresse Email' })} *</Label>
-                    <Input id="email" type="email" {...register('email')} className="mt-1.5" placeholder="you@company.com" />
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <EmailInput
+                          id="email"
+                          placeholder="you@company.com"
+                          className="mt-1.5"
+                          {...field}
+                        />
+                      )}
+                    />
                     {errors.email && <p className="text-destructive text-xs mt-1">{L({ en: 'Valid email required', fr: 'Email valide requis' })}</p>}
                   </div>
                 </div>
+
+                {/* Country + Company */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="phone">{L({ en: 'Phone Number', fr: 'Numéro de Téléphone' })}</Label>
-                    <Input id="phone" {...register('phone')} className="mt-1.5" placeholder="+1 555 000 0000" />
+                    <Label htmlFor="country">{L({ en: 'Country', fr: 'Pays' })}</Label>
+                    <Controller
+                      name="country"
+                      control={control}
+                      render={({ field }) => (
+                        <CountrySelect
+                          id="country"
+                          className="mt-1.5"
+                          value={field.value ?? ''}
+                          onChange={field.onChange}
+                          lang={language}
+                          placeholderEn="Select country…"
+                          placeholderFr="Sélectionnez votre pays…"
+                        />
+                      )}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="company">{L({ en: 'Company Name', fr: "Nom de l'Entreprise" })}</Label>
                     <Input id="company" {...register('company')} className="mt-1.5" placeholder={L({ en: 'Your Company Ltd.', fr: 'Votre Société S.A.' })} />
                   </div>
                 </div>
+
+                {/* Phone — dial code syncs with country */}
+                <div>
+                  <Label htmlFor="phone">{L({ en: 'Phone Number', fr: 'Numéro de Téléphone' })}</Label>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <PhoneInput
+                        id="phone"
+                        value={field.value}
+                        onChange={field.onChange}
+                        syncCountry={selectedCountry}
+                        className="mt-1.5"
+                      />
+                    )}
+                  />
+                </div>
+
                 <div>
                   <Label htmlFor="subject">{L({ en: 'Subject', fr: 'Sujet' })} *</Label>
                   <Input id="subject" {...register('subject')} className="mt-1.5" placeholder={L({ en: 'How can we help?', fr: 'Comment pouvons-nous vous aider ?' })} />
@@ -130,9 +192,10 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <Label htmlFor="message">{L({ en: 'Your Message', fr: 'Votre Message' })} *</Label>
-                  <Textarea id="message" {...register('message')} rows={5} className="mt-1.5" placeholder={L({ en: 'Tell us about your logistics or supply requirements...', fr: 'Parlez-nous de vos besoins en logistique ou fournitures...' })} />
+                  <Textarea id="message" {...register('message')} rows={5} className="mt-1.5" placeholder={L({ en: 'Tell us about your logistics or supply requirements…', fr: 'Parlez-nous de vos besoins en logistique ou fournitures…' })} />
                   {errors.message && <p className="text-destructive text-xs mt-1">{L({ en: 'Min 10 characters required', fr: 'Minimum 10 caractères requis' })}</p>}
                 </div>
+
                 <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                   <Button type="submit" size="lg" disabled={isSubmitting} className="w-full shadow-sm">
                     {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}

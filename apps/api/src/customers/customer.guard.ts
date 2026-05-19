@@ -1,0 +1,28 @@
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+
+@Injectable()
+export class CustomerGuard implements CanActivate {
+  constructor(private jwtService: JwtService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const authHeader = request.headers["authorization"];
+
+    if (!authHeader?.startsWith("Bearer ")) {
+      throw new UnauthorizedException("No token provided");
+    }
+
+    const token = authHeader.split(" ")[1];
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.SESSION_SECRET || "ltic-secret",
+      });
+      if (payload.role !== "customer") throw new Error("Not a customer token");
+      request.customer = payload;
+      return true;
+    } catch {
+      throw new UnauthorizedException("Invalid token");
+    }
+  }
+}

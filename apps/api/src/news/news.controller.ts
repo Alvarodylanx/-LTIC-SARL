@@ -2,7 +2,7 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, Pa
 import { NewsService } from './news.service';
 import { AuthGuard } from '../auth/auth.guard';
 
-@Controller('api/news')
+@Controller('news')
 export class NewsController {
   constructor(private readonly svc: NewsService) {}
 

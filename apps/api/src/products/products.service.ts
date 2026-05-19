@@ -1,93 +1,109 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { eq, and, ilike, desc } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
-import { products, categories, users, notifications } from '@ltic/db';
+﻿import { Injectable, NotFoundException } from "@nestjs/common";
+import { getPool } from "../db.provider";
 
 @Injectable()
 export class ProductsService {
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  private get db() { return getPool(); }
 
-  private shape(p: any, cat?: any) {
-    return {
-      id: p.id, nameEn: p.nameEn, nameFr: p.nameFr, name: p.nameEn, slug: p.slug,
-      descriptionEn: p.descriptionEn, descriptionFr: p.descriptionFr,
-      categoryId: p.categoryId, categoryName: cat?.nameEn ?? null,
-      imageUrl: p.imageUrl, images: p.images ?? [],
-      specifications: p.specifications, featured: p.featured, available: p.available,
-      createdAt: p.createdAt?.toISOString?.() ?? p.createdAt,
-    };
-  }
-
-  async findAll(opts: { categoryId?: number; search?: string; limit: number; offset: number }) {
-    const conditions: any[] = [];
-    if (opts.categoryId) conditions.push(eq(products.categoryId, opts.categoryId));
-    if (opts.search) conditions.push(ilike(products.nameEn, `%${opts.search}%`));
-
-    const rows = await this.db
-      .select({ product: products, category: categories })
-      .from(products)
-      .leftJoin(categories, eq(products.categoryId, categories.id))
-      .where(conditions.length ? and(...conditions) : undefined)
-      .orderBy(desc(products.createdAt))
-      .limit(opts.limit)
-      .offset(opts.offset);
-
-    return rows.map((r: any) => this.shape(r.product, r.category));
+  async findAll(q: any = {}) {
+    const conds: string[] = [];
+    const vals: any[] = [];
+    let i = 1;
+    if (q.categoryId) { conds.push(`p.category_id=$${i++}`); vals.push(+q.categoryId); }
+    if (q.search) { conds.push(`(p.name_en ILIKE $${i} OR p.name_fr ILIKE $${i})`); vals.push(`%${q.search}%`); i++; }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+    const limit = q.limit ? `LIMIT ${+q.limit}` : "";
+    const offset = q.offset ? `OFFSET ${+q.offset}` : "";
+    const res = await this.db.query(
+      `SELECT p.*, c.name_en as cat_name_en FROM products p
+       LEFT JOIN categories c ON c.id = p.category_id
+       ${where} ORDER BY p.created_at DESC ${limit} ${offset}`,
+      vals
+    );
+    return res.rows.map(this.mapRow);
   }
 
   async findFeatured() {
-    const rows = await this.db
-      .select({ product: products, category: categories })
-      .from(products)
-      .leftJoin(categories, eq(products.categoryId, categories.id))
-      .where(and(eq(products.featured, true), eq(products.available, true)))
-      .limit(8);
-    return rows.map((r: any) => this.shape(r.product, r.category));
+    const res = await this.db.query(
+      `SELECT p.*, c.name_en as cat_name_en FROM products p
+       LEFT JOIN categories c ON c.id = p.category_id
+       WHERE p.featured=true AND p.available=true
+       ORDER BY p.created_at DESC LIMIT 8`
+    );
+    return res.rows.map(this.mapRow);
   }
 
-  async findOne(id: number) {
-    const [row] = await this.db
-      .select({ product: products, category: categories })
-      .from(products)
-      .leftJoin(categories, eq(products.categoryId, categories.id))
-      .where(eq(products.id, id));
-    if (!row) throw new NotFoundException('Product not found');
-    return this.shape(row.product, row.category);
+  async findOne(idOrSlug: number | string) {
+    const isId = typeof idOrSlug === "number";
+    const res = await this.db.query(
+      `SELECT p.*, c.name_en as cat_name_en FROM products p
+       LEFT JOIN categories c ON c.id = p.category_id
+       WHERE ${isId ? "p.id=$1" : "p.slug=$1"}`,
+      [idOrSlug]
+    );
+    if (!res.rows[0]) throw new NotFoundException("Product not found");
+    return this.mapRow(res.rows[0]);
   }
 
   async create(data: any) {
-    const [p] = await this.db.insert(products).values(data).returning();
-    const created = await this.findOne(p.id);
-    await this.broadcastProductNotification(created);
-    return created;
+    const res = await this.db.query(
+      `INSERT INTO products (name_en, name_fr, slug, description_en, description_fr, category_id, image_url, images, specifications, featured, available)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+      [data.nameEn, data.nameFr, data.slug, data.descriptionEn, data.descriptionFr,
+       data.categoryId, data.imageUrl, JSON.stringify(data.images || []),
+       data.specifications, data.featured ?? false, data.available ?? true]
+    );
+    return this.mapRow(res.rows[0]);
   }
 
   async update(id: number, data: any) {
-    const [p] = await this.db.update(products).set(data).where(eq(products.id, id)).returning();
-    if (!p) throw new NotFoundException('Product not found');
-    return this.findOne(p.id);
+    const fields: string[] = [];
+    const vals: any[] = [];
+    let i = 1;
+    const map: Record<string, string> = {
+      nameEn: "name_en", nameFr: "name_fr", slug: "slug",
+      descriptionEn: "description_en", descriptionFr: "description_fr",
+      categoryId: "category_id", imageUrl: "image_url",
+      specifications: "specifications", featured: "featured", available: "available",
+    };
+    for (const [k, col] of Object.entries(map)) {
+      if (data[k] !== undefined) {
+        fields.push(`${col}=$${i++}`);
+        vals.push(k === "images" ? JSON.stringify(data[k]) : data[k]);
+      }
+    }
+    if (data.images !== undefined) { fields.push(`images=$${i++}`); vals.push(JSON.stringify(data.images)); }
+    if (!fields.length) return this.findOne(id);
+    vals.push(id);
+    const res = await this.db.query(
+      `UPDATE products SET ${fields.join(",")} WHERE id=$${i} RETURNING *`, vals
+    );
+    if (!res.rows[0]) throw new NotFoundException("Product not found");
+    return this.mapRow(res.rows[0]);
   }
 
   async remove(id: number) {
-    const [p] = await this.db.delete(products).where(eq(products.id, id)).returning();
-    if (!p) throw new NotFoundException('Product not found');
-    return { deleted: true };
+    await this.db.query("DELETE FROM products WHERE id=$1", [id]);
+    return { success: true };
   }
 
-  private async broadcastProductNotification(product: any) {
-    try {
-      const subs = await this.db.select().from(users).where(eq(users.notifyProducts, true));
-      if (!subs.length) return;
-      const rows = subs.map((u: any) => ({
-        userId: u.id,
-        type: 'product',
-        titleEn: 'New Product Available',
-        titleFr: 'Nouveau Produit Disponible',
-        messageEn: `${product.nameEn} has been added to our catalog.`,
-        messageFr: `${product.nameFr} a été ajouté à notre catalogue.`,
-        link: `/products/${product.slug}`,
-      }));
-      await this.db.insert(notifications).values(rows);
-    } catch {}
+  private mapRow(r: any) {
+    return {
+      id: r.id,
+      nameEn: r.name_en,
+      nameFr: r.name_fr,
+      name: r.name_en,
+      slug: r.slug,
+      descriptionEn: r.description_en,
+      descriptionFr: r.description_fr,
+      categoryId: r.category_id,
+      categoryName: r.cat_name_en || null,
+      imageUrl: r.image_url,
+      images: r.images || [],
+      specifications: r.specifications,
+      featured: r.featured,
+      available: r.available,
+      createdAt: r.created_at,
+    };
   }
 }
