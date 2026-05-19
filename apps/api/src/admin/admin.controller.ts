@@ -63,8 +63,17 @@ export class AdminController {
 
   @UseGuards(AuthGuard)
   @Patch("profile")
-  updateProfile(@Body() body: { name?: string; email?: string }) {
+  updateProfile(@Body() body: { name?: string }) {
     return this.adminProfileService.updateProfile(body);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch("profile/email")
+  changeEmail(@Body() body: { email: string; currentPassword: string }) {
+    if (!body.email || !body.currentPassword) {
+      throw new BadRequestException("email and currentPassword are required");
+    }
+    return this.adminProfileService.changeEmail(body.email, body.currentPassword);
   }
 
   @UseGuards(AuthGuard)

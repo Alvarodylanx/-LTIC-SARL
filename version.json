@@ -1,7 +1,47 @@
 {
-  "version": "1.7.0",
-  "releaseDate": "2026-05-18",
+  "version": "1.8.0",
+  "releaseDate": "2026-05-19",
   "changelog": [
+    {
+      "version": "1.8.0",
+      "date": "2026-05-19",
+      "type": "minor",
+      "summary": "Unified login page, role-based redirection, secure admin profile settings",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Single login page at /auth/login handles both admins and customers — POST /api/auth/login checks admin_profile first, then customers table; returns role in response"
+        },
+        {
+          "type": "feature",
+          "description": "Role-based redirection after login: admin → /admin/dashboard, customer → /account; supports ?redirect= query param"
+        },
+        {
+          "type": "feature",
+          "description": "AuthGuard now rejects customer tokens (role: 'customer') from accessing admin routes — closes privilege escalation gap"
+        },
+        {
+          "type": "feature",
+          "description": "Admin email change secured: PATCH /api/admin/profile/email requires current password verification (bcrypt) before updating"
+        },
+        {
+          "type": "feature",
+          "description": "Admin profile page redesigned into four sections: avatar, display name, email address (with password confirmation), change password"
+        },
+        {
+          "type": "feature",
+          "description": "Password minimum length raised to 8 characters; bcrypt cost raised from 10 to 12"
+        },
+        {
+          "type": "fix",
+          "description": "/admin now redirects unauthenticated users to /auth/login instead of showing a separate login form"
+        },
+        {
+          "type": "fix",
+          "description": "AdminSidebar redirects to /auth/login (not /admin) on token expiry or auth failure"
+        }
+      ]
+    },
     {
       "version": "1.7.0",
       "date": "2026-05-18",

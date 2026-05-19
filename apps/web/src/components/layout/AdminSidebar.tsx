@@ -35,7 +35,7 @@ export function AdminSidebar() {
 
   useEffect(() => {
     checkAuth().then((res) => {
-      if (!res.authenticated) router.push('/admin');
+      if (!res.authenticated) router.push('/auth/login?redirect=/admin/dashboard');
       else setUsername(res.username || 'Admin');
     });
   }, [router]);

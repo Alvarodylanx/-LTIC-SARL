@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, Loader2, Save, Lock, UserCircle } from 'lucide-react';
+import { Camera, Loader2, Save, Lock, UserCircle, Mail, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,55 +33,113 @@ async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T
   return res.json();
 }
 
+function PasswordInput({ id, value, onChange, placeholder, autoComplete }: {
+  id: string; value: string; onChange: (v: string) => void;
+  placeholder?: string; autoComplete?: string;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input
+        id={id}
+        type={show ? 'text' : 'password'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder || '••••••••'}
+        autoComplete={autoComplete}
+        className="pr-10"
+        required
+      />
+      <button
+        type="button"
+        onClick={() => setShow(!show)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+      >
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}
+
 export default function AdminProfilePage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<AdminProfile | null>(null);
-  const [profileForm, setProfileForm] = useState({ name: '', email: '' });
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-  const [savingProfile, setSavingProfile] = useState(false);
+
+  // Form states
+  const [nameForm, setNameForm] = useState({ name: '' });
+  const [emailForm, setEmailForm] = useState({ email: '', currentPassword: '' });
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+  // Loading states
+  const [savingName, setSavingName] = useState(false);
+  const [savingEmail, setSavingEmail] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
     adminFetch<AdminProfile>('/api/admin/profile').then((data) => {
       setProfile(data);
-      setProfileForm({ name: data.name, email: data.email });
+      setNameForm({ name: data.name });
+      setEmailForm((prev) => ({ ...prev, email: data.email }));
     }).catch(() => {});
   }, []);
 
-  const setPasswordField = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
-
-  const handleSaveProfile = async (e: React.FormEvent) => {
+  // ── Save display name ────────────────────────────────────────────────────────
+  const handleSaveName = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSavingProfile(true);
+    if (!nameForm.name.trim()) return;
+    setSavingName(true);
     try {
       const updated = await adminFetch<AdminProfile>('/api/admin/profile', {
         method: 'PATCH',
-        body: JSON.stringify(profileForm),
+        body: JSON.stringify({ name: nameForm.name }),
       });
       setProfile(updated);
-      setProfileForm({ name: updated.name, email: updated.email });
-      toast.success('Profile updated!');
+      toast.success('Display name updated');
     } catch (err: any) {
       toast.error(err.message);
     } finally {
-      setSavingProfile(false);
+      setSavingName(false);
     }
   };
 
+  // ── Change email ─────────────────────────────────────────────────────────────
+  const handleChangeEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(emailForm.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    if (!emailForm.currentPassword) {
+      toast.error('Current password is required to change email');
+      return;
+    }
+    setSavingEmail(true);
+    try {
+      const updated = await adminFetch<AdminProfile>('/api/admin/profile/email', {
+        method: 'PATCH',
+        body: JSON.stringify({ email: emailForm.email, currentPassword: emailForm.currentPassword }),
+      });
+      setProfile(updated);
+      setEmailForm({ email: updated.email, currentPassword: '' });
+      toast.success('Email address updated — use your new email to log in next time');
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setSavingEmail(false);
+    }
+  };
+
+  // ── Change password ──────────────────────────────────────────────────────────
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error('New passwords do not match');
       return;
     }
-    if (passwordForm.newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
+    if (passwordForm.newPassword.length < 8) {
+      toast.error('Password must be at least 8 characters');
       return;
     }
     setSavingPassword(true);
@@ -94,7 +152,7 @@ export default function AdminProfilePage() {
         }),
       });
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      toast.success('Password changed!');
+      toast.success('Password changed successfully');
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -102,6 +160,7 @@ export default function AdminProfilePage() {
     }
   };
 
+  // ── Avatar upload ────────────────────────────────────────────────────────────
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -118,7 +177,7 @@ export default function AdminProfilePage() {
       if (!res.ok) throw new Error('Upload failed');
       const updated = await res.json();
       setProfile(updated);
-      toast.success('Avatar updated!');
+      toast.success('Profile picture updated');
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -137,16 +196,13 @@ export default function AdminProfilePage() {
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">My Profile</h1>
-        <p className="text-muted-foreground mt-1">Manage your admin account settings</p>
+        <p className="text-muted-foreground mt-1">Manage your admin account credentials and settings</p>
       </div>
 
       <div className="space-y-6">
-        {/* Avatar */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-card border rounded-2xl p-6"
-        >
+
+        {/* ── Avatar ─────────────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="bg-card border rounded-2xl p-6">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <UserCircle className="h-4 w-4" /> Profile Picture
           </h3>
@@ -171,105 +227,113 @@ export default function AdminProfilePage() {
             </div>
             <div>
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => fileRef.current?.click()}
-                disabled={uploadingAvatar}
-                className="flex items-center gap-2"
-              >
-                <Camera className="h-4 w-4" />
-                Change Photo
+              <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={uploadingAvatar} className="flex items-center gap-2">
+                <Camera className="h-4 w-4" /> Change Photo
               </Button>
-              <p className="text-xs text-muted-foreground mt-1.5">JPG, PNG up to 5MB</p>
+              <p className="text-xs text-muted-foreground mt-1.5">JPG, PNG — max 5 MB</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Profile info */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-          className="bg-card border rounded-2xl p-6"
-        >
-          <h3 className="font-semibold mb-4">Account Information</h3>
-          <form onSubmit={handleSaveProfile} className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="name">Display Name</Label>
+        {/* ── Display Name ───────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }} className="bg-card border rounded-2xl p-6">
+          <h3 className="font-semibold mb-1">Display Name</h3>
+          <p className="text-xs text-muted-foreground mb-4">Shown in the admin sidebar and dashboard</p>
+          <form onSubmit={handleSaveName} className="flex gap-3">
+            <Input
+              value={nameForm.name}
+              onChange={(e) => setNameForm({ name: e.target.value })}
+              placeholder="Administrator"
+              required
+              className="flex-1"
+            />
+            <Button type="submit" disabled={savingName} className="flex items-center gap-2 flex-shrink-0">
+              {savingName ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Save
+            </Button>
+          </form>
+        </motion.div>
+
+        {/* ── Email Address ──────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-card border rounded-2xl p-6">
+          <h3 className="font-semibold mb-1 flex items-center gap-2">
+            <Mail className="h-4 w-4" /> Email Address
+          </h3>
+          <p className="text-xs text-muted-foreground mb-4">
+            Current: <span className="font-medium text-foreground">{profile.email}</span>
+            &nbsp;— Your current password is required to change this.
+          </p>
+          <form onSubmit={handleChangeEmail} className="space-y-3">
+            <div>
+              <Label htmlFor="newEmail">New Email Address</Label>
               <Input
-                id="name"
-                value={profileForm.name}
-                onChange={(e) => setProfileForm((prev) => ({ ...prev, name: e.target.value }))}
+                id="newEmail"
+                type="email"
+                value={emailForm.email}
+                onChange={(e) => setEmailForm((p) => ({ ...p, email: e.target.value }))}
+                placeholder="new@example.com"
                 required
+                className="mt-1"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={profileForm.email}
-                onChange={(e) => setProfileForm((prev) => ({ ...prev, email: e.target.value }))}
-                required
+            <div>
+              <Label htmlFor="emailPassword">Current Password (required)</Label>
+              <PasswordInput
+                id="emailPassword"
+                value={emailForm.currentPassword}
+                onChange={(v) => setEmailForm((p) => ({ ...p, currentPassword: v }))}
+                autoComplete="current-password"
               />
             </div>
             <div className="flex justify-end">
-              <Button type="submit" disabled={savingProfile} className="flex items-center gap-2">
-                {savingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                Save Changes
+              <Button type="submit" disabled={savingEmail} className="flex items-center gap-2">
+                {savingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+                Update Email
               </Button>
             </div>
           </form>
         </motion.div>
 
-        {/* Change password */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.16 }}
-          className="bg-card border rounded-2xl p-6"
-        >
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+        {/* ── Change Password ────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className="bg-card border rounded-2xl p-6">
+          <h3 className="font-semibold mb-1 flex items-center gap-2">
             <Lock className="h-4 w-4" /> Change Password
           </h3>
-          <form onSubmit={handleChangePassword} className="space-y-4">
-            <div className="space-y-1.5">
+          <p className="text-xs text-muted-foreground mb-4">Minimum 8 characters. Use a strong, unique password.</p>
+          <form onSubmit={handleChangePassword} className="space-y-3">
+            <div>
               <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
+              <PasswordInput
                 id="currentPassword"
-                type="password"
                 value={passwordForm.currentPassword}
-                onChange={setPasswordField('currentPassword')}
-                required
+                onChange={(v) => setPasswordForm((p) => ({ ...p, currentPassword: v }))}
                 autoComplete="current-password"
               />
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
                 <Label htmlFor="newPassword">New Password</Label>
-                <Input
+                <PasswordInput
                   id="newPassword"
-                  type="password"
                   value={passwordForm.newPassword}
-                  onChange={setPasswordField('newPassword')}
-                  required
+                  onChange={(v) => setPasswordForm((p) => ({ ...p, newPassword: v }))}
                   autoComplete="new-password"
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
+              <div>
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   value={passwordForm.confirmPassword}
-                  onChange={setPasswordField('confirmPassword')}
-                  required
+                  onChange={(v) => setPasswordForm((p) => ({ ...p, confirmPassword: v }))}
                   autoComplete="new-password"
                 />
               </div>
             </div>
+            {passwordForm.newPassword && passwordForm.confirmPassword &&
+              passwordForm.newPassword !== passwordForm.confirmPassword && (
+                <p className="text-xs text-destructive">Passwords do not match</p>
+              )}
             <div className="flex justify-end">
               <Button type="submit" disabled={savingPassword} className="flex items-center gap-2">
                 {savingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
@@ -278,6 +342,18 @@ export default function AdminProfilePage() {
             </div>
           </form>
         </motion.div>
+
+        {/* ── Security note ──────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="bg-muted/40 border rounded-2xl p-5 flex gap-3">
+          <ShieldCheck className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p className="font-medium text-foreground">Security reminders</p>
+            <p>Passwords are hashed with bcrypt (cost 12) — never stored in plain text.</p>
+            <p>Changing your email or password requires your current password as verification.</p>
+            <p>After changing email, use the new address to log in on all devices.</p>
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );

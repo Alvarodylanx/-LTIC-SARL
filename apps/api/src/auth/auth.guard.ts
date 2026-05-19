@@ -1,4 +1,4 @@
-﻿import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
@@ -18,10 +18,17 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.SESSION_SECRET || "ltic-secret",
       });
+
+      // Reject customer tokens from accessing admin routes.
+      // Old admin tokens (pre-v1.7) have no role field — still accepted.
+      if (payload.role && payload.role !== "admin") {
+        throw new UnauthorizedException("Admin access required");
+      }
+
       request.user = payload;
       return true;
-    } catch {
-      throw new UnauthorizedException("Invalid token");
+    } catch (err: any) {
+      throw new UnauthorizedException(err.message || "Invalid token");
     }
   }
 }
