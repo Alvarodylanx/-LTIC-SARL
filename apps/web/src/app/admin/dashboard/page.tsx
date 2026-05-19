@@ -5,6 +5,7 @@ import { Package, FileText, Truck, MessageSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { format } from 'date-fns';
 
 const statusColors: Record<string, string> = {
@@ -15,23 +16,24 @@ const statusColors: Record<string, string> = {
 };
 
 export default function DashboardPage() {
+  const { L } = useLanguage();
   const { data: stats, isLoading } = useQuery<any>({
     queryKey: ['stats', 'dashboard'],
     queryFn: () => api.get('/api/stats/dashboard'),
   });
 
   const statCards = [
-    { label: 'Total Products', icon: Package, value: stats?.totalProducts, color: 'text-foreground' },
-    { label: 'Pending Quotes', icon: FileText, value: stats?.pendingQuotes, color: 'text-primary' },
-    { label: 'Active Orders', icon: Truck, value: stats?.totalOrders, color: 'text-foreground' },
-    { label: 'Unread Inquiries', icon: MessageSquare, value: stats?.unreadContacts, color: 'text-primary' },
+    { label: L({ en: 'Total Products', fr: 'Produits totaux' }), icon: Package, value: stats?.totalProducts, color: 'text-foreground' },
+    { label: L({ en: 'Pending Quotes', fr: 'Devis en attente' }), icon: FileText, value: stats?.pendingQuotes, color: 'text-primary' },
+    { label: L({ en: 'Active Orders', fr: 'Commandes actives' }), icon: Truck, value: stats?.totalOrders, color: 'text-foreground' },
+    { label: L({ en: 'Unread Inquiries', fr: 'Messages non lus' }), icon: MessageSquare, value: stats?.unreadContacts, color: 'text-primary' },
   ];
 
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Overview of your LTIC SARL operations</p>
+        <h1 className="text-3xl font-bold">{L({ en: 'Dashboard', fr: 'Tableau de bord' })}</h1>
+        <p className="text-muted-foreground mt-1">{L({ en: 'Overview of your LTIC SARL operations', fr: 'Aperçu de vos opérations LTIC SARL' })}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -52,7 +54,7 @@ export default function DashboardPage() {
         {/* Recent Quotes */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Recent Quotes</CardTitle>
+            <CardTitle className="text-lg">{L({ en: 'Recent Quotes', fr: 'Devis récents' })}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -69,7 +71,7 @@ export default function DashboardPage() {
                       {quote.status}
                     </span>
                   </div>
-                )) || <p className="text-muted-foreground text-sm">No quotes yet</p>}
+                )) || <p className="text-muted-foreground text-sm">{L({ en: 'No quotes yet', fr: 'Aucun devis pour l\'instant' })}</p>}
               </div>
             )}
           </CardContent>
@@ -78,7 +80,7 @@ export default function DashboardPage() {
         {/* Recent Contacts */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Recent Contacts</CardTitle>
+            <CardTitle className="text-lg">{L({ en: 'Recent Contacts', fr: 'Contacts récents' })}</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -96,7 +98,7 @@ export default function DashboardPage() {
                       {!contact.read && <div className="w-2 h-2 rounded-full bg-primary" />}
                     </div>
                   </div>
-                )) || <p className="text-muted-foreground text-sm">No contacts yet</p>}
+                )) || <p className="text-muted-foreground text-sm">{L({ en: 'No contacts yet', fr: 'Aucun contact pour l\'instant' })}</p>}
               </div>
             )}
           </CardContent>

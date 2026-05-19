@@ -1,7 +1,23 @@
 {
-  "version": "1.8.1",
+  "version": "1.8.2",
   "releaseDate": "2026-05-19",
   "changelog": [
+    {
+      "version": "1.8.2",
+      "date": "2026-05-19",
+      "type": "patch",
+      "summary": "Fix language toggle on admin dashboard + fix file uploads",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Admin dashboard now responds to EN/FR language toggle — all strings (title, stat labels, section headers) are translated via useLanguage()"
+        },
+        {
+          "type": "fix",
+          "description": "File/image uploads fixed — downgraded multer from v2 to v1.4.5-lts.1 (NestJS FileInterceptor is incompatible with multer v2 API)"
+        }
+      ]
+    },
     {
       "version": "1.8.1",
       "date": "2026-05-19",
