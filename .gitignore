@@ -34,3 +34,4 @@ coverage/
 
 # User uploaded files (avatars, etc.)
 apps/api/uploads/
+uploads/

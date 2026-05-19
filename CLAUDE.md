@@ -1,12 +1,13 @@
 # LTIC SARL — Claude Code Instructions
 
-## Auto-push rule (MANDATORY)
-After **every** change you make to this codebase, you MUST:
-1. `git add -A`
-2. `git commit -m "<meaningful message>\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"`
-3. `git push origin main`
+## Auto-push rule (MANDATORY — NO EXCEPTIONS)
+After **every single change** you make to this codebase, you MUST:
+1. Bump `version.json` (minor for features, patch for fixes, major for breaking)
+2. `git add -A`
+3. `git commit -m "<type>: <description>\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"`
+4. `git push origin main`
 
-Never leave changes uncommitted. Do this at the end of every task, before reporting to the user.
+**This is non-negotiable.** Never finish a task without committing and pushing. Do this before reporting back to the user. If you skip this, you have not completed the task.
 
 ## Version control rule
 Whenever a feature, fix, or improvement is shipped, also bump `version.json` at the monorepo root:
