@@ -34,9 +34,9 @@ export default function AdminOrdersPage() {
   ];
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">{L({ en: 'Orders & Shipments', fr: 'Commandes & Expéditions' })}</h1>
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Orders & Shipments', fr: 'Commandes & Expéditions' })}</h1>
         <p className="text-muted-foreground mt-1">{L({ en: 'Manage shipment tracking and order status', fr: 'Gérez le suivi des expéditions et le statut des commandes' })}</p>
       </div>
 

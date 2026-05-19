@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Package, Tag, FileText, Truck, Newspaper,
   MessageSquare, Settings, LogOut, ShieldAlert, UserCircle,
-  GitBranch, Globe, Bell,
+  GitBranch, Globe, Bell, X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkAuth, logout } from '@/lib/auth';
@@ -26,7 +26,7 @@ const NAV = [
   { href: '/admin/profile',       icon: UserCircle,      label: { en: 'My Profile', fr: 'Mon profil' } },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const [username, setUsername] = useState<string>('');
@@ -56,11 +56,18 @@ export function AdminSidebar() {
   };
 
   return (
-    <div className="w-64 min-h-screen bg-sidebar text-sidebar-foreground flex flex-col">
+    <div className="w-64 min-h-screen h-full bg-sidebar text-sidebar-foreground flex flex-col overflow-y-auto">
       <div className="p-6 border-b border-sidebar-border">
-        <div className="flex items-center gap-2 mb-1">
-          <ShieldAlert className="h-5 w-5 text-primary" />
-          <span className="font-bold">LTIC SARL</span>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-primary" />
+            <span className="font-bold">LTIC SARL</span>
+          </div>
+          {onClose && (
+            <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-sidebar-accent/50 transition-colors">
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
         <p className="text-xs text-sidebar-foreground/60">{L({ en: 'Admin Panel', fr: 'Panneau admin' })}</p>
         {username && (
@@ -75,6 +82,7 @@ export function AdminSidebar() {
           <Link
             key={href}
             href={href}
+            onClick={onClose}
             className={cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
               pathname === href || pathname.startsWith(href + '/')
@@ -90,6 +98,7 @@ export function AdminSidebar() {
         {/* Notifications link with badge */}
         <Link
           href="/admin/notifications"
+          onClick={onClose}
           className={cn(
             'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
             pathname === '/admin/notifications'

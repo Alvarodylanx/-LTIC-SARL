@@ -305,13 +305,13 @@ export default function ChangelogPage() {
   useEffect(() => { load(); }, []);
 
   if (loading) return (
-    <div className="p-8 flex items-center justify-center h-96">
+    <div className="p-4 sm:p-8 flex items-center justify-center h-96">
       <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3 mb-1">

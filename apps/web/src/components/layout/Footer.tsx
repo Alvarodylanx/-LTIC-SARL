@@ -141,7 +141,7 @@ export function Footer() {
           <p className="text-sidebar-foreground/60 text-sm">
             {L({ en: `© ${year} LTIC SARL. All rights reserved.`, fr: `© ${year} LTIC SARL. Tous droits réservés.` })}
           </p>
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 text-sm">
             <Link href="/privacy" className="text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
               {L({ en: 'Privacy Policy', fr: 'Politique de Confidentialité' })}
             </Link>

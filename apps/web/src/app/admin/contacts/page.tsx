@@ -25,9 +25,9 @@ export default function AdminContactsPage() {
   });
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">{L({ en: 'Contact Inquiries', fr: 'Messages de contact' })}</h1>
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Contact Inquiries', fr: 'Messages de contact' })}</h1>
         <p className="text-muted-foreground mt-1">{L({ en: 'Manage incoming contact messages', fr: 'Gérez les messages de contact entrants' })}</p>
       </div>
 
@@ -59,7 +59,7 @@ export default function AdminContactsPage() {
               </div>
               {expanded === contact.id && (
                 <div className="px-6 pb-5 bg-muted/10">
-                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-sm">
                     <div>
                       <span className="text-muted-foreground">{L({ en: 'Email', fr: 'E-mail' })}: </span>
                       <a href={`mailto:${contact.email}`} className="text-primary hover:underline">{contact.email}</a>

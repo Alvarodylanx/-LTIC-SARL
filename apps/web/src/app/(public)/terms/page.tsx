@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function TermsPage() {
@@ -30,3 +30,4 @@ export default function TermsPage() {
     </>
   );
 }
+

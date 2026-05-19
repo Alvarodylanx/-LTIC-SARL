@@ -46,10 +46,10 @@ export default function AdminNotificationsPage() {
   const unread = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3">
             <Bell className="h-7 w-7" />
             {L({ en: 'Notifications', fr: 'Notifications' })}
             {unread > 0 && (

@@ -32,20 +32,20 @@ export default function AboutPage() {
         <motion.div variants={stagger} initial="hidden" animate="show"
           className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'About Us', fr: 'À Propos' })}</motion.p>
-          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Who We Are', fr: 'Qui Nous Sommes' })}</motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
+          <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Who We Are', fr: 'Qui Nous Sommes' })}</motion.h1>
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
             {L({ en: 'A multinational business solutions provider built on reliability, innovation, and global connectivity.', fr: "Un fournisseur de solutions d'affaires multinationales fondé sur la fiabilité, l'innovation et la connectivité mondiale." })}
           </motion.p>
         </motion.div>
       </section>
 
       {/* Company Overview */}
-      <section className="bg-background py-24">
+      <section className="bg-background py-16 sm:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div variants={fadeInLeft} initial="hidden" whileInView="show" viewport={viewportOnce}>
               <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Our Story', fr: 'Notre Histoire' })}</p>
-              <h2 className="text-4xl font-bold tracking-tight mb-6">{L({ en: 'Built for the Demands of Global Commerce', fr: 'Conçu pour les Exigences du Commerce Mondial' })}</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6">{L({ en: 'Built for the Demands of Global Commerce', fr: 'Conçu pour les Exigences du Commerce Mondial' })}</h2>
               <p className="text-muted-foreground mb-4 leading-relaxed">
                 {L({ en: "LTIC SARL was established to address a clear gap in the market: the need for a reliable, comprehensive, and truly multinational logistics and industrial supply partner for businesses operating across Africa, Europe, and beyond.", fr: "LTIC SARL a été créée pour combler un vide évident sur le marché: le besoin d'un partenaire logistique et de fournitures industrielles fiable, complet et véritablement multinational." })}
               </p>
@@ -78,10 +78,10 @@ export default function AboutPage() {
       </section>
 
       {/* Mission, Vision, Values */}
-      <section className="bg-muted/40 py-24">
+      <section className="bg-muted/40 py-16 sm:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
-            <h2 className="text-4xl font-bold tracking-tight">{L({ en: 'Mission, Vision & Values', fr: 'Mission, Vision & Valeurs' })}</h2>
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-8 sm:mb-12 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">{L({ en: 'Mission, Vision & Values', fr: 'Mission, Vision & Valeurs' })}</h2>
           </motion.div>
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce} className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -92,7 +92,7 @@ export default function AboutPage() {
               <motion.div key={title.en} variants={fadeInUp}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px -12px rgba(0,0,0,0.12)' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="bg-card border rounded-2xl p-8 hover:border-primary/40 transition-colors">
+                className="bg-card border rounded-2xl p-5 sm:p-6 lg:p-8 hover:border-primary/40 transition-colors">
                 <div className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6">
                   <Icon className="h-7 w-7" />
                 </div>
@@ -105,18 +105,18 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values Grid */}
-      <section className="bg-background py-24">
+      <section className="bg-background py-16 sm:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-8 sm:mb-12 lg:mb-16">
             <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'What Drives Us', fr: 'Ce Qui Nous Anime' })}</p>
-            <h2 className="text-4xl font-bold tracking-tight">{L({ en: 'Our Core Values', fr: 'Nos Valeurs Fondamentales' })}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">{L({ en: 'Our Core Values', fr: 'Nos Valeurs Fondamentales' })}</h2>
           </motion.div>
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {values.map(({ icon: Icon, ...val }) => (
               <motion.div key={val.en} variants={scaleIn}
                 whileHover={{ y: -5, boxShadow: '0 16px 32px -8px rgba(0,0,0,0.12)' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="bg-card border rounded-2xl p-8 hover:border-primary/40 transition-colors group">
+                className="bg-card border rounded-2xl p-5 sm:p-6 lg:p-8 hover:border-primary/40 transition-colors group">
                 <motion.div whileHover={{ rotate: 8, scale: 1.1 }} transition={{ type: 'spring', stiffness: 400 }}
                   className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                   <Icon className="h-6 w-6" />
@@ -130,13 +130,13 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="bg-sidebar py-20">
+      <section className="bg-sidebar py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[{ value: '30+', en: 'Countries', fr: 'Pays' }, { value: '500+', en: 'Clients', fr: 'Clients' }, { value: '15+', en: 'Years', fr: 'Années' }, { value: '10K+', en: 'Shipments', fr: 'Expéditions' }].map((stat) => (
               <motion.div key={stat.value} variants={scaleIn}>
-                <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
                 <div className="text-sidebar-foreground/80 text-sm font-medium uppercase tracking-wider">{L(stat)}</div>
               </motion.div>
             ))}
@@ -145,11 +145,11 @@ export default function AboutPage() {
       </section>
 
       {/* Team / Leadership */}
-      <section className="bg-background py-24">
+      <section className="bg-background py-16 sm:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-8 sm:mb-12 lg:mb-16">
             <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Our Team', fr: 'Notre Équipe' })}</p>
-            <h2 className="text-4xl font-bold tracking-tight mb-4">{L({ en: 'Professional Expertise at Every Level', fr: 'Expertise Professionnelle à Chaque Niveau' })}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4">{L({ en: 'Professional Expertise at Every Level', fr: 'Expertise Professionnelle à Chaque Niveau' })}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               {L({ en: 'Our team combines deep expertise across logistics, international trade, industrial supply, and strategic consulting — ensuring every client receives world-class service.', fr: "Notre équipe combine une expertise approfondie en logistique, commerce international, fournitures industrielles et conseil stratégique — garantissant un service de classe mondiale à chaque client." })}
             </p>
@@ -164,7 +164,7 @@ export default function AboutPage() {
               <motion.div key={i} variants={scaleIn}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px -12px rgba(0,0,0,0.12)' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="bg-card border rounded-2xl p-8 text-center hover:border-primary/40 transition-colors">
+                className="bg-card border rounded-2xl p-5 sm:p-6 lg:p-8 text-center hover:border-primary/40 transition-colors">
                 <div className="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
                   <User className="h-10 w-10" />
                 </div>
@@ -177,12 +177,12 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-primary py-20 relative overflow-hidden">
+      <section className="bg-primary py-12 sm:py-16 lg:py-20 relative overflow-hidden">
         <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 6 }}
           className="absolute right-10 top-10 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
         <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <motion.h2 variants={fadeInUp} className="text-4xl font-bold tracking-tight text-primary-foreground mb-4">
+          <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-primary-foreground mb-4">
             {L({ en: 'Ready to Partner with LTIC SARL?', fr: 'Prêt à Collaborer avec LTIC SARL ?' })}
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-primary-foreground/80 mb-10 max-w-xl mx-auto">
@@ -200,3 +200,5 @@ export default function AboutPage() {
     </>
   );
 }
+
+

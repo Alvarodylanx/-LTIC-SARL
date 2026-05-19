@@ -79,8 +79,8 @@ export default function ContactPage() {
         <motion.div variants={stagger} initial="hidden" animate="show"
           className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Get In Touch', fr: 'Prendre Contact' })}</motion.p>
-          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Contact Our Team', fr: 'Contactez Notre Équipe' })}</motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 max-w-xl mx-auto">
+          <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Contact Our Team', fr: 'Contactez Notre Équipe' })}</motion.h1>
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-xl mx-auto">
             {L({ en: 'Our experts are ready to discuss your logistics and supply needs.', fr: 'Nos experts sont prêts à discuter de vos besoins en logistique et fournitures.' })}
           </motion.p>
         </motion.div>
@@ -210,3 +210,5 @@ export default function ContactPage() {
     </>
   );
 }
+
+

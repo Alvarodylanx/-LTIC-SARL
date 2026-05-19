@@ -1,7 +1,55 @@
 {
-  "version": "1.8.6",
+  "version": "1.9.0",
   "releaseDate": "2026-05-19",
   "changelog": [
+    {
+      "version": "1.9.0",
+      "date": "2026-05-19",
+      "type": "minor",
+      "summary": "Full responsive design across all public pages, admin panel, and shared components",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Admin panel: mobile drawer sidebar with hamburger menu and backdrop overlay, visible on all screen sizes"
+        },
+        {
+          "type": "feature",
+          "description": "All admin pages: responsive padding (p-4 sm:p-6 lg:p-8), responsive headings (text-2xl sm:text-3xl), overflow-x-auto tables with min-width"
+        },
+        {
+          "type": "feature",
+          "description": "All public hero sections: responsive headings (text-3xl sm:text-4xl md:text-5xl lg:text-6xl) and body text (text-base sm:text-lg md:text-xl)"
+        },
+        {
+          "type": "feature",
+          "description": "Landing page: responsive hero heading scale, smaller decorative orbs on mobile, responsive section headings and stats"
+        },
+        {
+          "type": "feature",
+          "description": "About page: responsive stats (text-3xl sm:text-4xl md:text-5xl), responsive section padding (py-16 sm:py-20 lg:py-24), responsive card padding"
+        },
+        {
+          "type": "feature",
+          "description": "Categories page: sm:grid-cols-2 breakpoint added, responsive skeleton height, responsive gap"
+        },
+        {
+          "type": "feature",
+          "description": "WhatsApp button: smaller position on mobile (bottom-4 right-4 sm:bottom-6 sm:right-6), smaller button size on mobile"
+        },
+        {
+          "type": "feature",
+          "description": "SocialBar: flex-wrap added so icons wrap on small screens; gap reduced on mobile"
+        },
+        {
+          "type": "feature",
+          "description": "Footer: bottom legal links now flex-wrap on very small screens"
+        },
+        {
+          "type": "fix",
+          "description": "Fixed encoding corruption in 6 public page files (about, contact, news, products, quote, services, tracking) — French accented characters (é, è, à, ç, É, À, —) were double-encoded by a previous PowerShell script using the wrong encoding"
+        }
+      ]
+    },
     {
       "version": "1.8.6",
       "date": "2026-05-19",

@@ -40,7 +40,7 @@ export default function CategoryDetailPage() {
             <ArrowLeft className="h-4 w-4" />
             {L({ en: 'All Categories', fr: 'Toutes les Catégories' })}
           </Link>
-          <h1 className="text-5xl font-bold tracking-tight text-sidebar-foreground mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-sidebar-foreground mb-4">
             {category ? L({ en: category.nameEn, fr: category.nameFr }) : ''}
           </h1>
           {category && (category.descriptionEn || category.descriptionFr) && (

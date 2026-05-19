@@ -114,10 +114,10 @@ export default function AdminCategoriesPage() {
   });
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold">{L({ en: 'Categories', fr: 'Catégories' })}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Categories', fr: 'Catégories' })}</h1>
           <p className="text-muted-foreground mt-1">{L({ en: 'Manage product categories', fr: 'Gérez les catégories de produits' })}</p>
         </div>
         <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
@@ -126,8 +126,8 @@ export default function AdminCategoriesPage() {
       </div>
 
       {isLoading ? <div className="space-y-3">{Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div> : (
-        <div className="bg-card border rounded-xl overflow-hidden">
-          <table className="w-full">
+        <div className="bg-card border rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full min-w-[600px]">
             <thead className="bg-muted/50 border-b">
               <tr>
                 {[L({ en: 'Name', fr: 'Nom' }), L({ en: 'Translation', fr: 'Traduction' }), 'Slug', L({ en: 'Products', fr: 'Produits' }), L({ en: 'Actions', fr: 'Actions' })].map((h) => (

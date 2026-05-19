@@ -40,8 +40,8 @@ export default function ProductsPage() {
         <motion.div variants={stagger} initial="hidden" animate="show"
           className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Industrial Catalog', fr: 'Catalogue Industriel' })}</motion.p>
-          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Our Products', fr: 'Nos Produits' })}</motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
+          <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Our Products', fr: 'Nos Produits' })}</motion.h1>
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
             {L({ en: 'Premium certified industrial equipment, supplies, and materials — sourced globally, delivered reliably.', fr: 'Équipements industriels certifiés premium, fournitures et matériaux — approvisionnés mondialement, livrés de façon fiable.' })}
           </motion.p>
         </motion.div>
@@ -152,3 +152,5 @@ export default function ProductsPage() {
     </>
   );
 }
+
+

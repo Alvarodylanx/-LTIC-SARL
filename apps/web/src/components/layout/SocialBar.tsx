@@ -34,7 +34,7 @@ export function SocialBar() {
 
   return (
     <div className="bg-sidebar border-t border-sidebar-border py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
         {active.map(({ key, Icon, label, color }, i) => (
           <motion.a
             key={key}

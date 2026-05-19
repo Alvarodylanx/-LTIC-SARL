@@ -64,10 +64,10 @@ export default function TrackingPage() {
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
             {L({ en: 'Real-Time Tracking', fr: 'Suivi en Temps Réel' })}
           </motion.p>
-          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-4">
+          <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-4">
             {L({ en: 'Track Your Shipment', fr: 'Suivre Votre Expédition' })}
           </motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 mb-10 max-w-xl mx-auto">
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 mb-10 max-w-xl mx-auto">
             {L({ en: 'Enter your tracking number to get real-time updates on your cargo.', fr: 'Entrez votre numéro de suivi pour obtenir des mises à jour en temps réel sur votre cargaison.' })}
           </motion.p>
           <motion.form variants={fadeInUp} onSubmit={handleTrack} className="max-w-xl mx-auto flex gap-3">
@@ -199,3 +199,5 @@ export default function TrackingPage() {
     </>
   );
 }
+
+

@@ -91,10 +91,10 @@ export default function ServicesPage() {
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
             {L({ en: 'Our Services', fr: 'Nos Services' })}
           </motion.p>
-          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">
+          <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">
             {L({ en: 'Full-Spectrum Business Solutions', fr: "Solutions d'Affaires à Spectre Complet" })}
           </motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
             {L({ en: 'From freight coordination to industrial supply and strategic consulting — LTIC SARL delivers operational excellence across every dimension of global commerce.', fr: "De la coordination du fret aux fournitures industrielles et au conseil stratégique — LTIC SARL fournit l'excellence opérationnelle dans toutes les dimensions du commerce mondial." })}
           </motion.p>
         </motion.div>
@@ -148,7 +148,7 @@ export default function ServicesPage() {
           className="absolute right-10 top-10 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
         <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <motion.h2 variants={fadeInUp} className="text-4xl font-bold tracking-tight text-primary-foreground mb-4">
+          <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-primary-foreground mb-4">
             {L({ en: 'Ready to Get Started?', fr: 'Prêt à Commencer ?' })}
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-primary-foreground/80 mb-10 max-w-xl mx-auto">
@@ -166,3 +166,5 @@ export default function ServicesPage() {
     </>
   );
 }
+
+

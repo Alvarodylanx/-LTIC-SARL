@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -48,7 +48,7 @@ export default function HomePage() {
   return (
     <>
       {/* ─── Hero ─── */}
-      <section className="relative min-h-[92vh] bg-sidebar flex items-center overflow-hidden">
+      <section className="relative min-h-[85vh] sm:min-h-[92vh] bg-sidebar flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1800&auto=format&fit=crop&q=70"
@@ -64,13 +64,13 @@ export default function HomePage() {
               {L({ en: 'Multinational Business Solutions Provider', fr: "Fournisseur de Solutions d'Affaires Multinationales" })}
             </motion.div>
             <motion.h1 variants={fadeInUp} initial="hidden" animate="show"
-              className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-sidebar-foreground mb-6 leading-[1.1]">
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-sidebar-foreground mb-6 leading-[1.1]">
               {L({ en: 'Driving Global Trade Through', fr: 'Propulser le Commerce Mondial via une' })}{' '}
               <span className="text-primary">{L({ en: 'Reliable Logistics', fr: 'Logistique Fiable' })}</span>{' '}
               {L({ en: '& Industrial Solutions', fr: '& des Solutions Industrielles' })}
             </motion.h1>
             <motion.p variants={fadeInUp} initial="hidden" animate="show" transition={{ delay: 0.1 }}
-              className="text-xl text-sidebar-foreground/80 mb-10 max-w-2xl leading-relaxed">
+              className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 mb-8 sm:mb-10 max-w-2xl leading-relaxed">
               {L({ en: 'LTIC SARL connects markets, industries and opportunities worldwide — delivering end-to-end logistics, industrial supply, and international trade solutions with precision and reliability.', fr: 'LTIC SARL connecte marchés, industries et opportunités dans le monde entier — offrant des solutions logistiques complètes, de fournitures industrielles et de commerce international.' })}
             </motion.p>
             <motion.div variants={fadeInUp} initial="hidden" animate="show" transition={{ delay: 0.18 }} className="flex flex-wrap gap-4">
@@ -89,9 +89,9 @@ export default function HomePage() {
         </div>
         {/* Floating decorative orbs */}
         <motion.div animate={{ y: [0, -18, 0] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-          className="absolute right-10 top-1/3 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+          className="absolute right-0 sm:right-10 top-1/3 w-40 sm:w-72 h-40 sm:h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <motion.div animate={{ y: [0, 14, 0] }} transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut', delay: 1 }}
-          className="absolute right-40 bottom-20 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
+          className="hidden sm:block absolute right-40 bottom-20 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
       </section>
 
       {/* ─── Stats ─── */}
@@ -101,7 +101,7 @@ export default function HomePage() {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat) => (
               <motion.div key={stat.value} variants={scaleIn}>
-                <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">{stat.value}</div>
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-foreground mb-2">{stat.value}</div>
                 <div className="text-primary-foreground/80 text-sm font-medium uppercase tracking-wider">{L(stat)}</div>
               </motion.div>
             ))}
@@ -114,7 +114,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
             <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'What We Do', fr: 'Ce Que Nous Faisons' })}</p>
-            <h2 className="text-4xl font-bold tracking-tight text-foreground mb-4">{L({ en: 'Comprehensive Business Solutions', fr: "Solutions d'Affaires Complètes" })}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">{L({ en: 'Comprehensive Business Solutions', fr: "Solutions d'Affaires Complètes" })}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               {L({ en: 'From freight forwarding to industrial supply and strategic partnerships — we cover the full spectrum of global business operations.', fr: "Du freight forwarding à la fourniture industrielle et aux partenariats stratégiques — nous couvrons tout le spectre des opérations mondiales." })}
             </p>
@@ -125,7 +125,7 @@ export default function HomePage() {
               <motion.div key={svc.en} variants={fadeInUp}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px -12px rgba(0,0,0,0.15)' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="group bg-card border rounded-xl p-8 hover:border-primary/40 transition-colors duration-300 cursor-default">
+                className="group bg-card border rounded-xl p-5 sm:p-6 lg:p-8 hover:border-primary/40 transition-colors duration-300 cursor-default">
                 <motion.div whileHover={{ scale: 1.1, rotate: 5 }} transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   className="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                   <Icon className="h-7 w-7" />
@@ -151,7 +151,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div variants={fadeInLeft} initial="hidden" whileInView="show" viewport={viewportOnce}>
               <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Why LTIC SARL', fr: 'Pourquoi LTIC SARL' })}</p>
-              <h2 className="text-4xl font-bold tracking-tight mb-6">{L({ en: 'Your Strategic Partner for Global Operations', fr: 'Votre Partenaire Stratégique pour les Opérations Mondiales' })}</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6">{L({ en: 'Your Strategic Partner for Global Operations', fr: 'Votre Partenaire Stratégique pour les Opérations Mondiales' })}</h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
                 {L({ en: 'LTIC SARL is more than a logistics company — we are a multinational business solutions provider with the networks, expertise, and operational capacity to handle your most complex international requirements.', fr: "LTIC SARL est plus qu'une société de logistique — nous sommes un fournisseur de solutions d'affaires multinationales avec les réseaux, l'expertise et la capacité opérationnelle." })}
               </p>
@@ -198,7 +198,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
             <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Industrial Catalog', fr: 'Catalogue Industriel' })}</p>
-            <h2 className="text-4xl font-bold tracking-tight mb-4">{L({ en: 'Featured Products', fr: 'Produits en Vedette' })}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4">{L({ en: 'Featured Products', fr: 'Produits en Vedette' })}</h2>
           </motion.div>
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -247,7 +247,7 @@ export default function HomePage() {
       <section className="bg-muted/40 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h2 variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
-            className="text-4xl font-bold tracking-tight mb-12">
+            className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-8 sm:mb-12">
             {L({ en: 'Industries We Serve', fr: 'Secteurs que Nous Servons' })}
           </motion.h2>
           <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce}
@@ -271,7 +271,7 @@ export default function HomePage() {
           className="absolute left-10 bottom-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h2 variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
-            className="text-4xl md:text-5xl font-bold tracking-tight text-primary-foreground mb-6">
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-primary-foreground mb-6">
             {L({ en: 'Ready to Optimize Your Global Operations?', fr: 'Prêt à Optimiser Vos Opérations Mondiales ?' })}
           </motion.h2>
           <motion.p variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
@@ -291,3 +291,4 @@ export default function HomePage() {
     </>
   );
 }
+

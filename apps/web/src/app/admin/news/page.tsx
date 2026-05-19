@@ -134,10 +134,10 @@ export default function AdminNewsPage() {
   });
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold">{L({ en: 'News Articles', fr: 'Articles de presse' })}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'News Articles', fr: 'Articles de presse' })}</h1>
           <p className="text-muted-foreground mt-1">{L({ en: 'Manage news and insights', fr: 'Gérez les actualités et articles' })}</p>
         </div>
         <Button onClick={() => { setEditing(null); setModalOpen(true); }}>

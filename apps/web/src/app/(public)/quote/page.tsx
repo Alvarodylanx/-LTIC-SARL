@@ -183,10 +183,10 @@ export default function QuotePage() {
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
             {L({ en: 'Get a Quote', fr: 'Obtenir un Devis' })}
           </motion.p>
-          <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl font-bold tracking-tight text-sidebar-foreground mb-4">
+          <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-4">
             {L({ en: 'Request a Quote', fr: 'Demander un Devis' })}
           </motion.h1>
-          <motion.p variants={fadeInUp} className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
             {L({ en: 'Get a tailored quote for any logistics, industrial supply, or trade requirement.', fr: 'Obtenez un devis personnalisé pour tout besoin logistique, fourniture industrielle ou commercial.' })}
           </motion.p>
         </motion.div>
@@ -231,3 +231,5 @@ export default function QuotePage() {
     </>
   );
 }
+
+

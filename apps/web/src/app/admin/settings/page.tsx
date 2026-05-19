@@ -48,18 +48,18 @@ export default function AdminSettingsPage() {
   const onSubmit = (data: Record<string, string>) => updateMutation.mutate(data);
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center gap-3 mb-1">
           <Globe2 className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold">{L({ en: 'Site Settings', fr: 'Paramètres du site' })}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Site Settings', fr: 'Paramètres du site' })}</h1>
         </div>
         <p className="text-muted-foreground">{L({ en: 'Configure your social media links and site settings', fr: 'Configurez vos liens de réseaux sociaux et les paramètres du site' })}</p>
       </div>
 
       <div className="max-w-2xl">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-card border rounded-xl p-8 space-y-6">
+          <div className="bg-card border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
             <h2 className="text-lg font-bold border-b pb-4">{L({ en: 'Social Media Links', fr: 'Liens des réseaux sociaux' })}</h2>
             {socialFields.map(({ key, label, placeholder, color }) => (
               <div key={key}>

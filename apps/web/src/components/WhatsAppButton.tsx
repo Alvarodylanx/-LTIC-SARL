@@ -25,7 +25,7 @@ export function WhatsAppButton() {
   const url = settings?.social_whatsapp || 'https://wa.me/2376XXXXXXXX';
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2">
       {/* Tooltip */}
       <AnimatePresence>
         {hovered && (
@@ -72,7 +72,7 @@ export function WhatsAppButton() {
           whileHover={{ scale: 1.12, rotate: 8 }}
           whileTap={{ scale: 0.93 }}
           transition={{ type: 'spring', stiffness: 420, damping: 18 }}
-          className="relative w-14 h-14 rounded-full bg-green-500 shadow-lg shadow-green-500/40 flex items-center justify-center"
+          className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-green-500 shadow-lg shadow-green-500/40 flex items-center justify-center"
           style={{ willChange: 'transform' }}
         >
           <WhatsAppIcon />

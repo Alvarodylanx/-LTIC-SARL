@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,8 +20,8 @@ export default function CategoriesPage() {
       <section className="relative bg-sidebar py-20 overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Industrial Catalog', fr: 'Catalogue Industriel' })}</p>
-          <h1 className="text-5xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Product Categories', fr: 'Catégories de Produits' })}</h1>
-          <p className="text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Product Categories', fr: 'Catégories de Produits' })}</h1>
+          <p className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
             {L({ en: 'Browse our comprehensive catalog of industrial products and materials.', fr: 'Parcourez notre catalogue complet de produits et matériaux industriels.' })}
           </p>
         </div>
@@ -30,11 +30,11 @@ export default function CategoriesPage() {
       <section className="bg-background py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Array(6).fill(0).map((_, i) => <Skeleton key={i} className="h-64 rounded-xl" />)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {Array(6).fill(0).map((_, i) => <Skeleton key={i} className="h-56 sm:h-64 rounded-xl" />)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {categories?.map((cat) => (
                 <Link key={cat.id} href={`/categories/${cat.slug}`} className="group relative h-64 rounded-xl overflow-hidden">
                   {cat.imageUrl && (
@@ -62,3 +62,4 @@ export default function CategoriesPage() {
     </>
   );
 }
+
