@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Loader2, Mail, Lock, ShieldCheck, User } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Mail, Lock, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -160,14 +160,10 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 pt-5 border-t space-y-2 text-xs text-muted-foreground">
+          <div className="mt-6 pt-5 border-t text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <User className="h-3.5 w-3.5 flex-shrink-0" />
               <span>{L({ en: 'Customers: use your registered email and password.', fr: 'Clients : utilisez votre e-mail et mot de passe.' })}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
-              <span>{L({ en: 'Administrators are redirected to the admin dashboard automatically.', fr: 'Les administrateurs sont redirigés vers le tableau de bord automatiquement.' })}</span>
             </div>
           </div>
 
