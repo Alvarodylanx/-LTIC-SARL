@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Package, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Package, Loader2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -157,10 +157,14 @@ function ProductForm({ product, categories, onSuccess }: { product?: any; catego
   );
 }
 
+const PAGE_SIZE = 20;
+
 export default function AdminProductsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(0);
   const qc = useQueryClient();
   const { L } = useLanguage();
 
@@ -179,6 +183,14 @@ export default function AdminProductsPage() {
     onError: () => toast.error('Failed to delete'),
   });
 
+  const filtered = (products || []).filter((p) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return p.nameEn?.toLowerCase().includes(q) || p.nameFr?.toLowerCase().includes(q) || p.slug?.toLowerCase().includes(q);
+  });
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
@@ -186,9 +198,20 @@ export default function AdminProductsPage() {
           <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Products', fr: 'Produits' })}</h1>
           <p className="text-muted-foreground mt-1">{L({ en: 'Manage your product catalog', fr: 'Gérez votre catalogue de produits' })}</p>
         </div>
-        <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
-          <Plus className="h-4 w-4 mr-2" /> {L({ en: 'Add Product', fr: 'Ajouter un produit' })}
-        </Button>
+        <div className="flex gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              placeholder={L({ en: 'Search…', fr: 'Rechercher…' })}
+              className="pl-9 h-9 w-48 sm:w-64"
+            />
+          </div>
+          <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
+            <Plus className="h-4 w-4 mr-2" /> {L({ en: 'Add Product', fr: 'Ajouter un produit' })}
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -204,7 +227,7 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {products?.map((product) => (
+              {paged.map((product) => (
                 <tr key={product.id} className="hover:bg-muted/20 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
@@ -237,6 +260,22 @@ export default function AdminProductsPage() {
               ))}
             </tbody>
           </table>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t text-sm text-muted-foreground">
+              <span>{L({ en: `Showing ${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, filtered.length)} of ${filtered.length}`, fr: `Affichage ${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, filtered.length)} sur ${filtered.length}` })}</span>
+              <div className="flex items-center gap-1">
+                <button onClick={() => setPage((p) => p - 1)} disabled={page === 0}
+                  className="p-1.5 rounded hover:bg-muted disabled:opacity-40">
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <span className="px-2">{page + 1} / {totalPages}</span>
+                <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages - 1}
+                  className="p-1.5 rounded hover:bg-muted disabled:opacity-40">
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

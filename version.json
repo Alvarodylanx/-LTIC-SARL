@@ -1,7 +1,27 @@
 {
-  "version": "1.16.0",
+  "version": "1.17.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.17.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Admin search on products, categories, and news; admin products pagination",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Admin Products: search bar filters by name (EN/FR) and slug; pagination (20 per page) with Previous/Next controls and item count display"
+        },
+        {
+          "type": "feature",
+          "description": "Admin Categories: search bar filters by name (EN/FR) and slug"
+        },
+        {
+          "type": "feature",
+          "description": "Admin News: search bar filters articles by title (EN/FR)"
+        }
+      ]
+    },
     {
       "version": "1.16.0",
       "date": "2026-05-20",

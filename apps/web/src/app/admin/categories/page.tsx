@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -101,6 +101,7 @@ export default function AdminCategoriesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [search, setSearch] = useState('');
   const qc = useQueryClient();
   const { L, language } = useLanguage();
 
@@ -115,6 +116,12 @@ export default function AdminCategoriesPage() {
     onError: () => toast.error('Failed to delete'),
   });
 
+  const filtered = (categories || []).filter((c) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return c.nameEn?.toLowerCase().includes(q) || c.nameFr?.toLowerCase().includes(q) || c.slug?.toLowerCase().includes(q);
+  });
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
@@ -122,9 +129,16 @@ export default function AdminCategoriesPage() {
           <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Categories', fr: 'Catégories' })}</h1>
           <p className="text-muted-foreground mt-1">{L({ en: 'Manage product categories', fr: 'Gérez les catégories de produits' })}</p>
         </div>
-        <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
-          <Plus className="h-4 w-4 mr-2" /> {L({ en: 'Add Category', fr: 'Ajouter une catégorie' })}
-        </Button>
+        <div className="flex gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input value={search} onChange={(e) => setSearch(e.target.value)}
+              placeholder={L({ en: 'Search…', fr: 'Rechercher…' })} className="pl-9 h-9 w-48 sm:w-56" />
+          </div>
+          <Button onClick={() => { setEditing(null); setModalOpen(true); }}>
+            <Plus className="h-4 w-4 mr-2" /> {L({ en: 'Add Category', fr: 'Ajouter une catégorie' })}
+          </Button>
+        </div>
       </div>
 
       {isLoading ? <div className="space-y-3">{Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div> : (
@@ -138,7 +152,7 @@ export default function AdminCategoriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {categories?.map((cat) => (
+              {filtered.map((cat) => (
                 <tr key={cat.id} className="hover:bg-muted/20 transition-colors">
                   <td className="px-4 py-3 font-medium text-sm">{L({ en: cat.nameEn, fr: cat.nameFr })}</td>
                   <td className="px-4 py-3 text-sm text-muted-foreground">{language === 'en' ? cat.nameFr : cat.nameEn}</td>
