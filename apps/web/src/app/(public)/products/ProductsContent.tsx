@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { Package, Filter, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react';
+import { Package, Filter, ArrowRight, AlertCircle, RefreshCw, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
@@ -15,15 +16,30 @@ import { fadeInUp, scaleIn, stagger, staggerFast, viewportOnce } from '@/compone
 export default function ProductsPage() {
   const { L } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<number | undefined>();
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchInput.trim()), 350);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const { data: categories } = useQuery<any[]>({
     queryKey: ['categories'],
     queryFn: () => api.get('/api/categories'),
   });
 
+  const buildUrl = () => {
+    const params = new URLSearchParams();
+    if (selectedCategory) params.set('categoryId', String(selectedCategory));
+    if (debouncedSearch) params.set('search', debouncedSearch);
+    const q = params.toString();
+    return `/api/products${q ? `?${q}` : ''}`;
+  };
+
   const { data: products, isLoading, isError, refetch } = useQuery<any[]>({
-    queryKey: ['products', selectedCategory],
-    queryFn: () => api.get(`/api/products${selectedCategory ? `?categoryId=${selectedCategory}` : ''}`),
+    queryKey: ['products', selectedCategory, debouncedSearch],
+    queryFn: () => api.get(buildUrl()),
     retry: 2,
     staleTime: 2 * 60 * 1000,
   });
@@ -47,9 +63,26 @@ export default function ProductsPage() {
         </motion.div>
       </section>
 
-      {/* Category filter */}
-      <div className="sticky top-16 z-40 bg-muted/40 border-b py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Category filter + Search */}
+      <div className="sticky top-16 z-40 bg-muted/40 border-b py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
+          {/* Search input */}
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={L({ en: 'Search products…', fr: 'Rechercher des produits…' })}
+              className="pl-9 pr-8 h-9 text-sm"
+            />
+            {searchInput && (
+              <button onClick={() => setSearchInput('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+          {/* Category pills */}
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Filter className="h-4 w-4" />
@@ -98,14 +131,18 @@ export default function ProductsPage() {
             <motion.div variants={fadeInUp} initial="hidden" animate="show"
               className="flex flex-col items-center justify-center py-24 gap-4">
               <Package className="h-16 w-16 text-muted-foreground/40" />
-              <p className="text-muted-foreground text-lg">{L({ en: 'No products found in this category', fr: 'Aucun produit trouvé dans cette catégorie' })}</p>
-              <Button variant="outline" onClick={() => setSelectedCategory(undefined)}>
+              <p className="text-muted-foreground text-lg">
+                {debouncedSearch
+                  ? L({ en: `No products found for "${debouncedSearch}"`, fr: `Aucun produit trouvé pour "${debouncedSearch}"` })
+                  : L({ en: 'No products found in this category', fr: 'Aucun produit trouvé dans cette catégorie' })}
+              </p>
+              <Button variant="outline" onClick={() => { setSelectedCategory(undefined); setSearchInput(''); }}>
                 {L({ en: 'View All Products', fr: 'Voir Tous les Produits' })}
               </Button>
             </motion.div>
           ) : (
             <AnimatePresence mode="wait">
-              <motion.div key={selectedCategory ?? 'all'}
+              <motion.div key={`${selectedCategory ?? 'all'}-${debouncedSearch}`}
                 variants={stagger} initial="hidden" animate="show"
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {products.map((product) => (

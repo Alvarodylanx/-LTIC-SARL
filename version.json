@@ -1,7 +1,23 @@
 {
-  "version": "1.15.0",
+  "version": "1.16.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.16.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Product search on public catalog with debounce",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Public product catalog: debounced search input (350ms) — filters products by name in both English and French via ?search= query parameter"
+        },
+        {
+          "type": "fix",
+          "description": "Empty state message now shows the search term when no results are found"
+        }
+      ]
+    },
     {
       "version": "1.15.0",
       "date": "2026-05-20",
