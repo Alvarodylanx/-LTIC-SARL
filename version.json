@@ -1,7 +1,27 @@
 {
-  "version": "1.14.0",
+  "version": "1.15.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.15.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Per-page SEO metadata on all public pages using Next.js server component wrappers",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "generateMetadata on /products/[slug] — fetches product name, description, and image server-side for unique Open Graph per product"
+        },
+        {
+          "type": "feature",
+          "description": "generateMetadata on /news/[id] — fetches article title, summary, and image for unique Open Graph per news article (includes publishedTime)"
+        },
+        {
+          "type": "feature",
+          "description": "Static metadata added to About, Services, Contact, News list, Products list, and Quote pages via server component re-export wrappers"
+        }
+      ]
+    },
     {
       "version": "1.14.0",
       "date": "2026-05-20",
