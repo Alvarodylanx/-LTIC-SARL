@@ -24,7 +24,7 @@ export default function NewsPage() {
       <section className="relative bg-sidebar py-24 overflow-hidden">
         <div className="absolute inset-0">
           <Image src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1600&auto=format&fit=crop&q=50"
-            alt="News" fill className="object-cover opacity-10" />
+            alt="News" fill className="object-cover opacity-10" priority />
           <div className="absolute inset-0 bg-gradient-to-b from-sidebar/70 to-sidebar/80" />
         </div>
         <motion.div variants={stagger} initial="hidden" animate="show"

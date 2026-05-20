@@ -83,7 +83,7 @@ export default function ServicesPage() {
       <section className="relative bg-sidebar py-24 overflow-hidden">
         <div className="absolute inset-0">
           <Image src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&auto=format&fit=crop&q=50"
-            alt="Services hero" fill className="object-cover opacity-10" />
+            alt="Services hero" fill className="object-cover opacity-10" priority />
           <div className="absolute inset-0 bg-gradient-to-b from-sidebar/70 to-sidebar/80" />
         </div>
         <motion.div variants={stagger} initial="hidden" animate="show"

@@ -1,7 +1,27 @@
 {
-  "version": "1.11.0",
+  "version": "1.12.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.12.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Priority images on hero sections + AlertDialog confirmations for delete actions in admin",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Added priority prop to hero <Image> on all 6 public pages (about, services, news, contact, quote, products) — eliminates LCP image-not-prioritized warning"
+        },
+        {
+          "type": "feature",
+          "description": "New ConfirmDialog component built on existing Radix Dialog — reusable destructive action confirmation modal with Cancel/Delete buttons and loading state"
+        },
+        {
+          "type": "feature",
+          "description": "Admin Products, Categories, and News: replaced window.confirm() with ConfirmDialog — bilingual title/description, delete spinner while request is in flight"
+        }
+      ]
+    },
     {
       "version": "1.11.0",
       "date": "2026-05-20",

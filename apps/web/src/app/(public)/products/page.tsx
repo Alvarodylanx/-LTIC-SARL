@@ -34,7 +34,7 @@ export default function ProductsPage() {
       <section className="relative bg-sidebar py-24 overflow-hidden">
         <div className="absolute inset-0">
           <Image src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=1600&auto=format&fit=crop&q=50"
-            alt="Products" fill className="object-cover opacity-10" />
+            alt="Products" fill className="object-cover opacity-10" priority />
           <div className="absolute inset-0 bg-gradient-to-b from-sidebar/70 to-sidebar/80" />
         </div>
         <motion.div variants={stagger} initial="hidden" animate="show"

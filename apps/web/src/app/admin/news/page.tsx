@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -119,6 +120,7 @@ function NewsForm({ article, onSuccess }: { article?: any; onSuccess: () => void
 export default function AdminNewsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const qc = useQueryClient();
   const { L } = useLanguage();
 
@@ -129,7 +131,7 @@ export default function AdminNewsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.delete(`/api/news/${id}`),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-news'] }); toast.success('Article deleted'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-news'] }); toast.success('Article deleted'); setDeleteId(null); },
     onError: () => toast.error('Failed to delete'),
   });
 
@@ -180,7 +182,7 @@ export default function AdminNewsPage() {
                       <button onClick={() => { setEditing(article); setModalOpen(true); }} className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                         <Pencil className="h-4 w-4" />
                       </button>
-                      <button onClick={() => { if (confirm('Delete this article?')) deleteMutation.mutate(article.id); }} className="p-1.5 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
+                      <button onClick={() => setDeleteId(article.id)} className="p-1.5 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -199,6 +201,16 @@ export default function AdminNewsPage() {
           <NewsForm article={editing} onSuccess={() => setModalOpen(false)} />
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open) setDeleteId(null); }}
+        title={L({ en: 'Delete Article?', fr: 'Supprimer l\'article ?' })}
+        description={L({ en: 'This action cannot be undone.', fr: 'Cette action est irréversible.' })}
+        confirmLabel={L({ en: 'Delete', fr: 'Supprimer' })}
+        onConfirm={() => { if (deleteId !== null) deleteMutation.mutate(deleteId); }}
+        loading={deleteMutation.isPending}
+      />
     </div>
   );
 }

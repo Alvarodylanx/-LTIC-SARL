@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api';
@@ -159,6 +160,7 @@ function ProductForm({ product, categories, onSuccess }: { product?: any; catego
 export default function AdminProductsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const qc = useQueryClient();
   const { L } = useLanguage();
 
@@ -173,7 +175,7 @@ export default function AdminProductsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.delete(`/api/products/${id}`),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-products'] }); toast.success('Product deleted'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-products'] }); toast.success('Product deleted'); setDeleteId(null); },
     onError: () => toast.error('Failed to delete'),
   });
 
@@ -226,7 +228,7 @@ export default function AdminProductsPage() {
                       <button onClick={() => { setEditing(product); setModalOpen(true); }} className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                         <Pencil className="h-4 w-4" />
                       </button>
-                      <button onClick={() => { if (confirm('Delete this product?')) deleteMutation.mutate(product.id); }} className="p-1.5 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
+                      <button onClick={() => setDeleteId(product.id)} className="p-1.5 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -246,6 +248,16 @@ export default function AdminProductsPage() {
           <ProductForm product={editing} categories={categories || []} onSuccess={() => setModalOpen(false)} />
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open) setDeleteId(null); }}
+        title={L({ en: 'Delete Product?', fr: 'Supprimer le produit ?' })}
+        description={L({ en: 'This action cannot be undone.', fr: 'Cette action est irréversible.' })}
+        confirmLabel={L({ en: 'Delete', fr: 'Supprimer' })}
+        onConfirm={() => { if (deleteId !== null) deleteMutation.mutate(deleteId); }}
+        loading={deleteMutation.isPending}
+      />
     </div>
   );
 }

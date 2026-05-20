@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -99,6 +100,7 @@ function CategoryForm({ category, onSuccess }: { category?: any; onSuccess: () =
 export default function AdminCategoriesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const qc = useQueryClient();
   const { L, language } = useLanguage();
 
@@ -109,7 +111,7 @@ export default function AdminCategoriesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.delete(`/api/categories/${id}`),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Category deleted'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['categories'] }); toast.success('Category deleted'); setDeleteId(null); },
     onError: () => toast.error('Failed to delete'),
   });
 
@@ -147,7 +149,7 @@ export default function AdminCategoriesPage() {
                       <button onClick={() => { setEditing(cat); setModalOpen(true); }} className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                         <Pencil className="h-4 w-4" />
                       </button>
-                      <button onClick={() => { if (confirm('Delete this category?')) deleteMutation.mutate(cat.id); }} className="p-1.5 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
+                      <button onClick={() => setDeleteId(cat.id)} className="p-1.5 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -165,6 +167,16 @@ export default function AdminCategoriesPage() {
           <CategoryForm category={editing} onSuccess={() => setModalOpen(false)} />
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open) setDeleteId(null); }}
+        title={L({ en: 'Delete Category?', fr: 'Supprimer la catégorie ?' })}
+        description={L({ en: 'This action cannot be undone.', fr: 'Cette action est irréversible.' })}
+        confirmLabel={L({ en: 'Delete', fr: 'Supprimer' })}
+        onConfirm={() => { if (deleteId !== null) deleteMutation.mutate(deleteId); }}
+        loading={deleteMutation.isPending}
+      />
     </div>
   );
 }
