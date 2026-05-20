@@ -1,7 +1,27 @@
 {
-  "version": "1.13.0",
+  "version": "1.14.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.14.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Real MIME type validation on file uploads + remove SVG from allowed types",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Upload endpoint: removed SVG from allowed extensions (SVG can carry XSS payloads); now only allows JPG, PNG, GIF, WebP, MP4, MOV, AVI, MKV, WebM"
+        },
+        {
+          "type": "feature",
+          "description": "Upload endpoint: file-type@16 reads magic bytes from disk after multer saves the file; rejects and deletes the file if content type doesn't match declared extension"
+        },
+        {
+          "type": "feature",
+          "description": "Avatar upload: same MIME check applied — only allows JPEG, PNG, GIF, WebP based on both declared Content-Type and real file content"
+        }
+      ]
+    },
     {
       "version": "1.13.0",
       "date": "2026-05-20",

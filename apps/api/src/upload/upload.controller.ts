@@ -6,11 +6,18 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
 import * as fs from "fs";
+import { fromFile } from "file-type";
 import { AuthGuard } from "../auth/auth.guard";
 
 const MEDIA_DIR = path.join(__dirname, "../../../../uploads/media");
 const MAX_SIZE = 100 * 1024 * 1024; // 100 MB
-const ALLOWED_EXT = /\.(jpg|jpeg|png|gif|webp|svg|mp4|mov|avi|mkv|webm)$/i;
+
+const ALLOWED_EXT = /\.(jpg|jpeg|png|gif|webp|mp4|mov|avi|mkv|webm)$/i;
+
+const ALLOWED_MIME_PREFIXES = [
+  'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+  'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska', 'video/webm',
+];
 
 @Controller("upload")
 export class UploadController {
@@ -32,7 +39,7 @@ export class UploadController {
       fileFilter: (_req, file, cb) => {
         if (!ALLOWED_EXT.test(path.extname(file.originalname))) {
           return cb(
-            new BadRequestException("Only images (JPG, PNG, GIF, WebP, SVG) and videos (MP4, MOV, AVI, MKV, WebM) are allowed"),
+            new BadRequestException("Only images (JPG, PNG, GIF, WebP) and videos (MP4, MOV, AVI, MKV, WebM) are allowed"),
             false,
           );
         }
@@ -40,8 +47,17 @@ export class UploadController {
       },
     }),
   )
-  upload(@UploadedFile() file: Express.Multer.File) {
+  async upload(@UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException("No file provided");
+
+    const detected = await fromFile(file.path);
+    if (!detected || !ALLOWED_MIME_PREFIXES.includes(detected.mime)) {
+      fs.unlinkSync(file.path);
+      throw new BadRequestException(
+        `Invalid file content. Detected type: ${detected?.mime ?? 'unknown'}. Only images and videos are allowed.`
+      );
+    }
+
     return { url: `/uploads/media/${file.filename}` };
   }
 }

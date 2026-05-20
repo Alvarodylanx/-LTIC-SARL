@@ -8,6 +8,7 @@ import { diskStorage } from "multer";
 import * as path from "path";
 import * as fs from "fs";
 import { Inject } from "@nestjs/common";
+import { fromFile } from "file-type";
 import { eq } from "drizzle-orm";
 import { CustomersService } from "./customers.service";
 import { CustomerGuard } from "./customer.guard";
@@ -90,8 +91,9 @@ export class CustomersController {
         },
       }),
       fileFilter: (req, file, cb) => {
-        if (!file.mimetype.startsWith("image/")) {
-          return cb(new BadRequestException("Only image files are allowed"), false);
+        const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowed.includes(file.mimetype)) {
+          return cb(new BadRequestException("Only JPG, PNG, GIF, or WebP images are allowed"), false);
         }
         cb(null, true);
       },
@@ -100,6 +102,12 @@ export class CustomersController {
   )
   async uploadAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException("No file uploaded");
+    const detected = await fromFile(file.path);
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!detected || !allowedMimes.includes(detected.mime)) {
+      fs.unlinkSync(file.path);
+      throw new BadRequestException("Invalid image file content");
+    }
     const avatarUrl = `/uploads/${file.filename}`;
     return this.customersService.updateAvatar(req.customer.sub, avatarUrl);
   }
