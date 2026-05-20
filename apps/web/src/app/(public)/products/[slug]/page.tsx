@@ -69,8 +69,25 @@ export default function ProductDetailPage() {
 
   const related = relatedProducts?.filter((p) => p.id !== product.id).slice(0, 4);
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: L({ en: product.nameEn, fr: product.nameFr }),
+    description: L({ en: product.descriptionEn || '', fr: product.descriptionFr || '' }),
+    image: product.imageUrl || undefined,
+    brand: { '@type': 'Organization', name: 'LTIC SARL' },
+    offers: {
+      '@type': 'Offer',
+      availability: product.available
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      seller: { '@type': 'Organization', name: 'LTIC SARL' },
+    },
+  };
+
   return (
     <div className="bg-background">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       <motion.div variants={stagger} initial="hidden" animate="show"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div variants={fadeInLeft}>

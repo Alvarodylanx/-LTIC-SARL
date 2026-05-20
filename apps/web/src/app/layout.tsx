@@ -15,9 +15,36 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'LTIC SARL',
+  url: 'https://www.lticsarl.com',
+  logo: 'https://www.lticsarl.com/logo.png',
+  description: 'Multinational business solutions provider specializing in logistics, international trade, industrial supply, and supply chain consulting across 30+ countries.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Douala',
+    addressCountry: 'CM',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'contact@lticsarl.com',
+    availableLanguage: ['English', 'French'],
+  },
+  sameAs: [],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body className={inter.variable}>
         <Providers>{children}</Providers>
       </body>

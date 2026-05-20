@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, Package, AlertCircle, MapPin, Calendar } from 'lucide-react';
+import { Search, Loader2, Package, AlertCircle, MapPin, Calendar, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCustomer } from '@/contexts/CustomerContext';
 import { api } from '@/lib/api';
 import { format } from 'date-fns';
 import { fadeInUp, scaleIn, stagger, viewportOnce } from '@/components/motion/variants';
@@ -30,11 +32,18 @@ const statusLabels: Record<string, { en: string; fr: string }> = {
 
 export default function TrackingPage() {
   const { L } = useLanguage();
+  const { customer } = useCustomer();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    const adminToken = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+    setIsAuthenticated(!!customer || !!adminToken);
+  }, [customer]);
 
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,18 +143,35 @@ export default function TrackingPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     {[
-                      { label: { en: 'Client Name', fr: 'Nom du Client' }, value: order.clientName },
-                      { label: { en: 'Origin', fr: 'Origine' }, value: order.origin },
-                      { label: { en: 'Destination', fr: 'Destination' }, value: order.destination },
-                      { label: { en: 'Description', fr: 'Description' }, value: order.description },
-                      { label: { en: 'Estimated Delivery', fr: 'Livraison Estimée' }, value: order.estimatedDelivery },
-                    ].filter((item) => item.value).map(({ label, value }) => (
+                      { label: { en: 'Client Name', fr: 'Nom du Client' }, value: order.clientName, private: true },
+                      { label: { en: 'Origin', fr: 'Origine' }, value: order.origin, private: true },
+                      { label: { en: 'Destination', fr: 'Destination' }, value: order.destination, private: true },
+                      { label: { en: 'Description', fr: 'Description' }, value: order.description, private: false },
+                      { label: { en: 'Estimated Delivery', fr: 'Livraison Estimée' }, value: order.estimatedDelivery, private: false },
+                    ].filter((item) => item.value).map(({ label, value, private: isPrivate }) => (
                       <div key={label.en}>
                         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{L(label)}</p>
-                        <p className="font-medium text-sm">{value}</p>
+                        {isPrivate && !isAuthenticated ? (
+                          <Link href="/auth/login" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">
+                            <Lock className="h-3.5 w-3.5" />
+                            {L({ en: 'Login to view', fr: 'Connectez-vous pour voir' })}
+                          </Link>
+                        ) : (
+                          <p className="font-medium text-sm">{value}</p>
+                        )}
                       </div>
                     ))}
                   </div>
+                  {!isAuthenticated && (
+                    <p className="text-xs text-muted-foreground border-t pt-4 flex items-center gap-1.5">
+                      <Lock className="h-3 w-3 flex-shrink-0" />
+                      {L({ en: 'Some details are hidden. ', fr: 'Certaines informations sont masquées. ' })}
+                      <Link href="/auth/login" className="text-primary hover:underline">
+                        {L({ en: 'Login', fr: 'Connectez-vous' })}
+                      </Link>
+                      {L({ en: ' to see full shipment details.', fr: ' pour voir tous les détails de l\'expédition.' })}
+                    </p>
+                  )}
 
                   {order.timeline && order.timeline.length > 0 && (
                     <div>

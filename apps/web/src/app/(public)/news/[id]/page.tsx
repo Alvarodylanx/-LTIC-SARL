@@ -43,8 +43,24 @@ export default function NewsArticlePage() {
     );
   }
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: L({ en: article.titleEn, fr: article.titleFr }),
+    description: L({ en: article.summaryEn || '', fr: article.summaryFr || '' }),
+    image: article.imageUrl ? [article.imageUrl] : undefined,
+    datePublished: article.publishedAt,
+    publisher: {
+      '@type': 'Organization',
+      name: 'LTIC SARL',
+      url: 'https://www.lticsarl.com',
+    },
+    author: { '@type': 'Organization', name: 'LTIC SARL' },
+  };
+
   return (
     <div className="bg-background">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <motion.div variants={stagger} initial="hidden" animate="show"
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div variants={fadeInLeft}>
