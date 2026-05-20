@@ -4,16 +4,20 @@ import * as bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import { adminProfile, customers } from "@ltic/db";
+import { LoginAttemptsService } from "./login-attempts.service";
 
 @Injectable()
 export class UnifiedAuthService {
   constructor(
     @Inject(DB_TOKEN) private db: any,
     private jwtService: JwtService,
+    private loginAttempts: LoginAttemptsService,
   ) {}
 
   async login(email: string, password: string) {
     const normalizedEmail = email.trim().toLowerCase();
+
+    this.loginAttempts.check(normalizedEmail);
 
     // ── 1. Check admin_profile ────────────────────────────────────────────────
     const adminRows = await this.db.select().from(adminProfile).limit(1);
@@ -22,12 +26,13 @@ export class UnifiedAuthService {
       if (admin.email.toLowerCase() === normalizedEmail) {
         const valid = admin.passwordHash
           ? await bcrypt.compare(password, admin.passwordHash)
-          : password === (process.env.ADMIN_PASSWORD || "ltic2024!");
+          : password === process.env.ADMIN_PASSWORD;
 
         if (valid) {
+          this.loginAttempts.clearAttempts(normalizedEmail);
           const token = await this.jwtService.signAsync(
             { email: admin.email, role: "admin" },
-            { secret: process.env.SESSION_SECRET || "ltic-secret", expiresIn: "24h" },
+            { secret: process.env.SESSION_SECRET!, expiresIn: "24h" },
           );
           return {
             role: "admin",
@@ -35,7 +40,7 @@ export class UnifiedAuthService {
             user: { name: admin.name, email: admin.email },
           };
         }
-        // Email matched but wrong password — don't fall through to customer check
+        this.loginAttempts.recordFailure(normalizedEmail);
         throw new UnauthorizedException("Invalid email or password");
       }
     }
@@ -49,11 +54,15 @@ export class UnifiedAuthService {
 
     if (customer) {
       const valid = await bcrypt.compare(password, customer.passwordHash);
-      if (!valid) throw new UnauthorizedException("Invalid email or password");
+      if (!valid) {
+        this.loginAttempts.recordFailure(normalizedEmail);
+        throw new UnauthorizedException("Invalid email or password");
+      }
 
+      this.loginAttempts.clearAttempts(normalizedEmail);
       const token = await this.jwtService.signAsync(
         { sub: customer.id, email: customer.email, role: "customer" },
-        { secret: process.env.SESSION_SECRET || "ltic-secret", expiresIn: "7d" },
+        { secret: process.env.SESSION_SECRET!, expiresIn: "7d" },
       );
       return {
         role: "customer",
@@ -62,6 +71,7 @@ export class UnifiedAuthService {
       };
     }
 
+    this.loginAttempts.recordFailure(normalizedEmail);
     throw new UnauthorizedException("Invalid email or password");
   }
 }

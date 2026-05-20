@@ -2,6 +2,7 @@ import {
   Controller, Post, Get, Patch, Body, Req, UseGuards,
   UseInterceptors, UploadedFile, BadRequestException
 } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
@@ -39,6 +40,7 @@ export class CustomersController {
   }
 
   @Post("login")
+  @Throttle({ login: {} })
   login(@Body() body: { email: string; password: string }) {
     if (!body.email || !body.password) {
       throw new BadRequestException("email and password are required");

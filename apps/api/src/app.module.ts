@@ -1,6 +1,8 @@
 ﻿import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { APP_GUARD } from "@nestjs/core";
 import { Pool } from "pg";
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -27,10 +29,15 @@ export const DB_PROVIDER = "DB_POOL";
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      { name: "login",   ttl: 15 * 60 * 1000, limit: 5  },  // 5 attempts per 15 min
+      { name: "form",    ttl: 60 * 60 * 1000, limit: 10 },  // 10 per hour
+      { name: "general", ttl: 60 * 1000,      limit: 100 }, // 100 per minute
+    ]),
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.register({
       global: true,
-      secret: process.env.SESSION_SECRET || "ltic-secret",
+      secret: process.env.SESSION_SECRET,
       signOptions: { expiresIn: "24h" },
     }),
     DbModule,
@@ -52,6 +59,7 @@ export const DB_PROVIDER = "DB_POOL";
     UnifiedAuthModule,
   ],
   providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
     {
       provide: DB_PROVIDER,
       useFactory: () => {

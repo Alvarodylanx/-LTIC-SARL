@@ -1,7 +1,27 @@
 {
-  "version": "1.9.0",
-  "releaseDate": "2026-05-19",
+  "version": "1.10.0",
+  "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.10.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Account lockout after failed logins + remove all hardcoded JWT secret fallbacks",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "LoginAttemptsService: in-memory account lockout — 5 failed attempts within 15 minutes triggers a 30-minute lockout for that email address"
+        },
+        {
+          "type": "feature",
+          "description": "Lockout wired into UnifiedAuthService (admin + customer login) and CustomersService (dedicated customer login endpoint)"
+        },
+        {
+          "type": "fix",
+          "description": "Removed all remaining || 'ltic-secret' JWT secret fallbacks from customers.service.ts and unified-auth.service.ts — all tokens now strictly require SESSION_SECRET env var"
+        }
+      ]
+    },
     {
       "version": "1.9.0",
       "date": "2026-05-19",

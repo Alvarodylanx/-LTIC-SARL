@@ -4,12 +4,14 @@ import * as bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import { customers } from "@ltic/db";
+import { LoginAttemptsService } from "../auth/login-attempts.service";
 
 @Injectable()
 export class CustomersService {
   constructor(
     @Inject(DB_TOKEN) private db: any,
     private jwtService: JwtService,
+    private loginAttempts: LoginAttemptsService,
   ) {}
 
   async register(body: {
@@ -43,27 +45,37 @@ export class CustomersService {
 
     const token = await this.jwtService.signAsync(
       { sub: customer.id, email: customer.email, role: "customer" },
-      { secret: process.env.SESSION_SECRET || "ltic-secret", expiresIn: "7d" }
+      { secret: process.env.SESSION_SECRET!, expiresIn: "7d" }
     );
 
     return { token, customer: this.sanitize(customer) };
   }
 
   async login(email: string, password: string) {
+    this.loginAttempts.check(email);
+
     const [customer] = await this.db
       .select()
       .from(customers)
       .where(eq(customers.email, email))
       .limit(1);
 
-    if (!customer) throw new UnauthorizedException("Invalid credentials");
+    if (!customer) {
+      this.loginAttempts.recordFailure(email);
+      throw new UnauthorizedException("Invalid credentials");
+    }
 
     const valid = await bcrypt.compare(password, customer.passwordHash);
-    if (!valid) throw new UnauthorizedException("Invalid credentials");
+    if (!valid) {
+      this.loginAttempts.recordFailure(email);
+      throw new UnauthorizedException("Invalid credentials");
+    }
+
+    this.loginAttempts.clearAttempts(email);
 
     const token = await this.jwtService.signAsync(
       { sub: customer.id, email: customer.email, role: "customer" },
-      { secret: process.env.SESSION_SECRET || "ltic-secret", expiresIn: "7d" }
+      { secret: process.env.SESSION_SECRET!, expiresIn: "7d" }
     );
 
     return { token, customer: this.sanitize(customer) };

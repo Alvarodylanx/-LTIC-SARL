@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ContactsService } from './contacts.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -14,6 +15,7 @@ export class ContactsController {
   }
 
   @Post()
+  @Throttle({ form: {} })
   create(@Body() body: any) { return this.svc.create(body); }
 
   @Patch(':id')

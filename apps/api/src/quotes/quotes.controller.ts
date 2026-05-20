@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { QuotesService } from './quotes.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -17,6 +18,7 @@ export class QuotesController {
   findOne(@Param('id', ParseIntPipe) id: number) { return this.svc.findOne(id); }
 
   @Post()
+  @Throttle({ form: {} })
   create(@Body() body: any) { return this.svc.create(body); }
 
   @Patch(':id')

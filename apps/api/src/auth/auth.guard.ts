@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     const token = authHeader.split(" ")[1];
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.SESSION_SECRET || "ltic-secret",
+        secret: process.env.SESSION_SECRET,
       });
 
       // Reject customer tokens from accessing admin routes.
