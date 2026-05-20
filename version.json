@@ -1,7 +1,27 @@
 {
-  "version": "1.10.0",
+  "version": "1.11.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.11.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Footer contact info driven by settings API + admin settings contact fields",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Footer contact section (address, phone, email, website) now reads from the settings API — falls back to defaults if not configured"
+        },
+        {
+          "type": "feature",
+          "description": "Admin Settings page: new Company Contact Info section with editable address, phone, email, and website fields saved via PATCH /api/settings"
+        },
+        {
+          "type": "fix",
+          "description": "Footer phone and email are now clickable links (tel: and mailto:)"
+        }
+      ]
+    },
     {
       "version": "1.10.0",
       "date": "2026-05-20",

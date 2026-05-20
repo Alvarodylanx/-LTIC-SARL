@@ -117,19 +117,29 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sidebar-foreground/70 text-sm">Douala, Cameroon / International Operations</span>
+                <span className="text-sidebar-foreground/70 text-sm">
+                  {settings?.company_address || 'Douala, Cameroon / International Operations'}
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-primary flex-shrink-0" />
-                <span className="text-sidebar-foreground/70 text-sm">+237 6XX XXX XXX</span>
+                <a href={`tel:${settings?.company_phone || '+2376XXXXXXXX'}`}
+                  className="text-sidebar-foreground/70 text-sm hover:text-sidebar-foreground transition-colors">
+                  {settings?.company_phone || '+237 6XX XXX XXX'}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                <span className="text-sidebar-foreground/70 text-sm">contact@lticsarl.com</span>
+                <a href={`mailto:${settings?.company_email || 'contact@lticsarl.com'}`}
+                  className="text-sidebar-foreground/70 text-sm hover:text-sidebar-foreground transition-colors">
+                  {settings?.company_email || 'contact@lticsarl.com'}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Globe className="h-4 w-4 text-primary flex-shrink-0" />
-                <span className="text-sidebar-foreground/70 text-sm">www.lticsarl.com</span>
+                <span className="text-sidebar-foreground/70 text-sm">
+                  {settings?.company_website || 'www.lticsarl.com'}
+                </span>
               </li>
             </ul>
           </div>

@@ -11,6 +11,13 @@ import { Label } from '@/components/ui/label';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+const contactFields = [
+  { key: 'company_address', label: 'Address / Adresse',    placeholder: 'Douala, Cameroon / International Operations' },
+  { key: 'company_phone',   label: 'Phone / Téléphone',    placeholder: '+237 6XX XXX XXX' },
+  { key: 'company_email',   label: 'Email',                placeholder: 'contact@lticsarl.com' },
+  { key: 'company_website', label: 'Website / Site web',   placeholder: 'www.lticsarl.com' },
+];
+
 const socialFields = [
   { key: 'social_facebook',  label: 'Facebook',           placeholder: 'https://facebook.com/lticsarl',         color: 'text-blue-600' },
   { key: 'social_twitter',   label: 'X / Twitter',        placeholder: 'https://twitter.com/lticsarl',          color: 'text-sky-500' },
@@ -60,7 +67,15 @@ export default function AdminSettingsPage() {
       <div className="max-w-2xl">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="bg-card border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
-            <h2 className="text-lg font-bold border-b pb-4">{L({ en: 'Social Media Links', fr: 'Liens des réseaux sociaux' })}</h2>
+            <h2 className="text-lg font-bold border-b pb-4">{L({ en: 'Company Contact Info', fr: 'Coordonnées de l\'entreprise' })}</h2>
+            {contactFields.map(({ key, label, placeholder }) => (
+              <div key={key}>
+                <Label htmlFor={key} className="font-semibold">{label}</Label>
+                <Input id={key} {...register(key)} placeholder={placeholder} className="mt-1" />
+              </div>
+            ))}
+
+            <h2 className="text-lg font-bold border-b pb-4 pt-2">{L({ en: 'Social Media Links', fr: 'Liens des réseaux sociaux' })}</h2>
             {socialFields.map(({ key, label, placeholder, color }) => (
               <div key={key}>
                 <Label htmlFor={key} className={`font-semibold ${color}`}>{label}</Label>
