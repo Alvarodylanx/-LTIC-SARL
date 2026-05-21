@@ -1,5 +1,7 @@
 import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
+import { Subject, Observable } from 'rxjs';
+import { MessageEvent } from '@nestjs/common';
 import { DB_TOKEN } from '../db/db.module';
 
 export interface AdminNotification {
@@ -14,7 +16,13 @@ export interface AdminNotification {
 
 @Injectable()
 export class NotificationsService implements OnModuleInit {
+  private readonly events$ = new Subject<MessageEvent>();
+
   constructor(@Inject(DB_TOKEN) private db: any) {}
+
+  getStream(): Observable<MessageEvent> {
+    return this.events$.asObservable();
+  }
 
   async onModuleInit() {
     await this.db.execute(sql`
@@ -36,7 +44,9 @@ export class NotificationsService implements OnModuleInit {
       VALUES (${data.type}, ${data.title}, ${data.message}, ${data.link ?? null})
       RETURNING *
     `);
-    return result.rows[0];
+    const notification = result.rows[0];
+    this.events$.next({ data: notification });
+    return notification;
   }
 
   async findAll(): Promise<AdminNotification[]> {

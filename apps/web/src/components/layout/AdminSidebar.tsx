@@ -45,9 +45,22 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
       api.get('/api/notifications/unread-count')
         .then((d: any) => setUnread(d.count ?? 0))
         .catch(() => {});
+
     fetchCount();
-    const id = setInterval(fetchCount, 30_000);
-    return () => clearInterval(id);
+
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+    if (!token) return;
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const es = new EventSource(`${API_URL}/api/notifications/stream?token=${encodeURIComponent(token)}`);
+    es.onmessage = () => { setUnread((n) => n + 1); };
+    es.onerror = () => { es.close(); };
+
+    const fallback = setInterval(fetchCount, 60_000);
+    return () => {
+      es.close();
+      clearInterval(fallback);
+    };
   }, []);
 
   const handleLogout = async () => {

@@ -1,7 +1,27 @@
 {
-  "version": "1.20.0",
+  "version": "1.21.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.21.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "SSE real-time push for admin notifications",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "GET /api/notifications/stream: Server-Sent Events endpoint — emits a message event whenever a new notification is created (new quote or contact submission)"
+        },
+        {
+          "type": "feature",
+          "description": "SseAuthGuard: validates admin JWT from ?token= query param (required because browser EventSource cannot set Authorization headers)"
+        },
+        {
+          "type": "feature",
+          "description": "AdminSidebar: opens an EventSource connection on mount; increments the unread badge instantly on push instead of waiting for the 30-second poll; 60-second fallback poll kept for resilience"
+        }
+      ]
+    },
     {
       "version": "1.20.0",
       "date": "2026-05-20",
