@@ -1,5 +1,6 @@
 ﻿import { db } from "./index";
 import { categories, products, orders, news, settings } from "./schema";
+import { eq } from "drizzle-orm";
 
 async function seed() {
   console.log("Seeding database...");
@@ -20,8 +21,8 @@ async function seed() {
   }
   console.log("Settings seeded");
 
-  // Categories
-  const cats = await db.insert(categories).values([
+  // Categories — idempotent
+  await db.insert(categories).values([
     {
       nameEn: "Timber & Logs",
       nameFr: "Bois & Grumes",
@@ -62,10 +63,16 @@ async function seed() {
       descriptionFr: "Matériaux industriels lourds et équipements divers",
       imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=70",
     },
-  ]).returning();
-  console.log("Categories seeded:", cats.length);
+  ]).onConflictDoNothing();
 
-  const [timberCat, genCat, lubCat, filterCat, genIndustrial] = cats;
+  const cats = await db.select().from(categories);
+  console.log("Categories ready:", cats.length);
+
+  const timberCat = cats.find(c => c.slug === "timber-logs")!;
+  const genCat = cats.find(c => c.slug === "generators")!;
+  const lubCat = cats.find(c => c.slug === "lubricants")!;
+  const filterCat = cats.find(c => c.slug === "filters")!;
+  const genIndustrial = cats.find(c => c.slug === "general-industrial")!;
 
   // Products
   await db.insert(products).values([
@@ -239,10 +246,10 @@ async function seed() {
       featured: true,
       available: true,
     },
-  ]);
+  ]).onConflictDoNothing();
   console.log("Products seeded: 15");
 
-  // Demo order
+  // Demo order — idempotent
   await db.insert(orders).values({
     trackingNumber: "TRK-2024-001",
     clientName: "Demo Client",
@@ -272,7 +279,7 @@ async function seed() {
         location: "Atlantic Ocean",
       },
     ],
-  });
+  }).onConflictDoNothing();
   console.log("Demo order seeded");
 
   // News
@@ -331,7 +338,7 @@ LTIC SARL offre des services complets de traitement phytosanitaire et de certifi
       category: "Industry Insights",
       published: true,
     },
-  ]);
+  ]).onConflictDoNothing();
   console.log("News articles seeded");
 
   console.log("Database seeded successfully!");
