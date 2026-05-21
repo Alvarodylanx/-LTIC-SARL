@@ -53,7 +53,8 @@ export class MailService {
       <div style="font-family:sans-serif;max-width:600px;margin:auto">
         <h2 style="color:#1a56db">Quote Request Received — LTIC SARL</h2>
         <p>Dear ${quote.contactName},</p>
-        <p>Thank you for your interest in <strong>${quote.productInterest}</strong>. We have received your request and our team will get back to you within 2 business days.</p>
+        <p>Thank you for your interest in <strong>${quote.productInterest}</strong>. We have received your quote request and our team will get back to you within 2 business days.</p>
+        <p style="color:#6b7280;font-size:13px"><em>Cher(e) ${quote.contactName}, merci de l'intérêt que vous portez à <strong>${quote.productInterest}</strong>. Nous avons bien reçu votre demande de devis et notre équipe vous répondra dans les 2 jours ouvrables.</em></p>
         <p style="margin-top:24px;color:#6b7280">LTIC SARL — International Logistics & Trade</p>
       </div>`;
   }
@@ -64,6 +65,7 @@ export class MailService {
         <h2 style="color:#1a56db">Message Received — LTIC SARL</h2>
         <p>Dear ${contact.name},</p>
         <p>Thank you for contacting us regarding <strong>"${contact.subject}"</strong>. We have received your message and will respond within 1–2 business days.</p>
+        <p style="color:#6b7280;font-size:13px"><em>Cher(e) ${contact.name}, merci de nous avoir contactés concernant <strong>"${contact.subject}"</strong>. Nous avons bien reçu votre message et vous répondrons dans 1 à 2 jours ouvrables.</em></p>
         <p style="margin-top:24px;color:#6b7280">LTIC SARL — International Logistics & Trade</p>
       </div>`;
   }

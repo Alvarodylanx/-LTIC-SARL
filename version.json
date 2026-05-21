@@ -1,7 +1,33 @@
 {
-  "version": "1.27.0",
+  "version": "1.27.1",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.27.1",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Remaining audit actions — skip link, bilingual emails, Nginx config, env docs",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Public layout: skip-to-main-content link added for keyboard and screen reader users (WCAG 2.1 AA) — visually hidden until focused"
+        },
+        {
+          "type": "fix",
+          "description": "quoteConfirmationEmail and contactConfirmationEmail templates: added French paragraph below the English text — all client-facing confirmation emails are now bilingual EN/FR"
+        },
+        {
+          "type": "feature",
+          "description": ".env.example: fully rewritten with all production variables, three SMTP provider examples (Gmail, Brevo, Hostinger Email), and inline comments explaining each variable"
+        },
+        {
+          "type": "feature",
+          "description": "nginx.conf: production Nginx reverse-proxy configuration added — HTTP→HTTPS redirect, SSL via Let's Encrypt/Certbot, /api/* to NestJS, SSE unbuffered proxy, /_next/static/ long-term cache headers, 110MB upload limit"
+        }
+      ]
+    },
+    {
+      "version": "1.27.0",
     {
       "version": "1.27.0",
       "date": "2026-05-21",
