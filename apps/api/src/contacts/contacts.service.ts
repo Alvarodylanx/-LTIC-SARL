@@ -30,7 +30,7 @@ export class ContactsService {
     }).catch(() => {});
     this.mail.sendAdminNotification(
       `New Contact Message from ${data.name ?? 'Unknown'}`,
-      this.mail.contactEmail(data as Record<string, string | undefined>),
+      this.mail.contactEmail(data as unknown as Record<string, string | undefined>),
     ).catch(() => {});
     if (data.email) {
       this.mail.send(

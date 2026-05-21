@@ -31,13 +31,13 @@ export class QuotesService {
     // fire-and-forget: don't block the response
     this.notifications.create({
       type: 'quote',
-      title: `New quote from ${data.name ?? 'Unknown'}`,
-      message: `${data.company ? data.company + ' · ' : ''}${data.serviceType ?? 'General enquiry'} — ${data.email ?? ''}`,
+      title: `New quote from ${data.contactName ?? 'Unknown'}`,
+      message: `${data.companyName ? data.companyName + ' · ' : ''}${data.productInterest ?? 'General enquiry'} — ${data.email ?? ''}`,
       link: '/admin/quotes',
     }).catch(() => {});
     this.mail.sendAdminNotification(
       `New Quote Request from ${data.contactName ?? 'Unknown'}`,
-      this.mail.quoteEmail(data as Record<string, string | undefined>),
+      this.mail.quoteEmail(data as unknown as Record<string, string | undefined>),
     ).catch(() => {});
     if (data.email) {
       this.mail.send(

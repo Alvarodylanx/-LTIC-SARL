@@ -44,7 +44,7 @@ export class NotificationsService implements OnModuleInit {
       VALUES (${data.type}, ${data.title}, ${data.message}, ${data.link ?? null})
       RETURNING *
     `);
-    const notification = result.rows[0];
+    const notification = result.rows[0] as unknown as AdminNotification;
     this.events$.next({ data: notification });
     return notification;
   }
@@ -53,7 +53,7 @@ export class NotificationsService implements OnModuleInit {
     const result = await this.db.execute(sql`
       SELECT * FROM admin_notifications ORDER BY created_at DESC LIMIT 200
     `);
-    return result.rows;
+    return result.rows as unknown as AdminNotification[];
   }
 
   async countUnread(): Promise<number> {

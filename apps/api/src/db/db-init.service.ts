@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit, Logger, Inject } from '@nestjs/common';
-import { DB_TOKEN, Db } from './db.module';
+import { DB_TOKEN } from './db.constants';
+import type { Db } from './db.module';
 import { sql } from 'drizzle-orm';
 
 @Injectable()

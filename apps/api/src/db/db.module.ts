@@ -3,8 +3,9 @@ import { Pool } from 'pg';
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '@ltic/db';
 import { DbInitService } from './db-init.service';
+import { DB_TOKEN } from './db.constants';
 
-export const DB_TOKEN = 'DRIZZLE_DB';
+export { DB_TOKEN } from './db.constants';
 export type Db = NodePgDatabase<typeof schema>;
 
 @Global()
