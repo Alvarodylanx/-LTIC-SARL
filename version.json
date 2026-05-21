@@ -1,7 +1,43 @@
 {
-  "version": "1.25.3",
-  "releaseDate": "2026-05-20",
+  "version": "1.26.0",
+  "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.26.0",
+      "date": "2026-05-21",
+      "type": "minor",
+      "summary": "Client email notification on order creation + remove customer login/registration",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Orders: when admin creates an order with a client email, the client automatically receives a branded email containing their tracking number, a direct Track My Shipment link (/tracking?id=...), and order details (description, origin, destination, estimated delivery)"
+        },
+        {
+          "type": "feature",
+          "description": "MailService: new orderCreatedEmail() template with prominent tracking number display and branded button link"
+        },
+        {
+          "type": "feature",
+          "description": "Tracking page: now accepts ?id= query param and auto-searches on load — clients clicking the link in their email land directly on their shipment details"
+        },
+        {
+          "type": "feature",
+          "description": "Tracking page: all shipment details (client name, origin, destination) are now fully public — no login required since clients receive a direct link via email"
+        },
+        {
+          "type": "fix",
+          "description": "Removed customer login, registration, email verification, and account pages (/account/*, /auth/register, /auth/verify-email) — not needed for the B2B model where admin creates orders and clients track via email link"
+        },
+        {
+          "type": "fix",
+          "description": "Navbar: removed Sign In button and customer account dropdown — simplified to just nav links, language toggle, and Request Quote button"
+        },
+        {
+          "type": "fix",
+          "description": "CustomerContext and CustomerProvider removed from the app — no longer needed"
+        }
+      ]
+    },
     {
       "version": "1.25.3",
       "date": "2026-05-20",

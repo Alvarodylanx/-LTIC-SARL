@@ -1,23 +1,20 @@
-﻿'use client';
+'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Loader2, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Mail, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useCustomer } from '@/contexts/CustomerContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-
-export default function LoginPage() {
+function LoginForm() {
   const { L } = useLanguage();
-  const { refreshProfile } = useCustomer();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect');
@@ -28,18 +25,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // If already authenticated redirect to the right place, otherwise show the form
   useEffect(() => {
-    const adminCheck = fetch(`${API_URL}/api/admin/me`, { credentials: 'include' })
-      .then(r => r.ok ? 'admin' : 'none').catch(() => 'none');
-    const customerCheck = fetch(`${API_URL}/api/customers/me`, { credentials: 'include' })
-      .then(r => r.ok ? 'customer' : 'none').catch(() => 'none');
-
-    Promise.all([adminCheck, customerCheck]).then(([adminRole, customerRole]) => {
-      if (adminRole === 'admin') router.replace(redirect || '/admin/dashboard');
-      else if (customerRole === 'customer') router.replace(redirect || '/account');
-      else setChecking(false);
-    });
+    fetch(`${API_URL}/api/admin/me`, { credentials: 'include' })
+      .then(r => r.ok ? router.replace(redirect || '/admin/dashboard') : setChecking(false))
+      .catch(() => setChecking(false));
   }, [router, redirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,15 +48,13 @@ export default function LoginPage() {
         throw new Error(err.message || L({ en: 'Invalid email or password', fr: 'Email ou mot de passe incorrect' }));
       }
 
-      const data: { role: string; user: { name: string; email: string } } = await res.json();
+      const data: { role: string; user: { name: string } } = await res.json();
 
       if (data.role === 'admin') {
         toast.success(L({ en: `Welcome, ${data.user.name}!`, fr: `Bienvenue, ${data.user.name} !` }));
         router.push(redirect || '/admin/dashboard');
       } else {
-        await refreshProfile();
-        toast.success(L({ en: `Welcome back, ${data.user.name}!`, fr: `Bon retour, ${data.user.name} !` }));
-        router.push(redirect || '/account');
+        throw new Error(L({ en: 'Access denied', fr: 'Accès refusé' }));
       }
     } catch (err: any) {
       toast.error(err.message || L({ en: 'Login failed', fr: 'Échec de connexion' }));
@@ -96,9 +83,9 @@ export default function LoginPage() {
           <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <span className="text-white font-bold text-xl">LT</span>
           </div>
-          <h1 className="text-2xl font-bold">{L({ en: 'Sign In', fr: 'Connexion' })}</h1>
+          <h1 className="text-2xl font-bold">{L({ en: 'Admin Sign In', fr: 'Connexion Administrateur' })}</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            {L({ en: 'Access your LTIC SARL account', fr: 'Accédez à votre compte LTIC SARL' })}
+            {L({ en: 'LTIC SARL administration panel', fr: "Panneau d'administration LTIC SARL" })}
           </p>
         </div>
 
@@ -111,7 +98,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="admin@ltic-sarl.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -158,23 +145,16 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          <div className="mt-6 pt-5 border-t text-xs text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <User className="h-3.5 w-3.5 flex-shrink-0" />
-              <span>{L({ en: 'Customers: use your registered email and password.', fr: 'Clients : utilisez votre e-mail et mot de passe.' })}</span>
-            </div>
-          </div>
-
-          <div className="mt-5 text-center text-sm text-muted-foreground">
-            {L({ en: "Don't have an account?", fr: "Pas encore de compte?" })}{' '}
-            <Link href="/auth/register" className="text-primary font-medium hover:underline">
-              {L({ en: 'Create one', fr: "S'inscrire" })}
-            </Link>
-          </div>
         </div>
       </motion.div>
     </div>
   );
 }
 
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}

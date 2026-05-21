@@ -3,7 +3,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { CustomerProvider } from '@/contexts/CustomerContext';
 import { useState } from 'react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -19,10 +18,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <CustomerProvider>
-          {children}
-          <Toaster position="top-right" richColors />
-        </CustomerProvider>
+        {children}
+        <Toaster position="top-right" richColors />
       </LanguageProvider>
     </QueryClientProvider>
   );

@@ -2,10 +2,14 @@ import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, desc } from 'drizzle-orm';
 import { DB_TOKEN, Db } from '../db/db.module';
 import { orders, Order } from '@ltic/db';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(@Inject(DB_TOKEN) private db: Db) {}
+  constructor(
+    @Inject(DB_TOKEN) private db: Db,
+    private mail: MailService,
+  ) {}
 
   private generateTrackingNumber(): string {
     const now = new Date();
@@ -36,6 +40,15 @@ export class OrdersService {
       status: data.status || 'processing',
       estimatedDelivery: data.estimatedDelivery,
     }).returning();
+
+    if (order.clientEmail) {
+      this.mail.send(
+        order.clientEmail,
+        `Your Order ${order.trackingNumber} — LTIC SARL`,
+        this.mail.orderCreatedEmail(order),
+      );
+    }
+
     return order;
   }
 

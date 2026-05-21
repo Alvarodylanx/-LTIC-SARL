@@ -1,16 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, Package, AlertCircle, MapPin, Calendar, Lock } from 'lucide-react';
+import { Search, Loader2, Package, AlertCircle, MapPin, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useCustomer } from '@/contexts/CustomerContext';
 import { api } from '@/lib/api';
 import { format } from 'date-fns';
-import { fadeInUp, scaleIn, stagger, viewportOnce } from '@/components/motion/variants';
+import { useSearchParams } from 'next/navigation';
+import { fadeInUp, scaleIn, stagger } from '@/components/motion/variants';
+import { Suspense } from 'react';
 
 const statusColors: Record<string, string> = {
   processing: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -30,10 +30,9 @@ const statusLabels: Record<string, { en: string; fr: string }> = {
   cancelled: { en: 'Cancelled', fr: 'Annulé' },
 };
 
-export default function TrackingPage() {
+function TrackingContent() {
   const { L } = useLanguage();
-  const { customer } = useCustomer();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const searchParams = useSearchParams();
   const [trackingNumber, setTrackingNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState<any>(null);
@@ -41,28 +40,30 @@ export default function TrackingPage() {
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    if (customer) { setIsAuthenticated(true); return; }
-    import('@/lib/auth').then(({ checkAuth }) =>
-      checkAuth().then((res) => setIsAuthenticated(res.authenticated)).catch(() => {})
-    );
-  }, [customer]);
+    const id = searchParams.get('id');
+    if (id) {
+      setTrackingNumber(id);
+      doTrack(id);
+    }
+  }, []);
 
-  const handleTrack = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!trackingNumber.trim()) return;
+  async function doTrack(tn: string) {
+    if (!tn.trim()) return;
     setIsLoading(true);
     setError(null);
     setOrder(null);
     setSearched(true);
     try {
-      const result = await api.get<any>(`/api/orders/track?trackingNumber=${encodeURIComponent(trackingNumber.trim())}`);
+      const result = await api.get<any>(`/api/orders/track?trackingNumber=${encodeURIComponent(tn.trim())}`);
       setOrder(result);
     } catch {
       setError(L({ en: 'Shipment Not Found', fr: 'Expédition Introuvable' }));
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  const handleTrack = (e: React.FormEvent) => { e.preventDefault(); doTrack(trackingNumber); };
 
   return (
     <>
@@ -85,7 +86,7 @@ export default function TrackingPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input value={trackingNumber} onChange={(e) => setTrackingNumber(e.target.value)}
-                placeholder={L({ en: 'Enter tracking number (e.g., TRK-2024-001)', fr: 'Entrez le numéro de suivi (ex: TRK-2024-001)' })}
+                placeholder={L({ en: 'Enter tracking number (e.g., LTIC2605001234)', fr: 'Entrez le numéro de suivi (ex: LTIC2605001234)' })}
                 className="pl-10 h-12 text-foreground bg-background border-border" />
             </div>
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
@@ -145,35 +146,18 @@ export default function TrackingPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     {[
-                      { label: { en: 'Client Name', fr: 'Nom du Client' }, value: order.clientName, private: true },
-                      { label: { en: 'Origin', fr: 'Origine' }, value: order.origin, private: true },
-                      { label: { en: 'Destination', fr: 'Destination' }, value: order.destination, private: true },
-                      { label: { en: 'Description', fr: 'Description' }, value: order.description, private: false },
-                      { label: { en: 'Estimated Delivery', fr: 'Livraison Estimée' }, value: order.estimatedDelivery, private: false },
-                    ].filter((item) => item.value).map(({ label, value, private: isPrivate }) => (
+                      { label: { en: 'Client Name', fr: 'Nom du Client' }, value: order.clientName },
+                      { label: { en: 'Origin', fr: 'Origine' }, value: order.origin },
+                      { label: { en: 'Destination', fr: 'Destination' }, value: order.destination },
+                      { label: { en: 'Description', fr: 'Description' }, value: order.description },
+                      { label: { en: 'Estimated Delivery', fr: 'Livraison Estimée' }, value: order.estimatedDelivery },
+                    ].filter((item) => item.value).map(({ label, value }) => (
                       <div key={label.en}>
                         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{L(label)}</p>
-                        {isPrivate && !isAuthenticated ? (
-                          <Link href="/auth/login" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">
-                            <Lock className="h-3.5 w-3.5" />
-                            {L({ en: 'Login to view', fr: 'Connectez-vous pour voir' })}
-                          </Link>
-                        ) : (
-                          <p className="font-medium text-sm">{value}</p>
-                        )}
+                        <p className="font-medium text-sm">{value}</p>
                       </div>
                     ))}
                   </div>
-                  {!isAuthenticated && (
-                    <p className="text-xs text-muted-foreground border-t pt-4 flex items-center gap-1.5">
-                      <Lock className="h-3 w-3 flex-shrink-0" />
-                      {L({ en: 'Some details are hidden. ', fr: 'Certaines informations sont masquées. ' })}
-                      <Link href="/auth/login" className="text-primary hover:underline">
-                        {L({ en: 'Login', fr: 'Connectez-vous' })}
-                      </Link>
-                      {L({ en: ' to see full shipment details.', fr: ' pour voir tous les détails de l\'expédition.' })}
-                    </p>
-                  )}
 
                   {order.timeline && order.timeline.length > 0 && (
                     <div>
@@ -228,4 +212,10 @@ export default function TrackingPage() {
   );
 }
 
-
+export default function TrackingPage() {
+  return (
+    <Suspense>
+      <TrackingContent />
+    </Suspense>
+  );
+}

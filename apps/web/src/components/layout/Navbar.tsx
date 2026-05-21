@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Menu, X, User, LogOut, Package, FileText, Settings } from 'lucide-react';
+import { Globe, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useCustomer } from '@/contexts/CustomerContext';
 
 const navLinks = [
   { href: '/about', en: 'About Us', fr: 'À Propos' },
@@ -22,12 +21,8 @@ const navLinks = [
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const { language, setLanguage, L } = useLanguage();
-  const { customer, loading, logout } = useCustomer();
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -35,25 +30,9 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => { setMobileOpen(false); setUserMenuOpen(false); }, [pathname]);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
-
-  const handleLogout = () => {
-    logout();
-    setUserMenuOpen(false);
-    router.push('/');
-  };
 
   return (
     <motion.nav
@@ -111,77 +90,13 @@ export function Navbar() {
             <Globe className="h-4 w-4" />
             {language.toUpperCase()}
           </motion.button>
-
-          {!loading && customer ? (
-            <div className="relative" ref={menuRef}>
-              <motion.button
-                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium hover:bg-muted transition-colors"
-              >
-                {customer.avatarUrl ? (
-                  <img src={`http://localhost:4000${customer.avatarUrl}`} alt="" className="w-6 h-6 rounded-full object-cover" />
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">{customer.fullName[0]?.toUpperCase()}</span>
-                  </div>
-                )}
-                <span className="max-w-[120px] truncate">{customer.fullName.split(' ')[0]}</span>
-              </motion.button>
-
-              <AnimatePresence>
-                {userMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 w-48 bg-background border rounded-xl shadow-xl overflow-hidden z-50"
-                  >
-                    <div className="p-3 border-b">
-                      <p className="text-sm font-semibold truncate">{customer.fullName}</p>
-                      <p className="text-xs text-muted-foreground truncate">{customer.email}</p>
-                    </div>
-                    <div className="p-1">
-                      <Link href="/account" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-muted transition-colors">
-                        <User className="h-4 w-4" />{L({ en: 'My Account', fr: 'Mon Compte' })}
-                      </Link>
-                      <Link href="/account/orders" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-muted transition-colors">
-                        <Package className="h-4 w-4" />{L({ en: 'My Orders', fr: 'Mes Commandes' })}
-                      </Link>
-                      <Link href="/account/quotes" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-muted transition-colors">
-                        <FileText className="h-4 w-4" />{L({ en: 'My Quotes', fr: 'Mes Devis' })}
-                      </Link>
-                      <Link href="/account/profile" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-muted transition-colors">
-                        <Settings className="h-4 w-4" />{L({ en: 'Profile', fr: 'Profil' })}
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors"
-                      >
-                        <LogOut className="h-4 w-4" />{L({ en: 'Sign Out', fr: 'Déconnexion' })}
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : !loading ? (
-            <div className="flex items-center gap-2">
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/auth/login">{L({ en: 'Sign In', fr: 'Connexion' })}</Link>
-                </Button>
-              </motion.div>
-              {pathname !== '/' && (
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Button asChild size="sm">
-                    <Link href="/quote">{L({ en: 'Request Quote', fr: 'Demander un Devis' })}</Link>
-                  </Button>
-                </motion.div>
-              )}
-            </div>
-          ) : null}
+          {pathname !== '/' && (
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild size="sm">
+                <Link href="/quote">{L({ en: 'Request Quote', fr: 'Demander un Devis' })}</Link>
+              </Button>
+            </motion.div>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -231,26 +146,10 @@ export function Navbar() {
                   <Globe className="h-4 w-4" />
                   {language.toUpperCase()}
                 </button>
-                {customer ? (
-                  <>
-                    <Link href="/account" className="flex items-center gap-1.5 px-3 py-2 rounded-md border text-sm font-medium hover:bg-muted transition-colors">
-                      <User className="h-4 w-4" />{L({ en: 'Account', fr: 'Compte' })}
-                    </Link>
-                    <button onClick={handleLogout} className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-red-200 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
-                      <LogOut className="h-4 w-4" />{L({ en: 'Sign Out', fr: 'Déconnexion' })}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Button asChild variant="outline" size="sm">
-                      <Link href="/auth/login">{L({ en: 'Sign In', fr: 'Connexion' })}</Link>
-                    </Button>
-                    {pathname !== '/' && (
-                      <Button asChild size="sm">
-                        <Link href="/quote">{L({ en: 'Request Quote', fr: 'Demander un Devis' })}</Link>
-                      </Button>
-                    )}
-                  </>
+                {pathname !== '/' && (
+                  <Button asChild size="sm">
+                    <Link href="/quote">{L({ en: 'Request Quote', fr: 'Demander un Devis' })}</Link>
+                  </Button>
                 )}
               </div>
             </div>
