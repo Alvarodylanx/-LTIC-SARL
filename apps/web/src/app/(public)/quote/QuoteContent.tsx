@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { Clock, Shield, Globe2, CheckCircle2, Loader2, Send } from 'lucide-react';
+import { Clock, Shield, Globe2, CheckCircle2, Loader2, Send, Package, FileText, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -210,10 +210,25 @@ export default function QuotePage() {
                 </motion.div>
               ))}
               <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
-                className="bg-primary/5 border border-primary/20 rounded-xl p-6 mt-6">
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {L({ en: 'Our team of specialists will review your requirements and provide a comprehensive, customized quote with competitive pricing and delivery timelines.', fr: 'Notre équipe de spécialistes examinera vos besoins et fournira un devis complet et personnalisé avec des prix compétitifs et des délais de livraison.' })}
+                className="bg-card border rounded-xl p-6 mt-6">
+                <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4">
+                  {L({ en: 'What happens next?', fr: 'Que se passe-t-il ensuite ?' })}
                 </p>
+                <ol className="space-y-4">
+                  {[
+                    { icon: FileText, en: 'Submit this form — takes less than 2 minutes.', fr: 'Soumettez ce formulaire — moins de 2 minutes.' },
+                    { icon: Clock,    en: 'Our team reviews your request and prepares a custom offer within 24–48 hours.', fr: 'Notre équipe analyse votre demande et prépare une offre sous 24–48h.' },
+                    { icon: CheckCircle2, en: 'You receive a detailed quote with pricing, freight costs, and delivery timeline.', fr: 'Vous recevez un devis détaillé avec prix, frais de transport et délai de livraison.' },
+                    { icon: Truck,    en: 'Confirm the offer and we handle customs, freight, and logistics end-to-end.', fr: 'Confirmez l\'offre et nous gérons les douanes, le fret et la logistique.' },
+                  ].map(({ icon: Icon, en, fr }, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Icon className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{L({ en, fr })}</p>
+                    </li>
+                  ))}
+                </ol>
               </motion.div>
             </motion.div>
 

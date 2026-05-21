@@ -1,7 +1,23 @@
 {
-  "version": "1.25.0",
+  "version": "1.25.1",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.25.1",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Add How to Order step-by-step guide on home page and quote page",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Home page: new 'How to Place an Order' section with 4 animated steps (Browse Catalog → Request Quote → Receive Offer → Track Shipment), each with an icon, step number badge, description, and action link"
+        },
+        {
+          "type": "feature",
+          "description": "Quote page sidebar: replaced generic note with a numbered 'What happens next?' process guide showing exactly what happens after form submission"
+        }
+      ]
+    },
     {
       "version": "1.25.0",
       "date": "2026-05-20",

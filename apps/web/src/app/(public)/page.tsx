@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Globe2, Ship, Factory, BarChart3, Handshake, TreePine, Shield, Zap, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Globe2, Ship, Factory, BarChart3, Handshake, TreePine, Shield, Zap, TrendingUp, CheckCircle2, Package, FileText, Clock, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -36,6 +36,37 @@ const industries = [
   { en: 'Forestry', fr: 'Foresterie' },
   { en: 'Energy', fr: 'Énergie' },
   { en: 'Public Works', fr: 'Travaux Publics' },
+];
+
+const orderSteps = [
+  {
+    icon: Package,
+    title: { en: 'Browse Our Catalog', fr: 'Parcourez Notre Catalogue' },
+    desc:  { en: 'Explore our industrial products — timber, generators, lubricants, and more. Find what you need and note the product name.', fr: 'Explorez nos produits industriels — bois, générateurs, lubrifiants et plus encore. Trouvez ce qu\'il vous faut.' },
+    action: { en: 'View Catalog', fr: 'Voir le Catalogue' },
+    href: '/products',
+  },
+  {
+    icon: FileText,
+    title: { en: 'Request a Quote', fr: 'Demandez un Devis' },
+    desc:  { en: 'Fill in our quote form with the product, quantity, destination and any special requirements. Takes less than 2 minutes.', fr: 'Remplissez notre formulaire avec le produit, la quantité, la destination et vos exigences. Moins de 2 minutes.' },
+    action: { en: 'Get a Quote', fr: 'Obtenir un Devis' },
+    href: '/quote',
+  },
+  {
+    icon: Clock,
+    title: { en: 'Receive Your Offer', fr: 'Recevez Votre Offre' },
+    desc:  { en: 'Our team reviews your request and sends a custom price with freight costs, customs fees, and delivery timeline within 24–48 hours.', fr: 'Notre équipe analyse votre demande et vous envoie une offre personnalisée avec frais de transport et délais sous 24–48h.' },
+    action: null,
+    href: null,
+  },
+  {
+    icon: Truck,
+    title: { en: 'Track Your Shipment', fr: 'Suivez Votre Livraison' },
+    desc:  { en: 'Once you confirm the offer, we handle everything — customs, freight, logistics. Track your order in real time with your tracking number.', fr: 'Une fois l\'offre confirmée, nous gérons tout — douanes, fret, logistique. Suivez votre commande en temps réel.' },
+    action: { en: 'Track a Shipment', fr: 'Suivre une Livraison' },
+    href: '/tracking',
+  },
 ];
 
 export default function HomePage() {
@@ -258,6 +289,52 @@ export default function HomePage() {
                 className="bg-primary/10 text-primary border border-primary/20 rounded-full px-4 py-2 text-sm font-medium cursor-default">
                 {L(ind)}
               </motion.span>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─── How to Order ─── */}
+      <section className="bg-background py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="text-center mb-16">
+            <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">
+              {L({ en: 'Simple Process', fr: 'Processus Simple' })}
+            </p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              {L({ en: 'How to Place an Order', fr: 'Comment Passer une Commande' })}
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg">
+              {L({ en: 'From browsing our catalog to tracking your shipment — four simple steps.', fr: 'Du catalogue à la livraison — quatre étapes simples.' })}
+            </p>
+          </motion.div>
+
+          <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            {orderSteps.map((step, i) => (
+              <motion.div key={i} variants={fadeInUp} className="relative flex flex-col items-center text-center group">
+                {/* connector line */}
+                {i < orderSteps.length - 1 && (
+                  <div className="hidden lg:block absolute top-10 left-[calc(50%+2.5rem)] w-[calc(100%-5rem)] h-px bg-gradient-to-r from-primary/40 to-primary/10" />
+                )}
+                {/* step number badge */}
+                <div className="relative mb-5">
+                  <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors duration-300">
+                    <step.icon className="h-8 w-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                  </div>
+                  <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center shadow">
+                    {i + 1}
+                  </span>
+                </div>
+                <h3 className="font-bold text-base sm:text-lg mb-2">{L(step.title)}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">{L(step.desc)}</p>
+                {step.href && step.action && (
+                  <Link href={step.href}
+                    className="mt-auto inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:gap-2.5 transition-all">
+                    {L(step.action)} <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                )}
+              </motion.div>
             ))}
           </motion.div>
         </div>
