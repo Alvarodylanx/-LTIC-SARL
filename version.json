@@ -6,11 +6,11 @@
       "version": "1.24.7",
       "date": "2026-05-20",
       "type": "patch",
-      "summary": "Redesign admin sidebar profile section — clean profile card with avatar above name",
+      "summary": "Revert admin sidebar profile section redesign",
       "changes": [
         {
           "type": "fix",
-          "description": "AdminSidebar: separated brand row (LTIC SARL logo) from profile info — profile now renders as a dedicated card with a 56px centered avatar, display name, and Administrator role label, cleanly separated from the nav links by a divider"
+          "description": "Reverted AdminSidebar profile card redesign — restored original layout with avatar + name inline in the header section"
         }
       ]
     },
