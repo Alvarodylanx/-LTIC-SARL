@@ -1,7 +1,45 @@
 {
-  "version": "1.26.1",
+  "version": "1.27.0",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.27.0",
+      "date": "2026-05-21",
+      "type": "minor",
+      "summary": "Full website audit — production hardening, accessibility, SEO, hosting",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "CORS: allowed origins now read from NEXT_PUBLIC_SITE_URL env var — no longer hardcoded to localhost only, production domain is automatically allowed"
+        },
+        {
+          "type": "feature",
+          "description": "next.config.mjs: added output: 'standalone' — Next.js now bundles all runtime dependencies into .next/standalone/ for VPS deployment with Node.js"
+        },
+        {
+          "type": "feature",
+          "description": "ecosystem.config.js: PM2 process config added at repo root for Hostinger VPS deployment — manages both ltic-api (NestJS port 4000) and ltic-web (Next.js port 3000)"
+        },
+        {
+          "type": "fix",
+          "description": "Root layout: added metadataBase, alternates.canonical, OpenGraph url/siteName/images, and Twitter card metadata — required for correct social sharing and SEO"
+        },
+        {
+          "type": "fix",
+          "description": "Navbar: added aria-label to language toggle button on desktop and mobile — accessibility requirement (WCAG 2.1 AA icon-only buttons)"
+        },
+        {
+          "type": "fix",
+          "description": "Admin dashboard: added isError state with bilingual error message — previously showed infinite skeleton on API failure"
+        },
+        {
+          "type": "fix",
+          "description": "Order created email: added bilingual (EN/FR) content — client name, tracking number, order details, and CTA button now include French translations"
+        }
+      ]
+    },
+    {
+      "version": "1.26.1",
     {
       "version": "1.26.1",
       "date": "2026-05-21",

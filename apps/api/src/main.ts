@@ -72,8 +72,13 @@ async function bootstrap() {
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
   app.useStaticAssets(uploadsDir, { prefix: "/uploads" });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const allowedOrigins = siteUrl
+    ? [siteUrl, "http://localhost:3000", "http://127.0.0.1:3000"]
+    : ["http://localhost:3000", "http://127.0.0.1:3000"];
+
   app.enableCors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

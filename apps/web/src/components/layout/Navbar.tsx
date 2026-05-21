@@ -85,6 +85,7 @@ export function Navbar() {
           <motion.button
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
+            aria-label={language === 'en' ? 'Switch to French' : 'Passer en anglais'}
             className="flex items-center gap-1.5 px-3 py-2 rounded-md border text-sm font-medium hover:bg-muted transition-colors"
           >
             <Globe className="h-4 w-4" />
@@ -141,6 +142,7 @@ export function Navbar() {
               <div className="flex flex-wrap items-center gap-2 pt-3 border-t mt-2">
                 <button
                   onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
+                  aria-label={language === 'en' ? 'Switch to French' : 'Passer en anglais'}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-md border text-sm font-medium hover:bg-muted transition-colors"
                 >
                   <Globe className="h-4 w-4" />

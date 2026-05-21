@@ -5,13 +5,26 @@ import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'], variable: '--app-font-sans' });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lticsarl.com';
+
 export const metadata: Metadata = {
   title: 'LTIC SARL — Global Logistics & Industrial Solutions',
   description: 'LTIC SARL is a multinational business solutions provider specializing in logistics, international trade, industrial supply, and supply chain consulting across 30+ countries.',
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: '/' },
   openGraph: {
     title: 'LTIC SARL — Global Logistics & Industrial Solutions',
     description: 'Multinational logistics, industrial supply, and international trade excellence.',
     type: 'website',
+    url: SITE_URL,
+    siteName: 'LTIC SARL',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'LTIC SARL — Global Logistics' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LTIC SARL — Global Logistics & Industrial Solutions',
+    description: 'Multinational logistics, industrial supply, and international trade excellence.',
+    images: ['/og-image.png'],
   },
 };
 

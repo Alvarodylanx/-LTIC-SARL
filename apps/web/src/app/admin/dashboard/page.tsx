@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Package, FileText, Truck, MessageSquare } from 'lucide-react';
+import { Package, FileText, Truck, MessageSquare, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api';
@@ -17,9 +17,10 @@ const statusColors: Record<string, string> = {
 
 export default function DashboardPage() {
   const { L } = useLanguage();
-  const { data: stats, isLoading } = useQuery<any>({
+  const { data: stats, isLoading, isError } = useQuery<any>({
     queryKey: ['stats', 'dashboard'],
     queryFn: () => api.get('/api/stats/dashboard'),
+    retry: 2,
   });
 
   const statCards = [
@@ -28,6 +29,16 @@ export default function DashboardPage() {
     { label: L({ en: 'Active Orders', fr: 'Commandes actives' }), icon: Truck, value: stats?.totalOrders, color: 'text-foreground' },
     { label: L({ en: 'Unread Inquiries', fr: 'Messages non lus' }), icon: MessageSquare, value: stats?.unreadContacts, color: 'text-primary' },
   ];
+
+  if (isError) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center gap-3 text-center">
+        <AlertCircle className="h-10 w-10 text-destructive" />
+        <p className="font-semibold">{L({ en: 'Failed to load dashboard data', fr: 'Impossible de charger le tableau de bord' })}</p>
+        <p className="text-sm text-muted-foreground">{L({ en: 'Check your connection and refresh the page.', fr: 'Vérifiez votre connexion et actualisez la page.' })}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">

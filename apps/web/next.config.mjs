@@ -2,6 +2,7 @@
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 const config = {
+  output: 'standalone',
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

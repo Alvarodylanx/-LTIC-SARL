@@ -115,25 +115,26 @@ export class MailService {
   }): string {
     const trackUrl = `${this.siteUrl()}/tracking?id=${order.trackingNumber}`;
     const rows = [
-      order.description  ? `<tr><td style="padding:6px 0;color:#6b7280">Description</td><td style="padding:6px 0">${order.description}</td></tr>` : '',
-      order.origin       ? `<tr><td style="padding:6px 0;color:#6b7280">Origin</td><td style="padding:6px 0">${order.origin}</td></tr>` : '',
-      order.destination  ? `<tr><td style="padding:6px 0;color:#6b7280">Destination</td><td style="padding:6px 0">${order.destination}</td></tr>` : '',
-      order.estimatedDelivery ? `<tr><td style="padding:6px 0;color:#6b7280">Est. Delivery</td><td style="padding:6px 0">${order.estimatedDelivery}</td></tr>` : '',
+      order.description      ? `<tr><td style="padding:6px 0;color:#6b7280;width:160px">Description</td><td style="padding:6px 0">${order.description}</td></tr>` : '',
+      order.origin           ? `<tr><td style="padding:6px 0;color:#6b7280">Origin / Origine</td><td style="padding:6px 0">${order.origin}</td></tr>` : '',
+      order.destination      ? `<tr><td style="padding:6px 0;color:#6b7280">Destination</td><td style="padding:6px 0">${order.destination}</td></tr>` : '',
+      order.estimatedDelivery ? `<tr><td style="padding:6px 0;color:#6b7280">Est. Delivery / Livraison</td><td style="padding:6px 0">${order.estimatedDelivery}</td></tr>` : '',
     ].filter(Boolean).join('');
     return `
       <div style="font-family:sans-serif;max-width:600px;margin:auto">
         <h2 style="color:#1a56db">Your Order Has Been Created — LTIC SARL</h2>
         <p>Dear ${order.clientName},</p>
         <p>Your order has been created and is now being processed by our logistics team. Use the tracking number below to monitor your shipment at any time.</p>
+        <p style="color:#6b7280;font-size:13px"><em>Votre commande a été créée et est en cours de traitement par notre équipe logistique. Utilisez le numéro de suivi ci-dessous pour suivre votre expédition à tout moment.</em></p>
         <div style="background:#f3f4f6;border-radius:8px;padding:20px;text-align:center;margin:24px 0">
-          <p style="margin:0 0 4px;color:#6b7280;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">Tracking Number</p>
+          <p style="margin:0 0 4px;color:#6b7280;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">Tracking Number / Numéro de Suivi</p>
           <p style="margin:0;font-size:24px;font-weight:700;font-family:monospace;color:#111827">${order.trackingNumber}</p>
         </div>
         ${rows ? `<table style="width:100%;border-collapse:collapse">${rows}</table>` : ''}
         <p style="margin-top:24px">
-          <a href="${trackUrl}" style="background:#1a56db;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Track My Shipment</a>
+          <a href="${trackUrl}" style="background:#1a56db;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600">Track My Shipment / Suivre mon expédition</a>
         </p>
-        <p style="margin-top:24px;color:#6b7280;font-size:13px">If you have any questions, please contact us by replying to this email or visiting our website.</p>
+        <p style="margin-top:24px;color:#6b7280;font-size:13px">If you have any questions, please reply to this email or visit our website.<br><em>Si vous avez des questions, répondez à cet e-mail ou visitez notre site web.</em></p>
         <p style="color:#6b7280">LTIC SARL — International Logistics & Trade</p>
       </div>`;
   }
