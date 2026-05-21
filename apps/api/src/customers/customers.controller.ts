@@ -3,17 +3,18 @@ import {
   UseInterceptors, UploadedFile, BadRequestException
 } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
+import { AuthGuard } from "../auth/auth.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
 import * as fs from "fs";
 import { Inject } from "@nestjs/common";
 import { fromFile } from "file-type";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { CustomersService } from "./customers.service";
 import { CustomerGuard } from "./customer.guard";
 import { DB_TOKEN } from "../db/db.module";
-import { orders, quotes } from "@ltic/db";
+import { customers as customersTable, orders, quotes } from "@ltic/db";
 
 const uploadsDir = path.join(__dirname, "../../../../uploads");
 
@@ -119,7 +120,7 @@ export class CustomersController {
     return this.db
       .select()
       .from(orders)
-      .where(eq(orders.clientEmail, profile.email))
+      .where(or(eq(orders.customerId, req.customer.sub), eq(orders.clientEmail, profile.email)))
       .orderBy(orders.createdAt);
   }
 
@@ -132,5 +133,21 @@ export class CustomersController {
       .from(quotes)
       .where(eq(quotes.email, profile.email))
       .orderBy(quotes.createdAt);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  async listAll() {
+    return this.db
+      .select({
+        id: customersTable.id,
+        fullName: customersTable.fullName,
+        email: customersTable.email,
+        country: customersTable.country,
+        company: customersTable.company,
+        createdAt: customersTable.createdAt,
+      })
+      .from(customersTable)
+      .orderBy(customersTable.createdAt);
   }
 }

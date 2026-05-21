@@ -1,4 +1,4 @@
-﻿import { pgTable, serial, text, jsonb, timestamp } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, integer, text, jsonb, timestamp } from "drizzle-orm/pg-core";
 
 export interface OrderTimelineItem {
   status: string;
@@ -10,6 +10,7 @@ export interface OrderTimelineItem {
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   trackingNumber: text("tracking_number").notNull().unique(),
+  customerId: integer("customer_id"),
   clientName: text("client_name").notNull(),
   clientEmail: text("client_email"),
   origin: text("origin"),

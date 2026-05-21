@@ -1,20 +1,62 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Plus, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { format } from 'date-fns';
+
+const STATUSES = [
+  { value: 'processing',      en: 'Processing',       fr: 'En traitement' },
+  { value: 'customs-cleared', en: 'Customs Cleared',  fr: 'Dédouané' },
+  { value: 'shipped',         en: 'Shipped',           fr: 'Expédié' },
+  { value: 'in-transit',      en: 'In Transit',        fr: 'En transit' },
+  { value: 'delivered',       en: 'Delivered',         fr: 'Livré' },
+  { value: 'cancelled',       en: 'Cancelled',         fr: 'Annulé' },
+];
+
+const EMPTY_FORM = {
+  clientName: '', clientEmail: '', customerId: '',
+  origin: '', destination: '', description: '',
+  status: 'processing', estimatedDelivery: '',
+};
 
 export default function AdminOrdersPage() {
   const qc = useQueryClient();
   const { L } = useLanguage();
 
+  const [showAdd, setShowAdd] = useState(false);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+
   const { data: orders, isLoading } = useQuery<any[]>({
     queryKey: ['admin-orders'],
-    queryFn: () => api.get('/api/orders?limit=100'),
+    queryFn: () => api.get('/api/orders?limit=200'),
+  });
+
+  const { data: allCustomers } = useQuery<any[]>({
+    queryKey: ['admin-customers'],
+    queryFn: () => api.get('/api/customers'),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (body: any) => api.post('/api/orders', body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-orders'] });
+      toast.success(L({ en: 'Order created', fr: 'Commande créée' }));
+      setShowAdd(false);
+      setForm(EMPTY_FORM);
+    },
+    onError: () => toast.error(L({ en: 'Failed to create order', fr: 'Échec de la création' })),
   });
 
   const updateMutation = useMutation({
@@ -22,6 +64,31 @@ export default function AdminOrdersPage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-orders'] }); toast.success(L({ en: 'Order updated', fr: 'Commande mise à jour' })); },
     onError: () => toast.error(L({ en: 'Failed to update', fr: 'Échec de la mise à jour' })),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/orders/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-orders'] });
+      toast.success(L({ en: 'Order deleted', fr: 'Commande supprimée' }));
+      setDeleteId(null);
+    },
+    onError: () => toast.error(L({ en: 'Failed to delete', fr: 'Échec de la suppression' })),
+  });
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const body: any = {
+      clientName: form.clientName,
+      clientEmail: form.clientEmail || undefined,
+      origin: form.origin || undefined,
+      destination: form.destination || undefined,
+      description: form.description || undefined,
+      status: form.status,
+      estimatedDelivery: form.estimatedDelivery || undefined,
+    };
+    if (form.customerId) body.customerId = Number(form.customerId);
+    createMutation.mutate(body);
+  }
 
   const headers = [
     L({ en: 'Tracking #', fr: 'N° suivi' }),
@@ -31,22 +98,31 @@ export default function AdminOrdersPage() {
     L({ en: 'Status', fr: 'Statut' }),
     L({ en: 'Est. Delivery', fr: 'Livraison prévue' }),
     L({ en: 'Created', fr: 'Créé le' }),
+    '',
   ];
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Orders & Shipments', fr: 'Commandes & Expéditions' })}</h1>
-        <p className="text-muted-foreground mt-1">{L({ en: 'Manage shipment tracking and order status', fr: 'Gérez le suivi des expéditions et le statut des commandes' })}</p>
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold">{L({ en: 'Orders & Shipments', fr: 'Commandes & Expéditions' })}</h1>
+          <p className="text-muted-foreground mt-1">{L({ en: 'Manage shipment tracking and order status', fr: 'Gérez le suivi des expéditions et le statut des commandes' })}</p>
+        </div>
+        <Button onClick={() => setShowAdd(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          {L({ en: 'Add Order', fr: 'Ajouter une commande' })}
+        </Button>
       </div>
 
-      {isLoading ? <div className="space-y-3">{Array(8).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div> : (
+      {isLoading ? (
+        <div className="space-y-3">{Array(8).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
+      ) : (
         <div className="bg-card border rounded-xl overflow-hidden overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+          <table className="w-full min-w-[1000px]">
             <thead className="bg-muted/50 border-b">
               <tr>
-                {headers.map((h) => (
-                  <th key={h} className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4 py-3">{h}</th>
+                {headers.map((h, i) => (
+                  <th key={i} className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4 py-3">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -54,33 +130,132 @@ export default function AdminOrdersPage() {
               {orders?.map((order) => (
                 <tr key={order.id} className="hover:bg-muted/20 transition-colors">
                   <td className="px-4 py-3 font-mono text-sm font-bold text-primary">{order.trackingNumber}</td>
-                  <td className="px-4 py-3 font-medium text-sm">{order.clientName}</td>
-                  <td className="px-4 py-3 text-sm text-muted-foreground">{order.origin}</td>
-                  <td className="px-4 py-3 text-sm text-muted-foreground">{order.destination}</td>
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-sm">{order.clientName}</p>
+                    {order.clientEmail && <p className="text-xs text-muted-foreground">{order.clientEmail}</p>}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-muted-foreground">{order.origin || '—'}</td>
+                  <td className="px-4 py-3 text-sm text-muted-foreground">{order.destination || '—'}</td>
                   <td className="px-4 py-3">
                     <Select value={order.status} onValueChange={(val) => updateMutation.mutate({ id: order.id, status: val })}>
                       <SelectTrigger className="h-8 text-xs w-36">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="processing">{L({ en: 'Processing', fr: 'En traitement' })}</SelectItem>
-                        <SelectItem value="customs-cleared">{L({ en: 'Customs Cleared', fr: 'Dédouané' })}</SelectItem>
-                        <SelectItem value="shipped">{L({ en: 'Shipped', fr: 'Expédié' })}</SelectItem>
-                        <SelectItem value="in-transit">{L({ en: 'In Transit', fr: 'En transit' })}</SelectItem>
-                        <SelectItem value="delivered">{L({ en: 'Delivered', fr: 'Livré' })}</SelectItem>
-                        <SelectItem value="cancelled">{L({ en: 'Cancelled', fr: 'Annulé' })}</SelectItem>
+                        {STATUSES.map((s) => (
+                          <SelectItem key={s.value} value={s.value}>{L({ en: s.en, fr: s.fr })}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </td>
                   <td className="px-4 py-3 text-sm text-muted-foreground">{order.estimatedDelivery || '—'}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">{format(new Date(order.createdAt), 'dd MMM yyyy')}</td>
+                  <td className="px-4 py-3">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={() => setDeleteId(order.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {!orders?.length && <p className="text-center text-muted-foreground py-12">{L({ en: 'No orders yet', fr: 'Aucune commande pour l\'instant' })}</p>}
+          {!orders?.length && (
+            <p className="text-center text-muted-foreground py-12">{L({ en: 'No orders yet', fr: "Aucune commande pour l'instant" })}</p>
+          )}
         </div>
       )}
+
+      {/* Add Order Dialog */}
+      <Dialog open={showAdd} onOpenChange={setShowAdd}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{L({ en: 'Create New Order', fr: 'Créer une commande' })}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <Label>{L({ en: 'Client Name', fr: 'Nom du client' })} *</Label>
+                <Input value={form.clientName} onChange={(e) => setForm({ ...form, clientName: e.target.value })}
+                  placeholder="John Doe" required className="mt-1" />
+              </div>
+              <div>
+                <Label>{L({ en: 'Client Email', fr: 'Email du client' })}</Label>
+                <Input type="email" value={form.clientEmail} onChange={(e) => setForm({ ...form, clientEmail: e.target.value })}
+                  placeholder="john@example.com" className="mt-1" />
+              </div>
+              <div>
+                <Label>{L({ en: 'Link to Customer', fr: 'Lier au compte' })}</Label>
+                <Select value={form.customerId} onValueChange={(v) => setForm({ ...form, customerId: v })}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder={L({ en: 'Select customer…', fr: 'Choisir un compte…' })} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">{L({ en: 'None', fr: 'Aucun' })}</SelectItem>
+                    {allCustomers?.map((c) => (
+                      <SelectItem key={c.id} value={String(c.id)}>
+                        {c.fullName} — {c.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>{L({ en: 'Origin', fr: 'Origine' })}</Label>
+                <Input value={form.origin} onChange={(e) => setForm({ ...form, origin: e.target.value })}
+                  placeholder="Douala, CM" className="mt-1" />
+              </div>
+              <div>
+                <Label>{L({ en: 'Destination', fr: 'Destination' })}</Label>
+                <Input value={form.destination} onChange={(e) => setForm({ ...form, destination: e.target.value })}
+                  placeholder="Paris, FR" className="mt-1" />
+              </div>
+              <div className="col-span-2">
+                <Label>{L({ en: 'Description', fr: 'Description' })}</Label>
+                <Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  placeholder={L({ en: 'Cargo description…', fr: 'Description du fret…' })} className="mt-1" />
+              </div>
+              <div>
+                <Label>{L({ en: 'Status', fr: 'Statut' })}</Label>
+                <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {STATUSES.map((s) => (
+                      <SelectItem key={s.value} value={s.value}>{L({ en: s.en, fr: s.fr })}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>{L({ en: 'Est. Delivery', fr: 'Livraison prévue' })}</Label>
+                <Input value={form.estimatedDelivery} onChange={(e) => setForm({ ...form, estimatedDelivery: e.target.value })}
+                  placeholder="2026-07-15" className="mt-1" />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {L({ en: 'Tracking number is auto-generated (LTIC + date + random).', fr: 'Le numéro de suivi est généré automatiquement.' })}
+            </p>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setShowAdd(false)}>{L({ en: 'Cancel', fr: 'Annuler' })}</Button>
+              <Button type="submit" disabled={createMutation.isPending}>
+                {createMutation.isPending ? L({ en: 'Creating…', fr: 'Création…' }) : L({ en: 'Create Order', fr: 'Créer la commande' })}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open) setDeleteId(null); }}
+        title={L({ en: 'Delete Order?', fr: 'Supprimer la commande ?' })}
+        description={L({ en: 'This will permanently delete the order and cannot be undone.', fr: 'Cette action est irréversible.' })}
+        confirmLabel={L({ en: 'Delete', fr: 'Supprimer' })}
+        onConfirm={() => deleteId !== null && deleteMutation.mutate(deleteId)}
+        loading={deleteMutation.isPending}
+      />
     </div>
   );
 }

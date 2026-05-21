@@ -33,7 +33,7 @@ export class AdminController {
 
     const token = await this.jwtService.signAsync(
       { email: body.email },
-      { secret: process.env.SESSION_SECRET || "ltic-secret", expiresIn: "24h" }
+      { secret: process.env.SESSION_SECRET!, expiresIn: "24h" }
     );
     validTokens.add(token);
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -9,11 +9,19 @@ export class OrdersController {
   @Get('track')
   track(@Query('trackingNumber') trackingNumber: string) { return this.svc.track(trackingNumber); }
 
+  @Post()
+  @UseGuards(AuthGuard)
+  create(@Body() body: any) { return this.svc.create(body); }
+
   @Get()
   @UseGuards(AuthGuard)
   findAll(@Query('status') status?: string, @Query('limit') limit?: string, @Query('offset') offset?: string) {
-    return this.svc.findAll({ status, limit: limit ? Number(limit) : 50, offset: offset ? Number(offset) : 0 });
+    return this.svc.findAll({ status, limit: limit ? Number(limit) : 100, offset: offset ? Number(offset) : 0 });
   }
+
+  @Get('customer/:customerId')
+  @UseGuards(AuthGuard)
+  findByCustomer(@Param('customerId', ParseIntPipe) customerId: number) { return this.svc.findByCustomer(customerId); }
 
   @Get(':id')
   @UseGuards(AuthGuard)
@@ -22,4 +30,8 @@ export class OrdersController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   update(@Param('id', ParseIntPipe) id: number, @Body() body: any) { return this.svc.update(id, body); }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  delete(@Param('id', ParseIntPipe) id: number) { return this.svc.delete(id); }
 }

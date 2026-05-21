@@ -2,6 +2,7 @@ import { Module, Global } from '@nestjs/common';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from '@ltic/db';
+import { DbInitService } from './db-init.service';
 
 export const DB_TOKEN = 'DRIZZLE_DB';
 
@@ -15,6 +16,7 @@ export const DB_TOKEN = 'DRIZZLE_DB';
         return drizzle(pool, { schema });
       },
     },
+    DbInitService,
   ],
   exports: [DB_TOKEN],
 })

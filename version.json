@@ -1,7 +1,43 @@
 {
-  "version": "1.19.0",
+  "version": "1.20.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.20.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Order creation UI in admin panel, customer_id FK on orders, admin customer list",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Admin Orders page: Add Order button opens a dialog — auto-generates tracking number (LTIC + YYMM + 6 random digits), supports optional customer link, origin, destination, description, status, and estimated delivery"
+        },
+        {
+          "type": "feature",
+          "description": "Admin Orders page: delete button with ConfirmDialog on each order row"
+        },
+        {
+          "type": "feature",
+          "description": "orders schema: added customer_id integer column with ALTER TABLE … ADD COLUMN IF NOT EXISTS migration run at startup"
+        },
+        {
+          "type": "feature",
+          "description": "GET /api/customers (admin-protected): lists all registered customers for the order customer-link dropdown"
+        },
+        {
+          "type": "feature",
+          "description": "Customer My Orders: now matches by customerId OR clientEmail so linked orders appear in the account dashboard"
+        },
+        {
+          "type": "feature",
+          "description": "DELETE /api/orders/:id and GET /api/orders/customer/:customerId endpoints added"
+        },
+        {
+          "type": "fix",
+          "description": "Removed last || 'ltic-secret' JWT fallback in admin.controller.ts — all token signing now requires SESSION_SECRET"
+        }
+      ]
+    },
     {
       "version": "1.19.0",
       "date": "2026-05-20",
