@@ -92,12 +92,11 @@ export default function CustomerProfilePage() {
     if (!file) return;
     setUploadingAvatar(true);
     try {
-      const token = localStorage.getItem('customer_token');
       const formData = new FormData();
       formData.append('avatar', file);
       const res = await fetch(`${API_URL}/api/customers/me/avatar`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
         body: formData,
       });
       if (!res.ok) throw new Error('Upload failed');

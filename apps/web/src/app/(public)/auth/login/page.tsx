@@ -15,6 +15,7 @@ import { checkAuth } from '@/lib/auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
+
 export default function LoginPage() {
   const { L } = useLanguage();
   const { refreshProfile } = useCustomer();
@@ -30,21 +31,12 @@ export default function LoginPage() {
 
   // If already authenticated, skip the form
   useEffect(() => {
-    const adminToken = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-    const customerToken = typeof window !== 'undefined' ? localStorage.getItem('customer_token') : null;
-
-    if (adminToken) {
-      checkAuth()
-        .then((res) => {
-          if (res.authenticated) router.replace(redirect || '/admin/dashboard');
-          else setChecking(false);
-        })
-        .catch(() => setChecking(false));
-    } else if (customerToken) {
-      router.replace(redirect || '/account');
-    } else {
-      setChecking(false);
-    }
+    checkAuth()
+      .then((res) => {
+        if (res.authenticated) router.replace(redirect || '/admin/dashboard');
+        else setChecking(false);
+      })
+      .catch(() => setChecking(false));
   }, [router, redirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,6 +47,7 @@ export default function LoginPage() {
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email: email.trim(), password }),
       });
 
@@ -63,14 +56,12 @@ export default function LoginPage() {
         throw new Error(err.message || L({ en: 'Invalid email or password', fr: 'Email ou mot de passe incorrect' }));
       }
 
-      const data: { role: string; token: string; user: { name: string; email: string } } = await res.json();
+      const data: { role: string; user: { name: string; email: string } } = await res.json();
 
       if (data.role === 'admin') {
-        localStorage.setItem('admin_token', data.token);
         toast.success(L({ en: `Welcome, ${data.user.name}!`, fr: `Bienvenue, ${data.user.name} !` }));
         router.push(redirect || '/admin/dashboard');
       } else {
-        localStorage.setItem('customer_token', data.token);
         await refreshProfile();
         toast.success(L({ en: `Welcome back, ${data.user.name}!`, fr: `Bon retour, ${data.user.name} !` }));
         router.push(redirect || '/account');

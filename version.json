@@ -1,7 +1,51 @@
 {
-  "version": "1.22.0",
+  "version": "1.23.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.23.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "JWT authentication migrated from localStorage to httpOnly cookies",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "API startup: cookie-parser middleware enabled for reading httpOnly cookies from requests"
+        },
+        {
+          "type": "feature",
+          "description": "POST /api/auth/login: sets admin_jwt or customer_jwt httpOnly cookie (SameSite=Lax, Secure in production) instead of returning raw token; also adds POST /api/auth/logout to clear cookies"
+        },
+        {
+          "type": "feature",
+          "description": "POST /api/customers/login and /register: set customer_jwt httpOnly cookie (7-day maxAge); POST /api/customers/logout clears the cookie"
+        },
+        {
+          "type": "feature",
+          "description": "AuthGuard: reads admin_jwt cookie first, falls back to Authorization Bearer header for API clients"
+        },
+        {
+          "type": "feature",
+          "description": "CustomerGuard: reads customer_jwt cookie first, falls back to Authorization Bearer header; removed hardcoded secret fallback"
+        },
+        {
+          "type": "feature",
+          "description": "SseAuthGuard: reads admin_jwt cookie first (EventSource sends cookies with withCredentials), falls back to ?token= query param"
+        },
+        {
+          "type": "fix",
+          "description": "Frontend api.ts: removed Authorization header injection — cookies are sent automatically by the browser with credentials: include"
+        },
+        {
+          "type": "fix",
+          "description": "CustomerContext: removed all localStorage.getItem/setItem for customer_token — session managed entirely by httpOnly cookie"
+        },
+        {
+          "type": "fix",
+          "description": "Login page, profile page, MediaUpload, AdminSidebar SSE, tracking page: all localStorage token reads replaced with cookie-based approach"
+        }
+      ]
+    },
     {
       "version": "1.22.0",
       "date": "2026-05-20",

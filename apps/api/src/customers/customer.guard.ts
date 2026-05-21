@@ -7,16 +7,16 @@ export class CustomerGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers["authorization"];
+    const cookieToken: string | undefined = request.cookies?.customer_jwt;
+    const authHeader: string | undefined = request.headers["authorization"];
+    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : undefined;
+    const token = cookieToken || bearerToken;
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      throw new UnauthorizedException("No token provided");
-    }
+    if (!token) throw new UnauthorizedException("No token provided");
 
-    const token = authHeader.split(" ")[1];
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.SESSION_SECRET || "ltic-secret",
+        secret: process.env.SESSION_SECRET!,
       });
       if (payload.role !== "customer") throw new Error("Not a customer token");
       request.customer = payload;

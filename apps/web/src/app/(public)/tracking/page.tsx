@@ -41,8 +41,10 @@ export default function TrackingPage() {
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    const adminToken = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-    setIsAuthenticated(!!customer || !!adminToken);
+    if (customer) { setIsAuthenticated(true); return; }
+    import('@/lib/auth').then(({ checkAuth }) =>
+      checkAuth().then((res) => setIsAuthenticated(res.authenticated)).catch(() => {})
+    );
   }, [customer]);
 
   const handleTrack = async (e: React.FormEvent) => {

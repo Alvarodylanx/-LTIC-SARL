@@ -27,12 +27,11 @@ export function MediaUpload({ value, onChange }: MediaUploadProps) {
   const uploadFile = async (file: File) => {
     setUploading(true);
     try {
-      const token = localStorage.getItem('admin_token');
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
         body: fd,
       });
       if (!res.ok) {

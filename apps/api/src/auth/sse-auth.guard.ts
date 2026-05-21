@@ -7,7 +7,8 @@ export class SseAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.query?.token as string | undefined;
+    const token: string | undefined =
+      request.cookies?.admin_jwt ?? (request.query?.token as string | undefined);
 
     if (!token) throw new UnauthorizedException('No token provided');
 

@@ -33,13 +33,11 @@ const CustomerContext = createContext<CustomerContextType>({
 });
 
 async function customerFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('customer_token') : null;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> || {}),
   };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const res = await fetch(`${API_URL}${path}`, { ...options, headers, credentials: 'include' });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: 'Request failed' }));
     throw new Error(err.message || `HTTP ${res.status}`);
@@ -52,13 +50,10 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshProfile = useCallback(async () => {
-    const token = localStorage.getItem('customer_token');
-    if (!token) { setLoading(false); return; }
     try {
       const data = await customerFetch<Customer>('/api/customers/me');
       setCustomer(data);
     } catch {
-      localStorage.removeItem('customer_token');
       setCustomer(null);
     } finally {
       setLoading(false);
@@ -68,25 +63,23 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
   useEffect(() => { refreshProfile(); }, [refreshProfile]);
 
   const login = async (email: string, password: string) => {
-    const res = await customerFetch<{ token: string; customer: Customer }>('/api/customers/login', {
+    const res = await customerFetch<{ customer: Customer }>('/api/customers/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
-    localStorage.setItem('customer_token', res.token);
     setCustomer(res.customer);
   };
 
   const register = async (data: { fullName: string; email: string; password: string; phone?: string; country?: string }) => {
-    const res = await customerFetch<{ token: string; customer: Customer }>('/api/customers/register', {
+    const res = await customerFetch<{ customer: Customer }>('/api/customers/register', {
       method: 'POST',
       body: JSON.stringify(data),
     });
-    localStorage.setItem('customer_token', res.token);
     setCustomer(res.customer);
   };
 
-  const logout = () => {
-    localStorage.removeItem('customer_token');
+  const logout = async () => {
+    await customerFetch('/api/customers/logout', { method: 'POST' }).catch(() => {});
     setCustomer(null);
   };
 

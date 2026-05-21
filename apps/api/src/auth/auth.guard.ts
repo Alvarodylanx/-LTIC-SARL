@@ -7,13 +7,15 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers["authorization"];
+    const cookieToken: string | undefined = request.cookies?.admin_jwt;
+    const authHeader: string | undefined = request.headers["authorization"];
+    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : undefined;
+    const token = cookieToken || bearerToken;
 
-    if (!authHeader?.startsWith("Bearer ")) {
+    if (!token) {
       throw new UnauthorizedException("No token provided");
     }
 
-    const token = authHeader.split(" ")[1];
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.SESSION_SECRET,

@@ -1,6 +1,14 @@
-import { Controller, Post, Body, BadRequestException } from "@nestjs/common";
+import { Controller, Post, Body, Res, BadRequestException } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
+import { Response } from "express";
 import { UnifiedAuthService } from "./unified-auth.service";
+
+const COOKIE_OPTS = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  secure: process.env.NODE_ENV === "production",
+  path: "/",
+};
 
 @Controller("auth")
 export class UnifiedAuthController {
@@ -8,10 +16,28 @@ export class UnifiedAuthController {
 
   @Post("login")
   @Throttle({ login: {} })
-  login(@Body() body: { email: string; password: string }) {
+  async login(
+    @Body() body: { email: string; password: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
     if (!body.email?.trim() || !body.password) {
       throw new BadRequestException("Email and password are required");
     }
-    return this.svc.login(body.email, body.password);
+    const result = await this.svc.login(body.email, body.password);
+
+    if (result.role === "admin") {
+      res.cookie("admin_jwt", result.token, { ...COOKIE_OPTS, maxAge: 24 * 60 * 60 * 1000 });
+    } else {
+      res.cookie("customer_jwt", result.token, { ...COOKIE_OPTS, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    }
+
+    return { role: result.role, user: result.user };
+  }
+
+  @Post("logout")
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie("admin_jwt", { path: "/" });
+    res.clearCookie("customer_jwt", { path: "/" });
+    return { success: true };
   }
 }

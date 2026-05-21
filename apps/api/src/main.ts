@@ -30,6 +30,7 @@ import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./app.module";
 import * as fs from "fs";
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -37,6 +38,7 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix("api");
+  app.use(cookieParser());
 
   // Security headers
   const helmet = (await import("helmet")).default;

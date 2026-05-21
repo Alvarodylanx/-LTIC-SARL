@@ -1,7 +1,8 @@
 import {
-  Controller, Post, Get, Patch, Body, Req, UseGuards,
+  Controller, Post, Get, Patch, Body, Req, Res, UseGuards,
   UseInterceptors, UploadedFile, BadRequestException
 } from "@nestjs/common";
+import { Response } from "express";
 import { Throttle } from "@nestjs/throttler";
 import { AuthGuard } from "../auth/auth.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -25,29 +26,47 @@ export class CustomersController {
     @Inject(DB_TOKEN) private db: Db,
   ) {}
 
+  private setCookie(res: Response, token: string, maxAge: number) {
+    res.cookie("customer_jwt", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge,
+    });
+  }
+
   @Post("register")
-  register(
-    @Body() body: {
-      fullName: string;
-      email: string;
-      password: string;
-      phone?: string;
-      country?: string;
-    }
+  async register(
+    @Body() body: { fullName: string; email: string; password: string; phone?: string; country?: string },
+    @Res({ passthrough: true }) res: Response,
   ) {
     if (!body.fullName || !body.email || !body.password) {
       throw new BadRequestException("fullName, email, and password are required");
     }
-    return this.customersService.register(body);
+    const result = await this.customersService.register(body);
+    this.setCookie(res, result.token, 7 * 24 * 60 * 60 * 1000);
+    return { customer: result.customer };
   }
 
   @Post("login")
   @Throttle({ login: {} })
-  login(@Body() body: { email: string; password: string }) {
+  async login(
+    @Body() body: { email: string; password: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
     if (!body.email || !body.password) {
       throw new BadRequestException("email and password are required");
     }
-    return this.customersService.login(body.email, body.password);
+    const result = await this.customersService.login(body.email, body.password);
+    this.setCookie(res, result.token, 7 * 24 * 60 * 60 * 1000);
+    return { customer: result.customer };
+  }
+
+  @Post("logout")
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie("customer_jwt", { path: "/" });
+    return { success: true };
   }
 
   @UseGuards(CustomerGuard)
