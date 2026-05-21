@@ -47,10 +47,10 @@ export default function AboutPage() {
               <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Our Story', fr: 'Notre Histoire' })}</p>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6">{L({ en: 'Built for the Demands of Global Commerce', fr: 'Conçu pour les Exigences du Commerce Mondial' })}</h2>
               <p className="text-muted-foreground mb-4 leading-relaxed">
-                {L({ en: "LTIC SARL — Logistics and Transit International — was founded in Cameroon to meet a critical need: a reliable, comprehensive partner for logistics, transit, industrial supply, and international trade across Africa, Europe, the Middle East, and beyond.", fr: "LTIC SARL — Logistics and Transit International — a été fondée au Cameroun pour répondre à un besoin essentiel : un partenaire fiable et complet pour la logistique, le transit, la fourniture industrielle et le commerce international en Afrique, Europe, Moyen-Orient et au-delà." })}
+                {L({ en: "LTIC — Logistics and Transit International Company — was incorporated in Douala, Cameroon as a SARL to serve a critical need: a reliable, comprehensive partner for logistics, transit, industrial supply, commercial representation, and international trade in Cameroon and abroad.", fr: "LTIC — Logistics and Transit International Company — a été constituée à Douala, Cameroun en SARL pour répondre à un besoin essentiel : un partenaire fiable et complet en logistique, transit, fourniture industrielle, représentation commerciale et commerce international au Cameroun et à l'étranger." })}
               </p>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                {L({ en: 'From our base in Cameroon, we have grown into a diversified multinational company serving 500+ clients across 30+ countries — delivering logistics, industrial products, import/export facilitation, and strategic trade solutions with precision and reliability.', fr: "Depuis notre base au Cameroun, nous sommes devenus une entreprise multinationale diversifiée servant 500+ clients dans 30+ pays — en livrant des solutions logistiques, des produits industriels, la facilitation import/export et des solutions commerciales stratégiques." })}
+                {L({ en: 'From our registered headquarters in Douala, we operate across Africa, Europe, the Middle East, and Canada — delivering logistics, industrial supply, import/export facilitation, phytosanitary treatment, and strategic trade solutions with precision and reliability.', fr: "Depuis notre siège social à Douala, nous opérons en Afrique, Europe, Moyen-Orient et Canada — en livrant des solutions logistiques, de fourniture industrielle, de facilitation import/export, de traitement phytosanitaire et de commerce stratégique avec précision et fiabilité." })}
               </p>
               <ul className="space-y-3">
                 {[
@@ -134,7 +134,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[{ value: '30+', en: 'Countries', fr: 'Pays' }, { value: '500+', en: 'Clients', fr: 'Clients' }, { value: '15+', en: 'Years', fr: 'Années' }, { value: '10K+', en: 'Shipments', fr: 'Expéditions' }].map((stat) => (
+            {[{ value: '30+', en: 'Countries', fr: 'Pays' }, { value: '500+', en: 'Clients', fr: 'Clients' }, { value: '5+', en: 'Years', fr: 'Années' }, { value: '10K+', en: 'Shipments', fr: 'Expéditions' }].map((stat) => (
               <motion.div key={stat.value} variants={scaleIn}>
                 <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
                 <div className="text-sidebar-foreground/80 text-sm font-medium uppercase tracking-wider">{L(stat)}</div>
@@ -157,7 +157,7 @@ export default function AboutPage() {
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce}
             className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { role: { en: 'Operations Director', fr: 'Directeur des Opérations' }, desc: { en: 'Over 15 years managing international freight, customs operations, and multi-modal logistics across Africa and Europe.', fr: "Plus de 15 ans à gérer le fret international, les opérations douanières et la logistique multimodale en Afrique et en Europe." } },
+              { role: { en: 'Operations Director', fr: 'Directeur des Opérations' }, desc: { en: 'Experienced in managing international freight, customs operations, and multi-modal logistics across Africa, Europe, and the Middle East.', fr: "Expérimenté dans la gestion du fret international, des opérations douanières et de la logistique multimodale en Afrique, Europe et Moyen-Orient." } },
               { role: { en: 'Trade Manager', fr: 'Responsable Commercial' }, desc: { en: 'Specialist in global sourcing, import/export compliance, and building strategic trade partnerships across 30+ markets.', fr: "Spécialiste en approvisionnement mondial, conformité import/export, et développement de partenariats commerciaux stratégiques dans 30+ marchés." } },
               { role: { en: 'Supply Chain Consultant', fr: 'Consultant en Chaîne Logistique' }, desc: { en: 'Expert in supply chain design, procurement optimization, and industrial supply solutions for complex operational environments.', fr: "Expert en conception de chaîne logistique, optimisation des achats et solutions de fournitures industrielles pour environnements complexes." } },
             ].map((member, i) => (

@@ -1,7 +1,31 @@
 {
-  "version": "1.28.0",
+  "version": "1.28.1",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.28.1",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Fix company name and experience stats to match official RCCM registration document",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "About page story: corrected full legal name to 'Logistics and Transit International Company' (not International SARL — Company is part of the legal name, SARL is the legal form)"
+        },
+        {
+          "type": "fix",
+          "description": "Home and About stats: '15+ Years of Experience' corrected to '5+' — RCCM registration dates to June 2020, not 15 years ago"
+        },
+        {
+          "type": "fix",
+          "description": "About team card: removed unverifiable '15 years' claim, replaced with non-specific 'experienced in' wording"
+        },
+        {
+          "type": "fix",
+          "description": "About story paragraph 2: updated to reference Douala headquarters and confirmed operating regions (Africa, Europe, Middle East, Canada) per RCCM scope"
+        }
+      ]
+    },
     {
       "version": "1.28.0",
       "date": "2026-05-21",

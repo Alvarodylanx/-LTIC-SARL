@@ -14,7 +14,7 @@ import { fadeInUp, fadeInLeft, fadeInRight, fadeIn, scaleIn, stagger, staggerFas
 const stats = [
   { value: '30+', en: 'Countries Served', fr: 'Pays Desservis' },
   { value: '500+', en: 'Clients Worldwide', fr: 'Clients Mondiaux' },
-  { value: '15+', en: 'Years of Experience', fr: "Années d'Expérience" },
+  { value: '5+', en: 'Years of Experience', fr: "Années d'Expérience" },
   { value: '10K+', en: 'Shipments Completed', fr: 'Expéditions Réalisées' },
 ];
 
