@@ -1,7 +1,24 @@
 {
-  "version": "1.26.0",
+  "version": "1.26.1",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.26.1",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Fix Convert to Order dialog crash — empty SelectItem value not allowed",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Replaced SelectItem value='' with value='none' on the Link to Customer Account dropdown — Radix UI Select throws a runtime error when any item has an empty string value"
+        }
+      ]
+    },
+    {
+      "version": "1.26.0",
+      "date": "2026-05-21",
+      "type": "minor",
+      "summary": "Client email notification on order creation + remove customer accounts",
     {
       "version": "1.26.0",
       "date": "2026-05-21",

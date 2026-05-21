@@ -31,7 +31,7 @@ const ORDER_STATUSES = [
 ];
 
 const EMPTY_FORM = {
-  clientName: '', clientEmail: '', customerId: '',
+  clientName: '', clientEmail: '', customerId: 'none',
   origin: '', destination: '', description: '',
   status: 'processing', estimatedDelivery: '',
 };
@@ -91,7 +91,7 @@ export default function AdminQuotesPage() {
         status:            form.status,
         estimatedDelivery: form.estimatedDelivery || undefined,
       };
-      if (form.customerId) body.customerId = Number(form.customerId);
+      if (form.customerId && form.customerId !== 'none') body.customerId = Number(form.customerId);
 
       await api.post('/api/orders', body);
       await api.patch(`/api/quotes/${convertQuote.id}`, { status: 'responded' });
@@ -218,7 +218,7 @@ export default function AdminQuotesPage() {
                     <SelectValue placeholder={L({ en: 'Select…', fr: 'Choisir…' })} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{L({ en: 'None', fr: 'Aucun' })}</SelectItem>
+                    <SelectItem value="none">{L({ en: 'None', fr: 'Aucun' })}</SelectItem>
                     {allCustomers?.map((c) => (
                       <SelectItem key={c.id} value={String(c.id)}>{c.fullName} — {c.email}</SelectItem>
                     ))}
