@@ -1,7 +1,27 @@
 {
-  "version": "1.25.1",
+  "version": "1.25.2",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.25.2",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Convert quote to order directly from the Quotes page",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Quotes page: each row now has a 'Convert to Order' button — clicking it opens the Create Order dialog pre-filled with the customer's name, email, and product interest from the quote"
+        },
+        {
+          "type": "feature",
+          "description": "Quote source summary shown at the top of the dialog (product, quantity, company) so the admin has full context without switching pages"
+        },
+        {
+          "type": "feature",
+          "description": "After the order is successfully created, the source quote is automatically marked as 'Responded' — no manual status update needed"
+        }
+      ]
+    },
     {
       "version": "1.25.1",
       "date": "2026-05-20",
