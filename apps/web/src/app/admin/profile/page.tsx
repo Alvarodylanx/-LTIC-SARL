@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getAdminToken } from '@/lib/auth';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -20,13 +19,11 @@ interface AdminProfile {
 }
 
 async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getAdminToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> || {}),
   };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const res = await fetch(`${API_URL}${path}`, { ...options, headers, credentials: 'include' });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: 'Request failed' }));
     throw new Error(err.message || `HTTP ${res.status}`);
@@ -162,12 +159,11 @@ export default function AdminProfilePage() {
     if (!file) return;
     setUploadingAvatar(true);
     try {
-      const token = getAdminToken();
       const formData = new FormData();
       formData.append('avatar', file);
       const res = await fetch(`${API_URL}/api/admin/profile/avatar`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token || ''}` },
+        credentials: 'include',
         body: formData,
       });
       if (!res.ok) throw new Error(L({ en: 'Upload failed', fr: 'Échec de l\'envoi' }));

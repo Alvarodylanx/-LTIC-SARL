@@ -1,7 +1,27 @@
 {
-  "version": "1.24.2",
+  "version": "1.24.3",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.3",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix admin profile and changelog pages not loading after cookie migration",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Admin profile page: removed stale import of getAdminToken (deleted when auth was migrated to httpOnly cookies), replaced Bearer token header with credentials: 'include' so admin_jwt cookie is sent automatically"
+        },
+        {
+          "type": "fix",
+          "description": "Admin changelog page: same fix — removed getAdminToken import and switched to credentials: 'include' for all admin API calls"
+        },
+        {
+          "type": "fix",
+          "description": "Admin avatar upload: removed Authorization header with token, now sends cookies via credentials: 'include'"
+        }
+      ]
+    },
     {
       "version": "1.24.2",
       "date": "2026-05-20",
