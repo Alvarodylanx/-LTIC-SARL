@@ -1,7 +1,19 @@
 {
-  "version": "1.24.3",
+  "version": "1.24.4",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.4",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix login page skipping the form and redirecting directly to admin dashboard",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Login page: replaced single checkAuth() call (admin-only) with parallel checks of both admin and customer sessions — if admin cookie exists, redirect to /admin/dashboard; if customer cookie exists, redirect to /account; otherwise show the login form. Previously any valid admin_jwt cookie caused the login page to bypass the form entirely and redirect all visitors to /admin/dashboard."
+        }
+      ]
+    },
     {
       "version": "1.24.3",
       "date": "2026-05-20",

@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCustomer } from '@/contexts/CustomerContext';
-import { checkAuth } from '@/lib/auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -29,14 +28,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // If already authenticated, skip the form
+  // If already authenticated redirect to the right place, otherwise show the form
   useEffect(() => {
-    checkAuth()
-      .then((res) => {
-        if (res.authenticated) router.replace(redirect || '/admin/dashboard');
-        else setChecking(false);
-      })
-      .catch(() => setChecking(false));
+    const adminCheck = fetch(`${API_URL}/api/admin/me`, { credentials: 'include' })
+      .then(r => r.ok ? 'admin' : 'none').catch(() => 'none');
+    const customerCheck = fetch(`${API_URL}/api/customers/me`, { credentials: 'include' })
+      .then(r => r.ok ? 'customer' : 'none').catch(() => 'none');
+
+    Promise.all([adminCheck, customerCheck]).then(([adminRole, customerRole]) => {
+      if (adminRole === 'admin') router.replace(redirect || '/admin/dashboard');
+      else if (customerRole === 'customer') router.replace(redirect || '/account');
+      else setChecking(false);
+    });
   }, [router, redirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
