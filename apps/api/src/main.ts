@@ -5,16 +5,25 @@ dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 import { z } from "zod";
 
+const optionalEmail = z.preprocess(
+  (v) => (v === "" ? undefined : v),
+  z.string().email().optional(),
+);
+const optionalUrl = z.preprocess(
+  (v) => (v === "" ? undefined : v),
+  z.string().url().optional(),
+);
+
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL must be a non-empty PostgreSQL connection string"),
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
   PORT: z.string().regex(/^\d+$/).optional(),
-  ADMIN_PASSWORD: z.string().min(1).optional(),
-  ADMIN_EMAIL: z.string().email().optional(),
+  ADMIN_PASSWORD: z.string().optional(),
+  ADMIN_EMAIL: optionalEmail,
   MAIL_HOST: z.string().optional(),
   MAIL_USER: z.string().optional(),
   MAIL_PASS: z.string().optional(),
-  NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
+  NEXT_PUBLIC_SITE_URL: optionalUrl,
 });
 
 const parsed = envSchema.safeParse(process.env);

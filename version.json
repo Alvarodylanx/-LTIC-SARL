@@ -1,7 +1,31 @@
 {
-  "version": "1.24.0",
+  "version": "1.24.1",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.1",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix API startup crash caused by .env misconfiguration",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "SESSION_SECRET extended to 32+ characters — Zod min(32) check was failing, preventing the API from starting"
+        },
+        {
+          "type": "fix",
+          "description": "Removed duplicate ADMIN_EMAIL= (empty) line in .env that was overriding the real value and failing Zod email validation"
+        },
+        {
+          "type": "fix",
+          "description": "Zod env schema: optional email and URL fields now accept empty string (treated as undefined) so blank MAIL_USER=, MAIL_PASS= etc. never crash the API"
+        },
+        {
+          "type": "fix",
+          "description": "Created apps/web/.env.local with NEXT_PUBLIC_API_URL so Next.js picks up the API URL at build time"
+        }
+      ]
+    },
     {
       "version": "1.24.0",
       "date": "2026-05-20",
