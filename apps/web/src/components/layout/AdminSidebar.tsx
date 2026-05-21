@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import { checkAuth, logout } from '@/lib/auth';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAdminProfile } from '@/contexts/AdminProfileContext';
 import { api } from '@/lib/api';
 
 const NAV = [
@@ -29,23 +30,21 @@ const NAV = [
 export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [username, setUsername] = useState<string>('');
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarError, setAvatarError] = useState(false);
   const [unread, setUnread] = useState(0);
   const { language, setLanguage, L } = useLanguage();
+  const { profile } = useAdminProfile();
+
+  const username = profile?.name || '';
+  const avatarUrl = profile?.avatarUrl || null;
 
   useEffect(() => {
     checkAuth().then((res) => {
       if (!res.authenticated) router.push('/auth/login?redirect=/admin/dashboard');
-      else setUsername(res.username || 'Admin');
     });
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-    fetch(`${API_URL}/api/admin/profile`, { credentials: 'include' })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => { if (data?.avatarUrl) { setAvatarUrl(data.avatarUrl); setAvatarError(false); } })
-      .catch(() => {});
   }, [router]);
+
+  useEffect(() => { setAvatarError(false); }, [avatarUrl]);
 
   useEffect(() => {
     const fetchCount = () =>

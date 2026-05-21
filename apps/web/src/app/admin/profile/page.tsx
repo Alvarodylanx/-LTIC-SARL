@@ -8,15 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAdminProfile, AdminProfile } from '@/contexts/AdminProfileContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-
-interface AdminProfile {
-  id: number;
-  name: string;
-  email: string;
-  avatarUrl?: string;
-}
 
 async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
@@ -61,8 +55,8 @@ function PasswordInput({ id, value, onChange, placeholder, autoComplete }: {
 
 export default function AdminProfilePage() {
   const { L } = useLanguage();
+  const { profile, setProfile } = useAdminProfile();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [profile, setProfile] = useState<AdminProfile | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const [nameForm, setNameForm] = useState({ name: '' });
@@ -76,15 +70,19 @@ export default function AdminProfilePage() {
   const [avatarError, setAvatarError] = useState(false);
 
   useEffect(() => {
-    adminFetch<AdminProfile>('/api/admin/profile').then((data) => {
-      setProfile(data);
-      setAvatarError(false);
-      setNameForm({ name: data.name });
-      setEmailForm((prev) => ({ ...prev, email: data.email }));
-    }).catch((err) => {
-      setLoadError(err.message || 'Failed to load profile');
-    });
-  }, []);
+    if (profile) {
+      setNameForm({ name: profile.name });
+      setEmailForm((prev) => ({ ...prev, email: profile.email }));
+    } else {
+      adminFetch<AdminProfile>('/api/admin/profile').then((data) => {
+        setProfile(data);
+      }).catch((err) => {
+        setLoadError(err.message || 'Failed to load profile');
+      });
+    }
+  }, [profile?.id]);
+
+  useEffect(() => { setAvatarError(false); }, [profile?.avatarUrl]);
 
   const handleSaveName = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
+import { AdminProfileProvider } from '@/contexts/AdminProfileContext';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
+    <AdminProfileProvider>
     <div className="flex min-h-screen">
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -41,5 +43,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {children}
       </main>
     </div>
+    </AdminProfileProvider>
   );
 }

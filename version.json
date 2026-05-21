@@ -1,7 +1,31 @@
 {
-  "version": "1.24.9",
+  "version": "1.25.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.25.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Real-time admin profile updates across all admin pages via shared context",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "AdminProfileContext: new React context that holds the admin profile (name, email, avatarUrl) — fetched once on mount and shared across all admin components"
+        },
+        {
+          "type": "feature",
+          "description": "AdminLayout: wraps all admin pages with AdminProfileProvider so every page gets the same live profile state"
+        },
+        {
+          "type": "feature",
+          "description": "Profile page: uses setProfile from context on every successful save (name, email, avatar) — sidebar and any other consumer instantly reflect the change without page reload"
+        },
+        {
+          "type": "feature",
+          "description": "AdminSidebar: reads username and avatarUrl from context instead of fetching independently — updates immediately when the profile page saves"
+        }
+      ]
+    },
     {
       "version": "1.24.9",
       "date": "2026-05-20",
