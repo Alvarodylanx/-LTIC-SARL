@@ -3,13 +3,27 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
-// Fail fast if required environment variables are missing
-const REQUIRED_ENV = ["DATABASE_URL", "SESSION_SECRET"];
-for (const key of REQUIRED_ENV) {
-  if (!process.env[key]) {
-    console.error(`FATAL: Missing required environment variable: ${key}`);
-    process.exit(1);
+import { z } from "zod";
+
+const envSchema = z.object({
+  DATABASE_URL: z.string().min(1, "DATABASE_URL must be a non-empty PostgreSQL connection string"),
+  SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
+  PORT: z.string().regex(/^\d+$/).optional(),
+  ADMIN_PASSWORD: z.string().min(1).optional(),
+  ADMIN_EMAIL: z.string().email().optional(),
+  MAIL_HOST: z.string().optional(),
+  MAIL_USER: z.string().optional(),
+  MAIL_PASS: z.string().optional(),
+  NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
+});
+
+const parsed = envSchema.safeParse(process.env);
+if (!parsed.success) {
+  console.error("FATAL: Invalid environment variables:");
+  for (const issue of parsed.error.issues) {
+    console.error(`  ${issue.path.join(".")}: ${issue.message}`);
   }
+  process.exit(1);
 }
 
 import { NestFactory } from "@nestjs/core";

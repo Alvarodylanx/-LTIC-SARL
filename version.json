@@ -1,7 +1,23 @@
 {
-  "version": "1.18.0",
+  "version": "1.19.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.19.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Zod env var validation at API startup",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "API startup now validates all environment variables with Zod schema — SESSION_SECRET must be ≥32 chars, DATABASE_URL must be non-empty, ADMIN_EMAIL must be a valid email if set; prints each failing field with its reason before exiting"
+        },
+        {
+          "type": "fix",
+          "description": "Replaced manual REQUIRED_ENV for-loop with structured Zod validation that catches misconfigured optional vars (bad email format, short secrets) in addition to missing required ones"
+        }
+      ]
+    },
     {
       "version": "1.18.0",
       "date": "2026-05-20",
