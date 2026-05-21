@@ -1,7 +1,31 @@
 {
-  "version": "1.17.0",
+  "version": "1.18.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.18.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Back-to-top button and breadcrumb navigation on product and news detail pages",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "BackToTop button: appears after scrolling 400px, smooth-scrolls to top, positioned above the WhatsApp floating button"
+        },
+        {
+          "type": "feature",
+          "description": "Breadcrumb component: reusable nav with ChevronRight separators, clickable links for parent routes, bold current page label"
+        },
+        {
+          "type": "feature",
+          "description": "Product detail page: breadcrumb Home > Products > Category > Product Name replaces the back arrow link"
+        },
+        {
+          "type": "feature",
+          "description": "News article page: breadcrumb Home > News > Article Title replaces the back arrow link"
+        }
+      ]
+    },
     {
       "version": "1.17.0",
       "date": "2026-05-20",

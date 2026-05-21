@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Package, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
@@ -90,13 +91,13 @@ export default function ProductDetailPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       <motion.div variants={stagger} initial="hidden" animate="show"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div variants={fadeInLeft}>
-          <Link href="/products" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors">
-            <motion.span whileHover={{ x: -3 }} transition={{ type: 'spring', stiffness: 400 }}>
-              <ArrowLeft className="h-4 w-4" />
-            </motion.span>
-            {L({ en: 'Back to Products', fr: 'Retour aux Produits' })}
-          </Link>
+        <motion.div variants={fadeInLeft} className="mb-8">
+          <Breadcrumb items={[
+            { label: L({ en: 'Home', fr: 'Accueil' }), href: '/' },
+            { label: L({ en: 'Products', fr: 'Produits' }), href: '/products' },
+            ...(product.categoryName ? [{ label: product.categoryName }] : []),
+            { label: L({ en: product.nameEn, fr: product.nameFr }) },
+          ]} />
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">

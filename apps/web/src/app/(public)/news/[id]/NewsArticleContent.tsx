@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { format } from 'date-fns';
@@ -63,13 +64,12 @@ export default function NewsArticlePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <motion.div variants={stagger} initial="hidden" animate="show"
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div variants={fadeInLeft}>
-          <Link href="/news" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-8 transition-colors group">
-            <motion.span whileHover={{ x: -3 }} transition={{ type: 'spring', stiffness: 400 }}>
-              <ArrowLeft className="h-4 w-4" />
-            </motion.span>
-            {L({ en: 'Back to News', fr: 'Retour aux Actualités' })}
-          </Link>
+        <motion.div variants={fadeInLeft} className="mb-8">
+          <Breadcrumb items={[
+            { label: L({ en: 'Home', fr: 'Accueil' }), href: '/' },
+            { label: L({ en: 'News', fr: 'Actualités' }), href: '/news' },
+            { label: L({ en: article.titleEn, fr: article.titleFr }) },
+          ]} />
         </motion.div>
 
         {article.imageUrl && (
