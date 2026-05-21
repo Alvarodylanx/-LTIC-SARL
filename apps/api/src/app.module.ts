@@ -30,7 +30,7 @@ export const DB_PROVIDER = "DB_POOL";
 @Module({
   imports: [
     ThrottlerModule.forRoot([
-      { name: "login",   ttl: 15 * 60 * 1000, limit: 5  },  // 5 attempts per 15 min
+      { name: "login",   ttl: 15 * 60 * 1000, limit: 20 },  // 20 attempts per 15 min
       { name: "form",    ttl: 60 * 60 * 1000, limit: 10 },  // 10 per hour
       { name: "general", ttl: 60 * 1000,      limit: 100 }, // 100 per minute
     ]),

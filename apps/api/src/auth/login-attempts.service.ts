@@ -5,9 +5,9 @@ interface AttemptRecord {
   lockedUntil: number;
 }
 
-const LOCKOUT_THRESHOLD = 5;
-const LOCKOUT_DURATION_MS = 30 * 60 * 1000; // 30 minutes
-const WINDOW_MS = 15 * 60 * 1000;           // 15-minute window
+const LOCKOUT_THRESHOLD = 10;
+const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+const WINDOW_MS = 15 * 60 * 1000;          // 15-minute window
 
 @Injectable()
 export class LoginAttemptsService {
