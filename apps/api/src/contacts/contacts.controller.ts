@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { ContactsService } from './contacts.service';
 import { NewContact, Contact } from '@ltic/db';
 import { AuthGuard } from '../auth/auth.guard';
 
+@SkipThrottle({ login: true, form: true })
 @Controller('contacts')
 export class ContactsController {
   constructor(private readonly svc: ContactsService) {}

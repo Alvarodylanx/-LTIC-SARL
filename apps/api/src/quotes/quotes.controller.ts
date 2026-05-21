@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { QuotesService } from './quotes.service';
 import { NewQuote, Quote } from '@ltic/db';
 import { AuthGuard } from '../auth/auth.guard';
 
+@SkipThrottle({ login: true, form: true })
 @Controller('quotes')
 export class QuotesController {
   constructor(private readonly svc: QuotesService) {}

@@ -1,7 +1,9 @@
 import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { SettingsService } from './settings.service';
 import { AuthGuard } from '../auth/auth.guard';
 
+@SkipThrottle({ login: true, form: true })
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly svc: SettingsService) {}

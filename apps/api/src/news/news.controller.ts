@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { NewsService } from './news.service';
 import { NewNewsArticle, NewsArticle } from '@ltic/db';
 import { AuthGuard } from '../auth/auth.guard';
 
+@SkipThrottle({ login: true, form: true })
 @Controller('news')
 export class NewsController {
   constructor(private readonly svc: NewsService) {}

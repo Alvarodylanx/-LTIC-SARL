@@ -2,6 +2,7 @@ import {
   Controller, Post, UseGuards, UseInterceptors,
   UploadedFile, BadRequestException,
 } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
@@ -19,6 +20,7 @@ const ALLOWED_MIME_PREFIXES = [
   'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska', 'video/webm',
 ];
 
+@SkipThrottle({ login: true, form: true })
 @Controller("upload")
 export class UploadController {
   @Post()

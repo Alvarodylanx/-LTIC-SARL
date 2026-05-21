@@ -7,6 +7,7 @@ import { diskStorage } from "multer";
 import * as path from "path";
 import * as fs from "fs";
 import { JwtService } from "@nestjs/jwt";
+import { SkipThrottle } from "@nestjs/throttler";
 import { AuthGuard } from "../auth/auth.guard";
 import { AdminProfileService } from "./admin-profile.service";
 import { Request } from "express";
@@ -15,6 +16,7 @@ const uploadsDir = path.join(__dirname, "../../../../uploads");
 
 const validTokens = new Set<string>();
 
+@SkipThrottle({ login: true, form: true })
 @Controller("admin")
 export class AdminController {
   constructor(

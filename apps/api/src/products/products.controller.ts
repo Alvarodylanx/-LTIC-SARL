@@ -1,4 +1,5 @@
 ﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, UseGuards } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 import { ProductsService } from "./products.service";
 import { AuthGuard } from "../auth/auth.guard";
 
@@ -21,6 +22,7 @@ interface ProductQuery {
   offset?: string;
 }
 
+@SkipThrottle({ login: true, form: true })
 @Controller("products")
 export class ProductsController {
   constructor(private svc: ProductsService) {}

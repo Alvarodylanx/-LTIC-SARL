@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Res, BadRequestException } from "@nestjs/common";
-import { Throttle } from "@nestjs/throttler";
+import { Throttle, SkipThrottle } from "@nestjs/throttler";
 import { Response } from "express";
 import { UnifiedAuthService } from "./unified-auth.service";
 
@@ -10,6 +10,7 @@ const COOKIE_OPTS = {
   path: "/",
 };
 
+@SkipThrottle({ login: true, form: true })
 @Controller("auth")
 export class UnifiedAuthController {
   constructor(private readonly svc: UnifiedAuthService) {}

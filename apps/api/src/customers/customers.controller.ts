@@ -3,7 +3,7 @@ import {
   UseInterceptors, UploadedFile, BadRequestException
 } from "@nestjs/common";
 import { Response } from "express";
-import { Throttle } from "@nestjs/throttler";
+import { Throttle, SkipThrottle } from "@nestjs/throttler";
 import { AuthGuard } from "../auth/auth.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
@@ -19,6 +19,7 @@ import { customers as customersTable, orders, quotes } from "@ltic/db";
 
 const uploadsDir = path.join(__dirname, "../../../../uploads");
 
+@SkipThrottle({ login: true, form: true })
 @Controller("customers")
 export class CustomersController {
   constructor(

@@ -1,7 +1,23 @@
 {
-  "version": "1.24.1",
+  "version": "1.24.2",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.2",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix admin login redirect loop caused by ThrottlerGuard applying login throttle to auth-check endpoints",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Added @SkipThrottle({ login: true, form: true }) at class level to all 16 API controllers — the global ThrottlerGuard was applying the restrictive login throttle (5 req/15 min) to every route including GET /admin/me, causing the admin panel to return 429 after just 5 page loads and redirect back to the login screen"
+        },
+        {
+          "type": "fix",
+          "description": "Login and form-submission endpoints that need rate limiting (POST /auth/login, POST /auth/forgot-password, POST /contacts, POST /quotes, POST /customers/login) retain their throttles via per-method @Throttle() decorators which override the class-level skip"
+        }
+      ]
+    },
     {
       "version": "1.24.1",
       "date": "2026-05-20",

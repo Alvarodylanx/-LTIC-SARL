@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, UseGuards } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 import * as fs from "fs";
 import * as path from "path";
 import { AuthGuard } from "../auth/auth.guard";
@@ -18,6 +19,7 @@ function writeChangelog(data: any) {
   fs.writeFileSync(CHANGELOG_PATH, JSON.stringify(data, null, 2), "utf-8");
 }
 
+@SkipThrottle({ login: true, form: true })
 @Controller("version")
 export class VersionController {
   @Get()

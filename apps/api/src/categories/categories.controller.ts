@@ -1,4 +1,5 @@
 ﻿import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 import { CategoriesService } from "./categories.service";
 import { AuthGuard } from "../auth/auth.guard";
 
@@ -10,6 +11,7 @@ interface CategoryBody {
   imageUrl?: string;
 }
 
+@SkipThrottle({ login: true, form: true })
 @Controller("categories")
 export class CategoriesController {
   constructor(private svc: CategoriesService) {}

@@ -1,9 +1,11 @@
 import { Controller, Get, Patch, Delete, Param, UseGuards, ParseIntPipe, Sse, MessageEvent } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Observable } from 'rxjs';
 import { NotificationsService } from './notifications.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { SseAuthGuard } from '../auth/sse-auth.guard';
 
+@SkipThrottle({ login: true, form: true })
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly svc: NotificationsService) {}
