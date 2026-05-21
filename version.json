@@ -1,7 +1,27 @@
 {
-  "version": "1.28.1",
+  "version": "1.28.2",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.28.2",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Company stats now configurable from Admin → Settings panel",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Admin Settings page: new 'Company Statistics' section with 4 editable fields — Countries Served, Clients Worldwide, Years of Experience, Shipments Completed"
+        },
+        {
+          "type": "feature",
+          "description": "Home page stats bar: reads stat_countries, stat_clients, stat_years, stat_shipments from settings API; falls back to defaults if not configured"
+        },
+        {
+          "type": "feature",
+          "description": "About page stats bar: same live-from-settings pattern — owner updates once in admin panel and both pages reflect the change instantly"
+        }
+      ]
+    },
     {
       "version": "1.28.1",
       "date": "2026-05-21",

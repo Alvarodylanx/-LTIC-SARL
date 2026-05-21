@@ -3,10 +3,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { CheckCircle2, Target, Globe2, ShieldCheck, Lightbulb, Leaf, TrendingUp, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { api } from '@/lib/api';
 import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
+
+const statDefs = [
+  { key: 'stat_countries', fallback: '30+',  en: 'Countries', fr: 'Pays' },
+  { key: 'stat_clients',   fallback: '500+', en: 'Clients',   fr: 'Clients' },
+  { key: 'stat_years',     fallback: '5+',   en: 'Years',     fr: 'Années' },
+  { key: 'stat_shipments', fallback: '10K+', en: 'Shipments', fr: 'Expéditions' },
+];
 
 const values = [
   { icon: ShieldCheck, en: 'Reliability', fr: 'Fiabilité', descEn: 'Committed to delivering on every promise — on time, in full, and with complete transparency.', descFr: 'Engagés à tenir chaque promesse — à temps, intégralement et avec une totale transparence.' },
@@ -19,6 +28,16 @@ const values = [
 
 export default function AboutPage() {
   const { L } = useLanguage();
+  const { data: siteSettings } = useQuery<Record<string, string>>({
+    queryKey: ['settings'],
+    queryFn: () => api.get('/api/settings'),
+    staleTime: 5 * 60 * 1000,
+  });
+  const stats = statDefs.map((s) => ({
+    value: siteSettings?.[s.key] || s.fallback,
+    en: s.en,
+    fr: s.fr,
+  }));
 
   return (
     <>
@@ -134,7 +153,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportOnce}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[{ value: '30+', en: 'Countries', fr: 'Pays' }, { value: '500+', en: 'Clients', fr: 'Clients' }, { value: '5+', en: 'Years', fr: 'Années' }, { value: '10K+', en: 'Shipments', fr: 'Expéditions' }].map((stat) => (
+            {stats.map((stat) => (
               <motion.div key={stat.value} variants={scaleIn}>
                 <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
                 <div className="text-sidebar-foreground/80 text-sm font-medium uppercase tracking-wider">{L(stat)}</div>

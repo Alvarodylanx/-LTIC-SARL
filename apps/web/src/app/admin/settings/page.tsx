@@ -11,6 +11,13 @@ import { Label } from '@/components/ui/label';
 import { api } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+const statsFields = [
+  { key: 'stat_countries',  label: 'Countries Served / Pays Desservis',      placeholder: '30+' },
+  { key: 'stat_clients',    label: 'Clients Worldwide / Clients Mondiaux',    placeholder: '500+' },
+  { key: 'stat_years',      label: 'Years of Experience / Années d\'Expérience', placeholder: '5+' },
+  { key: 'stat_shipments',  label: 'Shipments Completed / Expéditions Réalisées', placeholder: '10K+' },
+];
+
 const contactFields = [
   { key: 'company_address', label: 'Address / Adresse',    placeholder: 'Douala, Cameroon / International Operations' },
   { key: 'company_phone',   label: 'Phone / Téléphone',    placeholder: '+237 6XX XXX XXX' },
@@ -67,6 +74,19 @@ export default function AdminSettingsPage() {
       <div className="max-w-2xl">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="bg-card border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
+            <div>
+              <h2 className="text-lg font-bold border-b pb-4">{L({ en: 'Company Statistics', fr: 'Statistiques de l\'entreprise' })}</h2>
+              <p className="text-sm text-muted-foreground mt-3 mb-4">{L({ en: 'These numbers appear on the home page and About page.', fr: 'Ces chiffres apparaissent sur la page d\'accueil et la page À propos.' })}</p>
+              <div className="space-y-4">
+                {statsFields.map(({ key, label, placeholder }) => (
+                  <div key={key}>
+                    <Label htmlFor={key} className="font-semibold">{label}</Label>
+                    <Input id={key} {...register(key)} placeholder={placeholder} className="mt-1" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <h2 className="text-lg font-bold border-b pb-4">{L({ en: 'Company Contact Info', fr: 'Coordonnées de l\'entreprise' })}</h2>
             {contactFields.map(({ key, label, placeholder }) => (
               <div key={key}>

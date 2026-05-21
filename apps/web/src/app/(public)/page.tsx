@@ -11,11 +11,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { fadeInUp, fadeInLeft, fadeInRight, fadeIn, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
 
-const stats = [
-  { value: '30+', en: 'Countries Served', fr: 'Pays Desservis' },
-  { value: '500+', en: 'Clients Worldwide', fr: 'Clients Mondiaux' },
-  { value: '5+', en: 'Years of Experience', fr: "Années d'Expérience" },
-  { value: '10K+', en: 'Shipments Completed', fr: 'Expéditions Réalisées' },
+const statDefs = [
+  { key: 'stat_countries',  fallback: '30+',  en: 'Countries Served',      fr: 'Pays Desservis' },
+  { key: 'stat_clients',    fallback: '500+', en: 'Clients Worldwide',      fr: 'Clients Mondiaux' },
+  { key: 'stat_years',      fallback: '5+',   en: 'Years of Experience',    fr: "Années d'Expérience" },
+  { key: 'stat_shipments',  fallback: '10K+', en: 'Shipments Completed',    fr: 'Expéditions Réalisées' },
 ];
 
 const services = [
@@ -75,6 +75,17 @@ export default function HomePage() {
     queryKey: ['products', 'featured'],
     queryFn: () => api.get('/api/products/featured'),
   });
+  const { data: siteSettings } = useQuery<Record<string, string>>({
+    queryKey: ['settings'],
+    queryFn: () => api.get('/api/settings'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const stats = statDefs.map((s) => ({
+    value: siteSettings?.[s.key] || s.fallback,
+    en: s.en,
+    fr: s.fr,
+  }));
 
   return (
     <>
