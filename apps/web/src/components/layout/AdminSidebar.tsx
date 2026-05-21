@@ -30,6 +30,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const [username, setUsername] = useState<string>('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [unread, setUnread] = useState(0);
   const { language, setLanguage, L } = useLanguage();
 
@@ -38,6 +39,11 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
       if (!res.authenticated) router.push('/auth/login?redirect=/admin/dashboard');
       else setUsername(res.username || 'Admin');
     });
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    fetch(`${API_URL}/api/admin/profile`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.avatarUrl) setAvatarUrl(data.avatarUrl); })
+      .catch(() => {});
   }, [router]);
 
   useEffect(() => {
@@ -81,9 +87,19 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
         </div>
         <p className="text-xs text-sidebar-foreground/60">{L({ en: 'Admin Panel', fr: 'Panneau admin' })}</p>
         {username && (
-          <p className="text-xs text-sidebar-foreground/60 mt-1">
-            {L({ en: 'Logged in as', fr: 'Connecté en tant que' })} <span className="text-sidebar-foreground">{username}</span>
-          </p>
+          <div className="flex items-center gap-2 mt-3">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={username} className="h-8 w-8 rounded-full object-cover shrink-0 border border-sidebar-border" />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-sidebar-border">
+                <span className="text-xs font-bold text-primary">{username.charAt(0).toUpperCase()}</span>
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-sidebar-foreground truncate">{username}</p>
+              <p className="text-[10px] text-sidebar-foreground/50">{L({ en: 'Administrator', fr: 'Administrateur' })}</p>
+            </div>
+          </div>
         )}
       </div>
 

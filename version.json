@@ -1,7 +1,19 @@
 {
-  "version": "1.24.4",
+  "version": "1.24.5",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.5",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Display admin profile avatar in sidebar header",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "AdminSidebar: fetch GET /api/admin/profile on mount (credentials: include) to get avatarUrl; display the avatar image (or an initial-letter fallback circle) next to the admin name in the sidebar header"
+        }
+      ]
+    },
     {
       "version": "1.24.4",
       "date": "2026-05-20",
