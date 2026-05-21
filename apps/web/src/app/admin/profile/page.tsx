@@ -73,10 +73,12 @@ export default function AdminProfilePage() {
   const [savingEmail, setSavingEmail] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   useEffect(() => {
     adminFetch<AdminProfile>('/api/admin/profile').then((data) => {
       setProfile(data);
+      setAvatarError(false);
       setNameForm({ name: data.name });
       setEmailForm((prev) => ({ ...prev, email: data.email }));
     }).catch((err) => {
@@ -172,6 +174,7 @@ export default function AdminProfilePage() {
       if (!res.ok) throw new Error(L({ en: 'Upload failed', fr: 'Échec de l\'envoi' }));
       const updated = await res.json();
       setProfile(updated);
+      setAvatarError(false);
       toast.success(L({ en: 'Profile picture updated', fr: 'Photo de profil mise à jour' }));
     } catch (err: any) {
       toast.error(err.message);
@@ -211,8 +214,13 @@ export default function AdminProfilePage() {
           </h3>
           <div className="flex items-center gap-4">
             <div className="relative">
-              {profile.avatarUrl ? (
-                <img src={`${API_URL}${profile.avatarUrl}`} alt={profile.name} className="w-20 h-20 rounded-full object-cover border-4 border-background shadow-lg" />
+              {profile.avatarUrl && !avatarError ? (
+                <img
+                  src={`${API_URL}${profile.avatarUrl}`}
+                  alt={profile.name}
+                  onError={() => setAvatarError(true)}
+                  className="w-20 h-20 rounded-full object-cover border-4 border-background shadow-lg"
+                />
               ) : (
                 <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center border-4 border-background shadow-lg">
                   <span className="text-white text-2xl font-bold">{profile.name[0]?.toUpperCase()}</span>

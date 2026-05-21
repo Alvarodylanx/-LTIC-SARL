@@ -1,7 +1,23 @@
 {
-  "version": "1.24.7",
+  "version": "1.24.8",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.8",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix broken profile picture display on My Profile page and sidebar",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Profile page: added avatarError state + onError handler on the avatar <img> — broken image no longer shows alt text overlaid on the circle; falls back cleanly to the initial-letter circle instead"
+        },
+        {
+          "type": "fix",
+          "description": "AdminSidebar: same onError fallback pattern applied to the sidebar avatar thumbnail"
+        }
+      ]
+    },
     {
       "version": "1.24.7",
       "date": "2026-05-20",
