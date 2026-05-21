@@ -36,9 +36,16 @@ export class QuotesService {
       link: '/admin/quotes',
     }).catch(() => {});
     this.mail.sendAdminNotification(
-      `New Quote Request from ${data.name ?? 'Unknown'}`,
-      this.mail.quoteEmail(data),
+      `New Quote Request from ${data.contactName ?? 'Unknown'}`,
+      this.mail.quoteEmail(data as Record<string, string | undefined>),
     ).catch(() => {});
+    if (data.email) {
+      this.mail.send(
+        data.email,
+        'Quote Request Received — LTIC SARL',
+        this.mail.quoteConfirmationEmail({ contactName: data.contactName ?? '', productInterest: data.productInterest ?? '', email: data.email }),
+      ).catch(() => {});
+    }
     return q;
   }
 

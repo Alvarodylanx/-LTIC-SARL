@@ -12,6 +12,7 @@ export interface Customer {
   country?: string;
   company?: string;
   avatarUrl?: string;
+  emailVerified?: boolean;
 }
 
 interface CustomerContextType {

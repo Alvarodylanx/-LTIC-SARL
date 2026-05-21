@@ -30,8 +30,15 @@ export class ContactsService {
     }).catch(() => {});
     this.mail.sendAdminNotification(
       `New Contact Message from ${data.name ?? 'Unknown'}`,
-      this.mail.contactEmail(data),
+      this.mail.contactEmail(data as Record<string, string | undefined>),
     ).catch(() => {});
+    if (data.email) {
+      this.mail.send(
+        data.email,
+        'Message Received — LTIC SARL',
+        this.mail.contactConfirmationEmail({ name: data.name ?? '', subject: data.subject ?? '' }),
+      ).catch(() => {});
+    }
     return c;
   }
 

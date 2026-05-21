@@ -40,4 +40,17 @@ export class UnifiedAuthController {
     res.clearCookie("customer_jwt", { path: "/" });
     return { success: true };
   }
+
+  @Post("forgot-password")
+  @Throttle({ form: {} })
+  async forgotPassword(@Body() body: { email: string }) {
+    await this.svc.forgotPassword(body.email || "");
+    return { success: true };
+  }
+
+  @Post("reset-password")
+  async resetPassword(@Body() body: { token: string; newPassword: string }) {
+    await this.svc.resetPassword(body.token, body.newPassword);
+    return { success: true };
+  }
 }

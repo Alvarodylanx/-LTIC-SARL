@@ -1,7 +1,55 @@
 {
-  "version": "1.23.0",
+  "version": "1.24.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Password reset, email verification, and transactional confirmation emails",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "POST /api/auth/forgot-password: generates a 32-byte secure token, stores it in password_reset_tokens table (1-hour TTL), sends reset-link email; always returns 200 to prevent email enumeration"
+        },
+        {
+          "type": "feature",
+          "description": "POST /api/auth/reset-password: validates token not used and not expired, bcrypt-hashes the new password, marks token used — returns 400 on bad/expired token"
+        },
+        {
+          "type": "feature",
+          "description": "Frontend forgot-password page at /auth/forgot-password: email form with success state; forgot-password link added below the password field on the login page"
+        },
+        {
+          "type": "feature",
+          "description": "Frontend reset-password page at /auth/reset-password: reads ?token= from URL, validates and submits new password, auto-redirects to login on success"
+        },
+        {
+          "type": "feature",
+          "description": "Email verification on customer registration: generates a 32-byte secure token with 24-hour TTL, sends verification email; GET /api/customers/verify?token= endpoint marks account as verified"
+        },
+        {
+          "type": "feature",
+          "description": "Frontend verify-email page at /auth/verify-email: auto-verifies on load, shows success/error state, refreshes customer profile"
+        },
+        {
+          "type": "feature",
+          "description": "Account dashboard: amber warning banner shown when emailVerified is false with instructions to check inbox"
+        },
+        {
+          "type": "feature",
+          "description": "Confirmation emails: quote submitters receive a branded confirmation email; contact form submitters receive a confirmation email (fire-and-forget, does not block response)"
+        },
+        {
+          "type": "fix",
+          "description": "customers schema: added emailVerified, emailVerificationToken, emailVerificationExpires columns to Drizzle schema for type-safe access"
+        },
+        {
+          "type": "fix",
+          "description": "sanitize() in customers.service: now strips emailVerificationToken and emailVerificationExpires from API responses in addition to passwordHash"
+        }
+      ]
+    },
     {
       "version": "1.23.0",
       "date": "2026-05-20",

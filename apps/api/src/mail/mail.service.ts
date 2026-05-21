@@ -23,6 +23,16 @@ export class MailService {
     }
   }
 
+  async send(to: string, subject: string, html: string): Promise<void> {
+    if (!this.transporter) return;
+    const from = process.env.MAIL_FROM || process.env.MAIL_USER;
+    try {
+      await this.transporter.sendMail({ from: `"LTIC SARL" <${from}>`, to, subject, html });
+    } catch (err: any) {
+      this.logger.error(`Failed to send email to ${to}: ${err.message}`);
+    }
+  }
+
   async sendAdminNotification(subject: string, html: string): Promise<void> {
     if (!this.transporter) return;
     const to = process.env.ADMIN_EMAIL || process.env.MAIL_USER;
@@ -34,7 +44,51 @@ export class MailService {
     }
   }
 
-  quoteEmail(quote: any): string {
+  private siteUrl(): string {
+    return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  }
+
+  quoteConfirmationEmail(quote: { contactName: string; productInterest: string; email: string }): string {
+    return `
+      <div style="font-family:sans-serif;max-width:600px;margin:auto">
+        <h2 style="color:#1a56db">Quote Request Received — LTIC SARL</h2>
+        <p>Dear ${quote.contactName},</p>
+        <p>Thank you for your interest in <strong>${quote.productInterest}</strong>. We have received your request and our team will get back to you within 2 business days.</p>
+        <p style="margin-top:24px;color:#6b7280">LTIC SARL — International Logistics & Trade</p>
+      </div>`;
+  }
+
+  contactConfirmationEmail(contact: { name: string; subject: string }): string {
+    return `
+      <div style="font-family:sans-serif;max-width:600px;margin:auto">
+        <h2 style="color:#1a56db">Message Received — LTIC SARL</h2>
+        <p>Dear ${contact.name},</p>
+        <p>Thank you for contacting us regarding <strong>"${contact.subject}"</strong>. We have received your message and will respond within 1–2 business days.</p>
+        <p style="margin-top:24px;color:#6b7280">LTIC SARL — International Logistics & Trade</p>
+      </div>`;
+  }
+
+  passwordResetEmail(resetUrl: string): string {
+    return `
+      <div style="font-family:sans-serif;max-width:600px;margin:auto">
+        <h2 style="color:#1a56db">Password Reset — LTIC SARL</h2>
+        <p>You requested a password reset. Click the button below to set a new password. This link expires in 1 hour.</p>
+        <p style="margin-top:24px"><a href="${resetUrl}" style="background:#1a56db;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none">Reset Password</a></p>
+        <p style="margin-top:16px;color:#6b7280;font-size:12px">If you did not request this, you can safely ignore this email.</p>
+      </div>`;
+  }
+
+  emailVerificationEmail(verifyUrl: string, name: string): string {
+    return `
+      <div style="font-family:sans-serif;max-width:600px;margin:auto">
+        <h2 style="color:#1a56db">Verify Your Email — LTIC SARL</h2>
+        <p>Welcome, ${name}! Please verify your email address to activate your account.</p>
+        <p style="margin-top:24px"><a href="${verifyUrl}" style="background:#1a56db;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none">Verify Email</a></p>
+        <p style="margin-top:16px;color:#6b7280;font-size:12px">This link expires in 24 hours.</p>
+      </div>`;
+  }
+
+  quoteEmail(quote: Record<string, string | undefined>): string {
     return `
       <div style="font-family:sans-serif;max-width:600px;margin:auto">
         <h2 style="color:#1a56db">New Quote Request — LTIC SARL</h2>
@@ -51,7 +105,7 @@ export class MailService {
       </div>`;
   }
 
-  contactEmail(contact: any): string {
+  contactEmail(contact: Record<string, string | undefined>): string {
     return `
       <div style="font-family:sans-serif;max-width:600px;margin:auto">
         <h2 style="color:#1a56db">New Contact Message — LTIC SARL</h2>

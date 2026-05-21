@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Package, FileText, Settings, ArrowRight, MapPin, Globe } from 'lucide-react';
+import { Package, FileText, Settings, ArrowRight, MapPin, Globe, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCustomer } from '@/contexts/CustomerContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -45,6 +45,23 @@ export default function AccountDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Email verification banner */}
+      {customer.emailVerified === false && (
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm">
+          <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="font-medium text-amber-800">
+              {L({ en: 'Please verify your email address', fr: 'Veuillez vérifier votre adresse e-mail' })}
+            </p>
+            <p className="text-amber-700 mt-0.5">
+              {L({ en: 'A verification link was sent to ', fr: 'Un lien de vérification a été envoyé à ' })}
+              <strong>{customer.email}</strong>.{' '}
+              {L({ en: 'Check your inbox and click the link to activate full account features.', fr: 'Consultez votre boîte mail et cliquez sur le lien pour activer toutes les fonctionnalités.' })}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Welcome */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}

@@ -1,10 +1,12 @@
-import { Injectable, Inject, ConflictException, UnauthorizedException, NotFoundException } from "@nestjs/common";
+import { Injectable, Inject, ConflictException, UnauthorizedException, NotFoundException, BadRequestException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
+import * as crypto from "crypto";
 import { eq } from "drizzle-orm";
 import { DB_TOKEN, Db } from "../db/db.module";
 import { customers } from "@ltic/db";
 import { LoginAttemptsService } from "../auth/login-attempts.service";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class CustomersService {
@@ -12,6 +14,7 @@ export class CustomersService {
     @Inject(DB_TOKEN) private db: Db,
     private jwtService: JwtService,
     private loginAttempts: LoginAttemptsService,
+    private mail: MailService,
   ) {}
 
   async register(body: {
@@ -32,6 +35,9 @@ export class CustomersService {
     }
 
     const passwordHash = await bcrypt.hash(body.password, 10);
+    const emailVerificationToken = crypto.randomBytes(32).toString("hex");
+    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
     const [customer] = await this.db
       .insert(customers)
       .values({
@@ -40,8 +46,15 @@ export class CustomersService {
         passwordHash,
         phone: body.phone ?? null,
         country: body.country ?? null,
+        emailVerified: false,
+        emailVerificationToken,
+        emailVerificationExpires,
       })
       .returning();
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const verifyUrl = `${siteUrl}/auth/verify-email?token=${emailVerificationToken}`;
+    this.mail.send(body.email, "Verify Your Email — LTIC SARL", this.mail.emailVerificationEmail(verifyUrl, body.fullName)).catch(() => {});
 
     const token = await this.jwtService.signAsync(
       { sub: customer.id, email: customer.email, role: "customer" },
@@ -136,8 +149,29 @@ export class CustomersService {
     return this.sanitize(updated);
   }
 
+  async verifyEmail(token: string) {
+    const [customer] = await this.db
+      .select()
+      .from(customers)
+      .where(eq(customers.emailVerificationToken, token))
+      .limit(1);
+
+    if (!customer) throw new BadRequestException("Invalid or expired verification link");
+    if (customer.emailVerified) return { success: true };
+    if (customer.emailVerificationExpires && customer.emailVerificationExpires < new Date()) {
+      throw new BadRequestException("Verification link has expired");
+    }
+
+    await this.db
+      .update(customers)
+      .set({ emailVerified: true, emailVerificationToken: null, emailVerificationExpires: null, updatedAt: new Date() })
+      .where(eq(customers.id, customer.id));
+
+    return { success: true };
+  }
+
   private sanitize(customer: any) {
-    const { passwordHash, ...rest } = customer;
+    const { passwordHash, emailVerificationToken, emailVerificationExpires, ...rest } = customer;
     return rest;
   }
 }

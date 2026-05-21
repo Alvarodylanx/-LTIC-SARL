@@ -1,5 +1,5 @@
 import {
-  Controller, Post, Get, Patch, Body, Req, Res, UseGuards,
+  Controller, Post, Get, Patch, Body, Req, Res, UseGuards, Query,
   UseInterceptors, UploadedFile, BadRequestException
 } from "@nestjs/common";
 import { Response } from "express";
@@ -67,6 +67,12 @@ export class CustomersController {
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie("customer_jwt", { path: "/" });
     return { success: true };
+  }
+
+  @Get("verify")
+  verifyEmail(@Query("token") token: string) {
+    if (!token) throw new BadRequestException("token is required");
+    return this.customersService.verifyEmail(token);
   }
 
   @UseGuards(CustomerGuard)
