@@ -71,37 +71,46 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
     router.push('/auth/login');
   };
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
   return (
     <div className="w-64 min-h-screen h-full bg-sidebar text-sidebar-foreground flex flex-col overflow-y-auto">
-      <div className="p-6 border-b border-sidebar-border">
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <ShieldAlert className="h-5 w-5 text-primary" />
-            <span className="font-bold">LTIC SARL</span>
-          </div>
-          {onClose && (
-            <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-sidebar-accent/50 transition-colors">
-              <X className="h-4 w-4" />
-            </button>
-          )}
+
+      {/* Brand row */}
+      <div className="px-5 pt-5 pb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ShieldAlert className="h-5 w-5 text-primary" />
+          <span className="font-bold tracking-wide">LTIC SARL</span>
         </div>
-        <p className="text-xs text-sidebar-foreground/60">{L({ en: 'Admin Panel', fr: 'Panneau admin' })}</p>
-        {username && (
-          <div className="flex items-center gap-2 mt-3">
-            {avatarUrl ? (
-              <img src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${avatarUrl}`} alt={username} className="h-8 w-8 rounded-full object-cover shrink-0 border border-sidebar-border" />
-            ) : (
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-sidebar-border">
-                <span className="text-xs font-bold text-primary">{username.charAt(0).toUpperCase()}</span>
-              </div>
-            )}
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-sidebar-foreground truncate">{username}</p>
-              <p className="text-[10px] text-sidebar-foreground/50">{L({ en: 'Administrator', fr: 'Administrateur' })}</p>
-            </div>
-          </div>
+        {onClose && (
+          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-sidebar-accent/50 transition-colors">
+            <X className="h-4 w-4" />
+          </button>
         )}
       </div>
+
+      {/* Profile card */}
+      {username && (
+        <div className="mx-3 mb-2 rounded-xl bg-sidebar-accent/30 border border-sidebar-border p-4 flex flex-col items-center gap-2">
+          {avatarUrl ? (
+            <img
+              src={`${API_URL}${avatarUrl}`}
+              alt={username}
+              className="h-14 w-14 rounded-full object-cover border-2 border-primary/40 shadow"
+            />
+          ) : (
+            <div className="h-14 w-14 rounded-full bg-primary/20 border-2 border-primary/40 shadow flex items-center justify-center">
+              <span className="text-xl font-bold text-primary">{username.charAt(0).toUpperCase()}</span>
+            </div>
+          )}
+          <div className="text-center min-w-0 w-full">
+            <p className="text-sm font-semibold text-sidebar-foreground truncate">{username}</p>
+            <p className="text-[11px] text-sidebar-foreground/50 mt-0.5">{L({ en: 'Administrator', fr: 'Administrateur' })}</p>
+          </div>
+        </div>
+      )}
+
+      <div className="mx-3 mb-3 border-b border-sidebar-border" />
 
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {NAV.map(({ href, icon: Icon, label }) => (
