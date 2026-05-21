@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
 const config = {
   images: {
     remotePatterns: [
@@ -6,6 +8,14 @@ const config = {
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'http',  hostname: 'localhost', port: '4000', pathname: '/uploads/**' },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${API_ORIGIN}/uploads/:path*`,
+      },
+    ];
   },
   async headers() {
     return [

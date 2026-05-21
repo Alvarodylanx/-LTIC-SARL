@@ -216,7 +216,7 @@ export default function AdminProfilePage() {
             <div className="relative">
               {profile.avatarUrl && !avatarError ? (
                 <img
-                  src={`${API_URL}${profile.avatarUrl}`}
+                  src={profile.avatarUrl}
                   alt={profile.name}
                   onError={() => setAvatarError(true)}
                   className="w-20 h-20 rounded-full object-cover border-4 border-background shadow-lg"

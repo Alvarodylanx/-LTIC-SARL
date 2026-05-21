@@ -1,7 +1,23 @@
 {
-  "version": "1.24.8",
+  "version": "1.24.9",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.9",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix uploaded profile picture not displaying — route uploads through Next.js proxy",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "next.config.mjs: added rewrite /uploads/:path* → API_ORIGIN/uploads/:path* so uploaded images are served same-origin from the Next.js server, eliminating the Cross-Origin-Resource-Policy block that prevented localhost:3000 from loading images stored on localhost:4000"
+        },
+        {
+          "type": "fix",
+          "description": "Profile page and AdminSidebar: changed avatar src from ${API_URL}${avatarUrl} to just avatarUrl (relative path) — the Next.js rewrite transparently proxies it to the API"
+        }
+      ]
+    },
     {
       "version": "1.24.8",
       "date": "2026-05-20",

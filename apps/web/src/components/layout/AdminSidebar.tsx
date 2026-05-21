@@ -91,7 +91,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
           <div className="flex items-center gap-2 mt-3">
             {avatarUrl && !avatarError ? (
               <img
-                src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${avatarUrl}`}
+                src={avatarUrl}
                 alt={username}
                 onError={() => setAvatarError(true)}
                 className="h-8 w-8 rounded-full object-cover shrink-0 border border-sidebar-border"
