@@ -63,6 +63,7 @@ export default function AdminProfilePage() {
   const { L } = useLanguage();
   const fileRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<AdminProfile | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const [nameForm, setNameForm] = useState({ name: '' });
   const [emailForm, setEmailForm] = useState({ email: '', currentPassword: '' });
@@ -78,7 +79,9 @@ export default function AdminProfilePage() {
       setProfile(data);
       setNameForm({ name: data.name });
       setEmailForm((prev) => ({ ...prev, email: data.email }));
-    }).catch(() => {});
+    }).catch((err) => {
+      setLoadError(err.message || 'Failed to load profile');
+    });
   }, []);
 
   const handleSaveName = async (e: React.FormEvent) => {
@@ -177,6 +180,14 @@ export default function AdminProfilePage() {
       if (fileRef.current) fileRef.current.value = '';
     }
   };
+
+  if (loadError) return (
+    <div className="flex flex-col items-center justify-center h-96 gap-3">
+      <p className="text-destructive font-medium">Failed to load profile</p>
+      <p className="text-sm text-muted-foreground">{loadError}</p>
+      <button onClick={() => { setLoadError(null); window.location.reload(); }} className="text-sm underline text-primary">Retry</button>
+    </div>
+  );
 
   if (!profile) return (
     <div className="flex items-center justify-center h-96">
