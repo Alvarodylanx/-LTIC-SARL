@@ -2,14 +2,14 @@ import { Injectable, Inject, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { DB_TOKEN } from "../db/db.module";
+import { DB_TOKEN, Db } from "../db/db.module";
 import { adminProfile, customers } from "@ltic/db";
 import { LoginAttemptsService } from "./login-attempts.service";
 
 @Injectable()
 export class UnifiedAuthService {
   constructor(
-    @Inject(DB_TOKEN) private db: any,
+    @Inject(DB_TOKEN) private db: Db,
     private jwtService: JwtService,
     private loginAttempts: LoginAttemptsService,
   ) {}

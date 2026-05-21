@@ -2,6 +2,14 @@
 import { CategoriesService } from "./categories.service";
 import { AuthGuard } from "../auth/auth.guard";
 
+interface CategoryBody {
+  nameEn: string;
+  nameFr: string;
+  descriptionEn?: string;
+  descriptionFr?: string;
+  imageUrl?: string;
+}
+
 @Controller("categories")
 export class CategoriesController {
   constructor(private svc: CategoriesService) {}
@@ -14,11 +22,11 @@ export class CategoriesController {
 
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() body: any) { return this.svc.create(body); }
+  create(@Body() body: CategoryBody) { return this.svc.create(body); }
 
   @UseGuards(AuthGuard)
   @Patch(":id")
-  update(@Param("id") id: string, @Body() body: any) { return this.svc.update(+id, body); }
+  update(@Param("id") id: string, @Body() body: Partial<CategoryBody>) { return this.svc.update(+id, body); }
 
   @UseGuards(AuthGuard)
   @Delete(":id")

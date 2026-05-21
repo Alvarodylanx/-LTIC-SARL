@@ -2,6 +2,25 @@
 import { ProductsService } from "./products.service";
 import { AuthGuard } from "../auth/auth.guard";
 
+interface ProductBody {
+  nameEn: string;
+  nameFr: string;
+  descriptionEn?: string;
+  descriptionFr?: string;
+  imageUrl?: string;
+  categoryId?: number;
+  available?: boolean;
+  slug?: string;
+  specifications?: string;
+}
+
+interface ProductQuery {
+  categoryId?: string;
+  search?: string;
+  limit?: string;
+  offset?: string;
+}
+
 @Controller("products")
 export class ProductsController {
   constructor(private svc: ProductsService) {}
@@ -10,18 +29,18 @@ export class ProductsController {
   getFeatured() { return this.svc.findFeatured(); }
 
   @Get()
-  findAll(@Query() q: any) { return this.svc.findAll(q); }
+  findAll(@Query() q: ProductQuery) { return this.svc.findAll(q); }
 
   @Get(":id")
   findOne(@Param("id") id: string) { return this.svc.findOne(isNaN(+id) ? id : +id); }
 
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() body: any) { return this.svc.create(body); }
+  create(@Body() body: ProductBody) { return this.svc.create(body); }
 
   @UseGuards(AuthGuard)
   @Patch(":id")
-  update(@Param("id") id: string, @Body() body: any) { return this.svc.update(+id, body); }
+  update(@Param("id") id: string, @Body() body: Partial<ProductBody>) { return this.svc.update(+id, body); }
 
   @UseGuards(AuthGuard)
   @Delete(":id")

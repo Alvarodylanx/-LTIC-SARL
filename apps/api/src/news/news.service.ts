@@ -1,11 +1,11 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, desc } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
-import { news } from '@ltic/db';
+import { DB_TOKEN, Db } from '../db/db.module';
+import { news, NewNewsArticle, NewsArticle } from '@ltic/db';
 
 @Injectable()
 export class NewsService {
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  constructor(@Inject(DB_TOKEN) private db: Db) {}
 
   async findAll(opts: { limit: number; offset: number }) {
     return this.db.select().from(news).where(eq(news.published, true))
@@ -18,12 +18,12 @@ export class NewsService {
     return article;
   }
 
-  async create(data: any) {
+  async create(data: NewNewsArticle) {
     const [article] = await this.db.insert(news).values(data).returning();
     return article;
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: Partial<NewsArticle>) {
     const [article] = await this.db.update(news).set(data).where(eq(news.id, id)).returning();
     if (!article) throw new NotFoundException('Article not found');
     return article;

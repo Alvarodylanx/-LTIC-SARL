@@ -2,7 +2,7 @@ import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { Subject, Observable } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
-import { DB_TOKEN } from '../db/db.module';
+import { DB_TOKEN, Db } from '../db/db.module';
 
 export interface AdminNotification {
   id: number;
@@ -18,7 +18,7 @@ export interface AdminNotification {
 export class NotificationsService implements OnModuleInit {
   private readonly events$ = new Subject<MessageEvent>();
 
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  constructor(@Inject(DB_TOKEN) private db: Db) {}
 
   getStream(): Observable<MessageEvent> {
     return this.events$.asObservable();

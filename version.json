@@ -1,7 +1,43 @@
 {
-  "version": "1.21.0",
+  "version": "1.22.0",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.22.0",
+      "date": "2026-05-20",
+      "type": "minor",
+      "summary": "Replace TypeScript any with proper interfaces throughout the API",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Exported Db type alias (NodePgDatabase<typeof schema>) from db.module.ts — all 12 services/controllers now use Db instead of any for the Drizzle ORM instance"
+        },
+        {
+          "type": "fix",
+          "description": "news.service.ts / news.controller.ts: create() accepts NewNewsArticle, update() accepts Partial<NewsArticle>"
+        },
+        {
+          "type": "fix",
+          "description": "quotes.service.ts / quotes.controller.ts: create() accepts NewQuote, update() accepts Partial<Quote>"
+        },
+        {
+          "type": "fix",
+          "description": "contacts.service.ts / contacts.controller.ts: create() accepts NewContact, update() accepts Partial<Contact>"
+        },
+        {
+          "type": "fix",
+          "description": "orders.service.ts / orders.controller.ts: update() accepts Partial<Order>; create body inferred from service signature"
+        },
+        {
+          "type": "fix",
+          "description": "categories.controller.ts: inline CategoryBody interface replaces body: any for create and update"
+        },
+        {
+          "type": "fix",
+          "description": "products.controller.ts: inline ProductBody and ProductQuery interfaces replace body/query: any"
+        }
+      ]
+    },
     {
       "version": "1.21.0",
       "date": "2026-05-20",

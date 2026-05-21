@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { QuotesService } from './quotes.service';
+import { NewQuote, Quote } from '@ltic/db';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('quotes')
@@ -19,9 +20,9 @@ export class QuotesController {
 
   @Post()
   @Throttle({ form: {} })
-  create(@Body() body: any) { return this.svc.create(body); }
+  create(@Body() body: NewQuote) { return this.svc.create(body); }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) { return this.svc.update(id, body); }
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: Partial<Quote>) { return this.svc.update(id, body); }
 }

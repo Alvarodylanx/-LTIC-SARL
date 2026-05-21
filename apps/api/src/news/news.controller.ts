@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { NewsService } from './news.service';
+import { NewNewsArticle, NewsArticle } from '@ltic/db';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('news')
@@ -16,11 +17,11 @@ export class NewsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() body: any) { return this.svc.create(body); }
+  create(@Body() body: NewNewsArticle) { return this.svc.create(body); }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) { return this.svc.update(id, body); }
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: Partial<NewsArticle>) { return this.svc.update(id, body); }
 
   @Delete(':id')
   @UseGuards(AuthGuard)

@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { eq, sql, desc } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
+import { DB_TOKEN, Db } from '../db/db.module';
 import { products, quotes, orders, contacts } from '@ltic/db';
 
 @Injectable()
 export class StatsService {
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  constructor(@Inject(DB_TOKEN) private db: Db) {}
 
   async getDashboard() {
     const [[{ total: totalProducts }], [{ total: totalQuotes }], [{ total: pendingQuotes }],

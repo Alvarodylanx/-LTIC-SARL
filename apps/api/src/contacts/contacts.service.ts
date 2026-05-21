@@ -1,14 +1,14 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, desc } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
-import { contacts } from '@ltic/db';
+import { DB_TOKEN, Db } from '../db/db.module';
+import { contacts, NewContact, Contact } from '@ltic/db';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ContactsService {
   constructor(
-    @Inject(DB_TOKEN) private db: any,
+    @Inject(DB_TOKEN) private db: Db,
     private notifications: NotificationsService,
     private mail: MailService,
   ) {}
@@ -20,7 +20,7 @@ export class ContactsService {
     return q;
   }
 
-  async create(data: any) {
+  async create(data: NewContact) {
     const [c] = await this.db.insert(contacts).values(data).returning();
     this.notifications.create({
       type: 'contact',
@@ -35,7 +35,7 @@ export class ContactsService {
     return c;
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: Partial<Contact>) {
     const [c] = await this.db.update(contacts).set(data).where(eq(contacts.id, id)).returning();
     if (!c) throw new NotFoundException('Contact not found');
     return c;

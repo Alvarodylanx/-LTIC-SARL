@@ -1,12 +1,12 @@
 import { Injectable, Inject, UnauthorizedException, BadRequestException, OnModuleInit } from "@nestjs/common";
 import * as bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { DB_TOKEN } from "../db/db.module";
+import { DB_TOKEN, Db } from "../db/db.module";
 import { adminProfile } from "@ltic/db";
 
 @Injectable()
 export class AdminProfileService implements OnModuleInit {
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  constructor(@Inject(DB_TOKEN) private db: Db) {}
 
   /** Migrate legacy admin_profile rows that stored a username instead of an email. */
   async onModuleInit() {

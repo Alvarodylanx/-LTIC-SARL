@@ -13,7 +13,7 @@ import { fromFile } from "file-type";
 import { eq, or } from "drizzle-orm";
 import { CustomersService } from "./customers.service";
 import { CustomerGuard } from "./customer.guard";
-import { DB_TOKEN } from "../db/db.module";
+import { DB_TOKEN, Db } from "../db/db.module";
 import { customers as customersTable, orders, quotes } from "@ltic/db";
 
 const uploadsDir = path.join(__dirname, "../../../../uploads");
@@ -22,7 +22,7 @@ const uploadsDir = path.join(__dirname, "../../../../uploads");
 export class CustomersController {
   constructor(
     private customersService: CustomersService,
-    @Inject(DB_TOKEN) private db: any,
+    @Inject(DB_TOKEN) private db: Db,
   ) {}
 
   @Post("register")

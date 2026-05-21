@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { ContactsService } from './contacts.service';
+import { NewContact, Contact } from '@ltic/db';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('contacts')
@@ -16,9 +17,9 @@ export class ContactsController {
 
   @Post()
   @Throttle({ form: {} })
-  create(@Body() body: any) { return this.svc.create(body); }
+  create(@Body() body: NewContact) { return this.svc.create(body); }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) { return this.svc.update(id, body); }
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: Partial<Contact>) { return this.svc.update(id, body); }
 }

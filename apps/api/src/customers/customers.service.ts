@@ -2,14 +2,14 @@ import { Injectable, Inject, ConflictException, UnauthorizedException, NotFoundE
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { DB_TOKEN } from "../db/db.module";
+import { DB_TOKEN, Db } from "../db/db.module";
 import { customers } from "@ltic/db";
 import { LoginAttemptsService } from "../auth/login-attempts.service";
 
 @Injectable()
 export class CustomersService {
   constructor(
-    @Inject(DB_TOKEN) private db: any,
+    @Inject(DB_TOKEN) private db: Db,
     private jwtService: JwtService,
     private loginAttempts: LoginAttemptsService,
   ) {}

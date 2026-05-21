@@ -1,14 +1,14 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, desc } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
-import { quotes } from '@ltic/db';
+import { DB_TOKEN, Db } from '../db/db.module';
+import { quotes, NewQuote, Quote } from '@ltic/db';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class QuotesService {
   constructor(
-    @Inject(DB_TOKEN) private db: any,
+    @Inject(DB_TOKEN) private db: Db,
     private notifications: NotificationsService,
     private mail: MailService,
   ) {}
@@ -26,7 +26,7 @@ export class QuotesService {
     return q;
   }
 
-  async create(data: any) {
+  async create(data: NewQuote) {
     const [q] = await this.db.insert(quotes).values(data).returning();
     // fire-and-forget: don't block the response
     this.notifications.create({
@@ -42,7 +42,7 @@ export class QuotesService {
     return q;
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: Partial<Quote>) {
     const [q] = await this.db.update(quotes).set({ ...data, updatedAt: new Date() })
       .where(eq(quotes.id, id)).returning();
     if (!q) throw new NotFoundException('Quote not found');

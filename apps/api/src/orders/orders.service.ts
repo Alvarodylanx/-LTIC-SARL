@@ -1,11 +1,11 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, desc } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
-import { orders } from '@ltic/db';
+import { DB_TOKEN, Db } from '../db/db.module';
+import { orders, Order } from '@ltic/db';
 
 @Injectable()
 export class OrdersService {
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  constructor(@Inject(DB_TOKEN) private db: Db) {}
 
   private generateTrackingNumber(): string {
     const now = new Date();
@@ -69,7 +69,7 @@ export class OrdersService {
     return order;
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: Partial<Order>) {
     const [order] = await this.db.update(orders).set({ ...data, updatedAt: new Date() })
       .where(eq(orders.id, id)).returning();
     if (!order) throw new NotFoundException('Order not found');

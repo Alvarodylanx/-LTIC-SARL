@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
-import { DB_TOKEN } from '../db/db.module';
+import { DB_TOKEN, Db } from '../db/db.module';
 import { settings } from '@ltic/db';
 
 @Injectable()
 export class SettingsService {
-  constructor(@Inject(DB_TOKEN) private db: any) {}
+  constructor(@Inject(DB_TOKEN) private db: Db) {}
 
   async findAll(): Promise<Record<string, string>> {
     const rows = await this.db.select().from(settings);
