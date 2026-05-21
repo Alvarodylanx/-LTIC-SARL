@@ -1,7 +1,23 @@
 {
-  "version": "1.24.5",
+  "version": "1.24.6",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.24.6",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix profile picture not loading on My Profile page and admin sidebar",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "API: added crossOriginResourcePolicy: false to Helmet config — Helmet 8 defaults to Cross-Origin-Resource-Policy: same-origin which blocked the Next.js frontend (localhost:3000) from loading uploaded images from the API (localhost:4000)"
+        },
+        {
+          "type": "fix",
+          "description": "AdminSidebar: fixed avatar img src using the raw relative path /uploads/... which resolved to localhost:3000/uploads/... — now correctly prepends NEXT_PUBLIC_API_URL to form the full API URL"
+        }
+      ]
+    },
     {
       "version": "1.24.5",
       "date": "2026-05-20",

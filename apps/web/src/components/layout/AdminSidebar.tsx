@@ -89,7 +89,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
         {username && (
           <div className="flex items-center gap-2 mt-3">
             {avatarUrl ? (
-              <img src={avatarUrl} alt={username} className="h-8 w-8 rounded-full object-cover shrink-0 border border-sidebar-border" />
+              <img src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${avatarUrl}`} alt={username} className="h-8 w-8 rounded-full object-cover shrink-0 border border-sidebar-border" />
             ) : (
               <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-sidebar-border">
                 <span className="text-xs font-bold text-primary">{username.charAt(0).toUpperCase()}</span>

@@ -65,6 +65,7 @@ async function bootstrap() {
       },
     },
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
   }));
 
   const uploadsDir = path.join(__dirname, "../../../uploads");
