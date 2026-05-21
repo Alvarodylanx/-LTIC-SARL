@@ -55,24 +55,11 @@ export default function AdminQuotesPage() {
     queryFn: () => api.get('/api/customers'),
   });
 
-  const updateQuoteMutation = useMutation({
+  const [submitting, setSubmitting] = useState(false);
+
+  const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: string }) => api.patch(`/api/quotes/${id}`, { status }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-quotes'] }),
-  });
-
-  const createOrderMutation = useMutation({
-    mutationFn: (body: any) => api.post('/api/orders', body),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['admin-orders'] });
-      // mark the source quote as responded
-      if (convertQuote) {
-        updateQuoteMutation.mutate({ id: convertQuote.id, status: 'responded' });
-      }
-      toast.success(L({ en: 'Order created from quote', fr: 'Commande créée depuis le devis' }));
-      setConvertQuote(null);
-      setForm(EMPTY_FORM);
-    },
-    onError: () => toast.error(L({ en: 'Failed to create order', fr: 'Échec de la création' })),
   });
 
   function openConvert(quote: any) {
@@ -81,7 +68,6 @@ export default function AdminQuotesPage() {
       quote.quantity ? `Qty: ${quote.quantity}` : '',
       quote.companyName ? `(${quote.companyName})` : '',
     ].filter(Boolean).join(' — ');
-
     setForm({
       ...EMPTY_FORM,
       clientName: quote.contactName || quote.companyName || '',
@@ -91,19 +77,35 @@ export default function AdminQuotesPage() {
     setConvertQuote(quote);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const body: any = {
-      clientName:       form.clientName,
-      clientEmail:      form.clientEmail || undefined,
-      origin:           form.origin || undefined,
-      destination:      form.destination || undefined,
-      description:      form.description || undefined,
-      status:           form.status,
-      estimatedDelivery: form.estimatedDelivery || undefined,
-    };
-    if (form.customerId) body.customerId = Number(form.customerId);
-    createOrderMutation.mutate(body);
+    if (!convertQuote) return;
+    setSubmitting(true);
+    try {
+      const body: any = {
+        clientName:        form.clientName,
+        clientEmail:       form.clientEmail || undefined,
+        origin:            form.origin || undefined,
+        destination:       form.destination || undefined,
+        description:       form.description || undefined,
+        status:            form.status,
+        estimatedDelivery: form.estimatedDelivery || undefined,
+      };
+      if (form.customerId) body.customerId = Number(form.customerId);
+
+      await api.post('/api/orders', body);
+      await api.patch(`/api/quotes/${convertQuote.id}`, { status: 'responded' });
+
+      qc.invalidateQueries({ queryKey: ['admin-orders'] });
+      qc.invalidateQueries({ queryKey: ['admin-quotes'] });
+      toast.success(L({ en: 'Order created — quote marked as Responded', fr: 'Commande créée — devis marqué Répondu' }));
+      setConvertQuote(null);
+      setForm(EMPTY_FORM);
+    } catch (err: any) {
+      toast.error(err.message || L({ en: 'Failed to create order', fr: 'Échec de la création' }));
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const headers = [
@@ -146,7 +148,7 @@ export default function AdminQuotesPage() {
                   <td className="px-4 py-3 text-sm max-w-[180px] truncate">{quote.productInterest}</td>
                   <td className="px-4 py-3 text-sm text-muted-foreground">{quote.quantity || '—'}</td>
                   <td className="px-4 py-3">
-                    <Select value={quote.status} onValueChange={(val) => updateQuoteMutation.mutate({ id: quote.id, status: val })}>
+                    <Select value={quote.status} onValueChange={(val) => updateStatusMutation.mutate({ id: quote.id, status: val })}>
                       <SelectTrigger className="h-8 text-xs w-32">
                         <SelectValue />
                       </SelectTrigger>
@@ -262,8 +264,8 @@ export default function AdminQuotesPage() {
               <Button type="button" variant="outline" onClick={() => { setConvertQuote(null); setForm(EMPTY_FORM); }}>
                 {L({ en: 'Cancel', fr: 'Annuler' })}
               </Button>
-              <Button type="submit" disabled={createOrderMutation.isPending}>
-                {createOrderMutation.isPending
+              <Button type="submit" disabled={submitting}>
+                {submitting
                   ? L({ en: 'Creating…', fr: 'Création…' })
                   : L({ en: 'Create Order', fr: 'Créer la commande' })}
               </Button>

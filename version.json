@@ -1,7 +1,19 @@
 {
-  "version": "1.25.2",
+  "version": "1.25.3",
   "releaseDate": "2026-05-20",
   "changelog": [
+    {
+      "version": "1.25.3",
+      "date": "2026-05-20",
+      "type": "patch",
+      "summary": "Fix quote-to-order conversion not working",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Replaced two chained useMutation calls (createOrderMutation → updateQuoteMutation inside onSuccess) with a single async handleSubmit that awaits both API calls directly — eliminates stale closure on convertQuote state and shows the real error message if either call fails"
+        }
+      ]
+    },
     {
       "version": "1.25.2",
       "date": "2026-05-20",
