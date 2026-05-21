@@ -59,10 +59,10 @@ export class OrdersService {
   }
 
   async findAll(opts: { status?: string; limit: number; offset: number }) {
-    let q = this.db.select().from(orders).orderBy(desc(orders.createdAt)).limit(opts.limit).offset(opts.offset);
-    if (opts.status) q = this.db.select().from(orders).where(eq(orders.status, opts.status))
-      .orderBy(desc(orders.createdAt)).limit(opts.limit).offset(opts.offset);
-    return q;
+    if (opts.status)
+      return this.db.select().from(orders).where(eq(orders.status, opts.status))
+        .orderBy(desc(orders.createdAt)).limit(opts.limit).offset(opts.offset);
+    return this.db.select().from(orders).orderBy(desc(orders.createdAt)).limit(opts.limit).offset(opts.offset);
   }
 
   async findOne(id: number) {

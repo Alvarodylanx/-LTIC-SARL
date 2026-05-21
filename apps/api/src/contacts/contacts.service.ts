@@ -14,10 +14,10 @@ export class ContactsService {
   ) {}
 
   async findAll(opts: { read?: boolean; limit: number; offset: number }) {
-    let q = this.db.select().from(contacts).orderBy(desc(contacts.createdAt)).limit(opts.limit).offset(opts.offset);
-    if (opts.read !== undefined) q = this.db.select().from(contacts).where(eq(contacts.read, opts.read))
-      .orderBy(desc(contacts.createdAt)).limit(opts.limit).offset(opts.offset);
-    return q;
+    if (opts.read !== undefined)
+      return this.db.select().from(contacts).where(eq(contacts.read, opts.read))
+        .orderBy(desc(contacts.createdAt)).limit(opts.limit).offset(opts.offset);
+    return this.db.select().from(contacts).orderBy(desc(contacts.createdAt)).limit(opts.limit).offset(opts.offset);
   }
 
   async create(data: NewContact) {

@@ -6,6 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { useQuery } from '@tanstack/react-query';
 import { MapPin, Phone, Mail, Clock, Globe2, Loader2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +32,11 @@ type FormData = z.infer<typeof schema>;
 
 export default function ContactPage() {
   const { L, language } = useLanguage();
+  const { data: siteSettings } = useQuery<Record<string, string>>({
+    queryKey: ['settings'],
+    queryFn: () => api.get('/api/settings'),
+    staleTime: 5 * 60 * 1000,
+  });
   const {
     register,
     handleSubmit,
@@ -60,9 +66,9 @@ export default function ContactPage() {
   };
 
   const contactInfo = [
-    { icon: MapPin, label: { en: 'Address', fr: 'Adresse' }, value: 'Douala, Cameroon / International Operations' },
-    { icon: Phone, label: { en: 'Phone', fr: 'Téléphone' }, value: '+237 6XX XXX XXX' },
-    { icon: Mail, label: { en: 'Email', fr: 'Email' }, value: 'contact@lticsarl.com' },
+    { icon: MapPin, label: { en: 'Address', fr: 'Adresse' }, value: siteSettings?.company_address || 'Douala, Cameroon' },
+    { icon: Phone, label: { en: 'Phone', fr: 'Téléphone' }, value: siteSettings?.company_phone || '+237 6XX XXX XXX' },
+    { icon: Mail, label: { en: 'Email', fr: 'Email' }, value: siteSettings?.company_email || 'contact@lticsarl.com' },
     { icon: Clock, label: { en: 'Hours', fr: 'Horaires' }, value: 'Monday – Friday, 8:00 AM – 6:00 PM (WAT)' },
     { icon: Globe2, label: { en: 'Coverage', fr: 'Couverture' }, value: L({ en: 'Global — 30+ countries served', fr: 'Mondial — 30+ pays desservis' }) },
   ];

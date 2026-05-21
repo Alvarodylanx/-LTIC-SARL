@@ -1,7 +1,27 @@
 {
-  "version": "1.28.2",
+  "version": "1.28.3",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.28.3",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Full site audit — TypeScript fixes, contact page live settings, cleanup",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "contacts.service, quotes.service, orders.service: fixed Drizzle ORM TypeScript errors — conditional where clause now uses early return instead of let reassignment"
+        },
+        {
+          "type": "fix",
+          "description": "Contact page: address, phone, and email now read from settings API (same keys as footer) — updating Admin → Settings updates the contact page instantly"
+        },
+        {
+          "type": "fix",
+          "description": "About page: removed unused Leaf import"
+        }
+      ]
+    },
     {
       "version": "1.28.2",
       "date": "2026-05-21",

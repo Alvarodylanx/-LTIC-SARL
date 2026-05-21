@@ -14,10 +14,10 @@ export class QuotesService {
   ) {}
 
   async findAll(opts: { status?: string; limit: number; offset: number }) {
-    let q = this.db.select().from(quotes).orderBy(desc(quotes.createdAt)).limit(opts.limit).offset(opts.offset);
-    if (opts.status) q = this.db.select().from(quotes).where(eq(quotes.status, opts.status))
-      .orderBy(desc(quotes.createdAt)).limit(opts.limit).offset(opts.offset);
-    return q;
+    if (opts.status)
+      return this.db.select().from(quotes).where(eq(quotes.status, opts.status))
+        .orderBy(desc(quotes.createdAt)).limit(opts.limit).offset(opts.offset);
+    return this.db.select().from(quotes).orderBy(desc(quotes.createdAt)).limit(opts.limit).offset(opts.offset);
   }
 
   async findOne(id: number) {

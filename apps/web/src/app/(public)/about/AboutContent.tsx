@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { CheckCircle2, Target, Globe2, ShieldCheck, Lightbulb, Leaf, TrendingUp, User } from 'lucide-react';
+import { CheckCircle2, Target, Globe2, ShieldCheck, Lightbulb, TrendingUp, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
