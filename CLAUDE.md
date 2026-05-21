@@ -23,9 +23,10 @@ Add a changelog entry in `version.json` describing what changed. Commit this alo
 - `packages/db` — Drizzle ORM schema + seed
 
 ## Admin credentials
-- Default login email: `admin@ltic-sarl.com` (stored in `admin_profile` table)
-- Default password: `ltic2024!` (falls back to `ADMIN_PASSWORD` env var until changed in DB)
+- Login email: `alvarodylan10@gmail.com` (stored in `admin_profile` table)
+- Password: `ltic2024!` (bcrypt hash stored in DB)
 - The admin changes email/password from the **My Profile** page — these are stored with bcrypt in `admin_profile`
+- NEVER reset or overwrite the admin email/password without the user's explicit request
 
 ## Key env vars
 See `.env.example` for the full list. Critical ones:
