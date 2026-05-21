@@ -9,12 +9,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lticsarl.com';
 
 export const metadata: Metadata = {
   title: 'LTIC SARL — Global Logistics & Industrial Solutions',
-  description: 'LTIC SARL is a multinational business solutions provider specializing in logistics, international trade, industrial supply, and supply chain consulting across 30+ countries.',
+  description: 'LTIC SARL (Logistics and Transit International) is a Cameroonian multinational company specializing in logistics, transit, industrial supply, import/export facilitation, and international trade services across 30+ countries.',
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: '/' },
   openGraph: {
     title: 'LTIC SARL — Global Logistics & Industrial Solutions',
-    description: 'Multinational logistics, industrial supply, and international trade excellence.',
+    description: 'Reliable logistics, transit, industrial supply, and international trade services for modern businesses and global markets.',
     type: 'website',
     url: SITE_URL,
     siteName: 'LTIC SARL',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'LTIC SARL — Global Logistics & Industrial Solutions',
-    description: 'Multinational logistics, industrial supply, and international trade excellence.',
+    description: 'Reliable logistics, transit, industrial supply, and international trade services for modern businesses and global markets.',
     images: ['/og-image.png'],
   },
 };
@@ -34,7 +34,7 @@ const organizationJsonLd = {
   name: 'LTIC SARL',
   url: 'https://www.lticsarl.com',
   logo: 'https://www.lticsarl.com/logo.png',
-  description: 'Multinational business solutions provider specializing in logistics, international trade, industrial supply, and supply chain consulting across 30+ countries.',
+  description: 'Logistics and Transit International SARL — based in Cameroon, providing logistics, transit, industrial supply, import/export, and international trade solutions across 30+ countries.',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Douala',

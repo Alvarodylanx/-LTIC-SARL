@@ -1,7 +1,39 @@
 {
-  "version": "1.27.1",
+  "version": "1.28.0",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.28.0",
+      "date": "2026-05-21",
+      "type": "minor",
+      "summary": "Company content update — accurate company identity, values, and messaging across all public pages",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Home page hero: updated heading to 'Global Logistics, Industrial Supply & International Trade Solutions' and sub-copy to match official company description"
+        },
+        {
+          "type": "feature",
+          "description": "About page: updated hero subtext to reflect Cameroon base; rewritten story paragraphs to identify as Logistics and Transit International SARL founded in Cameroon"
+        },
+        {
+          "type": "feature",
+          "description": "About page values grid: replaced generic values with company's official values — Reliability, Professionalism, Integrity, Innovation, Operational Excellence, Global Collaboration"
+        },
+        {
+          "type": "feature",
+          "description": "About page Vision: updated to 'globally recognized logistics, transit, and industrial solutions company trusted across Africa, Europe, Middle East, Canada, and beyond'"
+        },
+        {
+          "type": "feature",
+          "description": "About page Mission/Values card: values list updated to official company values — Professionalism, Reliability, Integrity, Customer Satisfaction, Operational Excellence, Innovation, Global Collaboration, Efficiency"
+        },
+        {
+          "type": "feature",
+          "description": "Root layout metadata: updated SEO description, OpenGraph description, and JSON-LD schema description to accurately reflect the company's full name, Cameroon origin, and service scope"
+        }
+      ]
+    },
     {
       "version": "1.27.1",
       "date": "2026-05-21",

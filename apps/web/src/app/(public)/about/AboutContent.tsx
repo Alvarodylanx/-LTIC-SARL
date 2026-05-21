@@ -9,12 +9,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
 
 const values = [
-  { icon: ShieldCheck, en: 'Reliability', fr: 'Fiabilité', descEn: 'We deliver on every commitment — on time, in full, with complete transparency.', descFr: 'Nous respectons chaque engagement — à temps, intégralement, avec transparence totale.' },
-  { icon: Globe2, en: 'Global Reach', fr: 'Portée Mondiale', descEn: 'Active networks spanning Africa, Europe, Middle East, North America and Asia.', descFr: "Réseaux actifs en Afrique, Europe, Moyen-Orient, Amérique du Nord et Asie." },
-  { icon: Target, en: 'Precision', fr: 'Précision', descEn: 'Every shipment handled with meticulous attention to detail and regulatory compliance.', descFr: "Chaque expédition traitée avec une attention méticuleuse aux détails et à la conformité réglementaire." },
-  { icon: Lightbulb, en: 'Innovation', fr: 'Innovation', descEn: 'Continuous adoption of modern technologies and methodologies to serve you better.', descFr: 'Adoption continue de technologies et méthodologies modernes pour mieux vous servir.' },
-  { icon: Leaf, en: 'Sustainability', fr: 'Durabilité', descEn: 'Integrating sustainable practices across supply chain operations worldwide.', descFr: "Intégration de pratiques durables dans toutes les opérations de la chaîne d'approvisionnement." },
-  { icon: TrendingUp, en: 'Excellence', fr: 'Excellence', descEn: 'Maintaining the highest professional standards in every business interaction.', descFr: 'Maintenir les plus hauts standards professionnels dans chaque interaction commerciale.' },
+  { icon: ShieldCheck, en: 'Reliability', fr: 'Fiabilité', descEn: 'Committed to delivering on every promise — on time, in full, and with complete transparency.', descFr: 'Engagés à tenir chaque promesse — à temps, intégralement et avec une totale transparence.' },
+  { icon: Target, en: 'Professionalism', fr: 'Professionnalisme', descEn: 'Maintaining the highest standards of expertise, conduct, and accountability in every business interaction.', descFr: "Maintenir les plus hauts standards d'expertise, de conduite et de responsabilité dans chaque interaction commerciale." },
+  { icon: CheckCircle2, en: 'Integrity', fr: 'Intégrité', descEn: 'Operating with honesty and ethical standards across all client, partner, and supplier relationships.', descFr: 'Agir avec honnêteté et rigueur éthique dans toutes les relations avec clients, partenaires et fournisseurs.' },
+  { icon: Lightbulb, en: 'Innovation', fr: 'Innovation', descEn: 'Continuously adopting modern technologies and methodologies to deliver smarter logistics solutions.', descFr: 'Adopter continuellement les technologies et méthodologies modernes pour des solutions logistiques plus performantes.' },
+  { icon: TrendingUp, en: 'Operational Excellence', fr: 'Excellence Opérationnelle', descEn: 'Relentless pursuit of efficiency, quality, and continuous improvement across all our operations.', descFr: "Recherche constante d'efficacité, de qualité et d'amélioration continue dans toutes nos opérations." },
+  { icon: Globe2, en: 'Global Collaboration', fr: 'Collaboration Mondiale', descEn: 'Building strong international partnerships to connect businesses with global markets and opportunities.', descFr: 'Construire des partenariats internationaux solides pour connecter les entreprises aux marchés et opportunités mondiales.' },
 ];
 
 export default function AboutPage() {
@@ -34,7 +34,7 @@ export default function AboutPage() {
           <motion.p variants={fadeInUp} className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'About Us', fr: 'À Propos' })}</motion.p>
           <motion.h1 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-sidebar-foreground mb-6">{L({ en: 'Who We Are', fr: 'Qui Nous Sommes' })}</motion.h1>
           <motion.p variants={fadeInUp} className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl mx-auto">
-            {L({ en: 'A multinational business solutions provider built on reliability, innovation, and global connectivity.', fr: "Un fournisseur de solutions d'affaires multinationales fondé sur la fiabilité, l'innovation et la connectivité mondiale." })}
+            {L({ en: 'A Cameroonian company with international reach — providing reliable logistics, transit, industrial supply, and global trade solutions across 30+ countries.', fr: "Une entreprise camerounaise à portée internationale — offrant des solutions fiables de logistique, transit, fourniture industrielle et commerce mondial dans plus de 30 pays." })}
           </motion.p>
         </motion.div>
       </section>
@@ -47,10 +47,10 @@ export default function AboutPage() {
               <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-3">{L({ en: 'Our Story', fr: 'Notre Histoire' })}</p>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6">{L({ en: 'Built for the Demands of Global Commerce', fr: 'Conçu pour les Exigences du Commerce Mondial' })}</h2>
               <p className="text-muted-foreground mb-4 leading-relaxed">
-                {L({ en: "LTIC SARL was established to address a clear gap in the market: the need for a reliable, comprehensive, and truly multinational logistics and industrial supply partner for businesses operating across Africa, Europe, and beyond.", fr: "LTIC SARL a été créée pour combler un vide évident sur le marché: le besoin d'un partenaire logistique et de fournitures industrielles fiable, complet et véritablement multinational." })}
+                {L({ en: "LTIC SARL — Logistics and Transit International — was founded in Cameroon to meet a critical need: a reliable, comprehensive partner for logistics, transit, industrial supply, and international trade across Africa, Europe, the Middle East, and beyond.", fr: "LTIC SARL — Logistics and Transit International — a été fondée au Cameroun pour répondre à un besoin essentiel : un partenaire fiable et complet pour la logistique, le transit, la fourniture industrielle et le commerce international en Afrique, Europe, Moyen-Orient et au-delà." })}
               </p>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                {L({ en: 'With over 15 years of combined expertise, we have grown from a regional logistics operator into a diversified multinational business solutions provider, serving 500+ clients across 30+ countries.', fr: "Avec plus de 15 ans d'expertise combinée, nous sommes passés d'un opérateur logistique régional à un fournisseur de solutions d'affaires multinationales diversifié, servant 500+ clients dans 30+ pays." })}
+                {L({ en: 'From our base in Cameroon, we have grown into a diversified multinational company serving 500+ clients across 30+ countries — delivering logistics, industrial products, import/export facilitation, and strategic trade solutions with precision and reliability.', fr: "Depuis notre base au Cameroun, nous sommes devenus une entreprise multinationale diversifiée servant 500+ clients dans 30+ pays — en livrant des solutions logistiques, des produits industriels, la facilitation import/export et des solutions commerciales stratégiques." })}
               </p>
               <ul className="space-y-3">
                 {[
@@ -86,8 +86,8 @@ export default function AboutPage() {
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={viewportOnce} className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: Target, title: { en: 'Mission', fr: 'Mission' }, desc: { en: 'To deliver reliable, efficient, and comprehensive logistics, industrial supply, and trade solutions that empower our clients to compete successfully in global markets.', fr: "Fournir des solutions logistiques, de fournitures industrielles et commerciales fiables, efficaces et complètes qui permettent à nos clients de réussir sur les marchés mondiaux." } },
-              { icon: Globe2, title: { en: 'Vision', fr: 'Vision' }, desc: { en: 'To become the leading multinational business solutions provider in emerging and frontier markets, connecting industries and opportunities across continents.', fr: "Devenir le principal fournisseur de solutions d'affaires multinationales sur les marchés émergents et frontières, connectant industries et opportunités à travers les continents." } },
-              { icon: ShieldCheck, title: { en: 'Values', fr: 'Valeurs' }, desc: { en: 'Reliability, Innovation, Precision, Global Reach, Sustainability, Customer Excellence', fr: 'Fiabilité, Innovation, Précision, Portée Mondiale, Durabilité, Excellence Client' } },
+              { icon: Globe2, title: { en: 'Vision', fr: 'Vision' }, desc: { en: 'To become a globally recognized logistics, transit, and industrial solutions company — trusted by businesses across Africa, Europe, the Middle East, Canada, and beyond.', fr: "Devenir une entreprise de logistique, transit et solutions industrielles reconnue à l'échelle mondiale — de confiance pour les entreprises en Afrique, Europe, Moyen-Orient, Canada et au-delà." } },
+              { icon: ShieldCheck, title: { en: 'Values', fr: 'Valeurs' }, desc: { en: 'Professionalism, Reliability, Integrity, Customer Satisfaction, Operational Excellence, Innovation, Global Collaboration, Efficiency', fr: 'Professionnalisme, Fiabilité, Intégrité, Satisfaction Client, Excellence Opérationnelle, Innovation, Collaboration Mondiale, Efficacité' } },
             ].map(({ icon: Icon, title, desc }) => (
               <motion.div key={title.en} variants={fadeInUp}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px -12px rgba(0,0,0,0.12)' }}

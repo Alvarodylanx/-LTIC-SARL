@@ -96,13 +96,13 @@ export default function HomePage() {
             </motion.div>
             <motion.h1 variants={fadeInUp} initial="hidden" animate="show"
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-sidebar-foreground mb-6 leading-[1.1]">
-              {L({ en: 'Driving Global Trade Through', fr: 'Propulser le Commerce Mondial via une' })}{' '}
-              <span className="text-primary">{L({ en: 'Reliable Logistics', fr: 'Logistique Fiable' })}</span>{' '}
-              {L({ en: '& Industrial Solutions', fr: '& des Solutions Industrielles' })}
+              {L({ en: 'Global Logistics, Industrial Supply', fr: 'Logistique Mondiale, Fourniture Industrielle' })}{' '}
+              <span className="text-primary">{L({ en: '& International Trade', fr: '& Commerce International' })}</span>{' '}
+              {L({ en: 'Solutions', fr: 'Solutions' })}
             </motion.h1>
             <motion.p variants={fadeInUp} initial="hidden" animate="show" transition={{ delay: 0.1 }}
               className="text-base sm:text-lg md:text-xl text-sidebar-foreground/80 mb-8 sm:mb-10 max-w-2xl leading-relaxed">
-              {L({ en: 'LTIC SARL connects markets, industries and opportunities worldwide — delivering end-to-end logistics, industrial supply, and international trade solutions with precision and reliability.', fr: 'LTIC SARL connecte marchés, industries et opportunités dans le monde entier — offrant des solutions logistiques complètes, de fournitures industrielles et de commerce international.' })}
+              {L({ en: 'Reliable logistics, transit, industrial supply, and international trade services designed for modern businesses and global markets.', fr: 'Services fiables de logistique, transit, fourniture industrielle et commerce international conçus pour les entreprises modernes et les marchés mondiaux.' })}
             </motion.p>
             <motion.div variants={fadeInUp} initial="hidden" animate="show" transition={{ delay: 0.18 }} className="flex flex-wrap gap-4">
               <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
