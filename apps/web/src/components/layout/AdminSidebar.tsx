@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Package, Tag, FileText, Truck, Newspaper,
   MessageSquare, Settings, LogOut, ShieldAlert, UserCircle,
-  GitBranch, Globe, Bell, X,
+  GitBranch, Globe, Bell, X, Handshake,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkAuth, logout } from '@/lib/auth';
@@ -22,6 +22,7 @@ const NAV = [
   { href: '/admin/orders',        icon: Truck,           label: { en: 'Orders',     fr: 'Commandes' } },
   { href: '/admin/news',          icon: Newspaper,       label: { en: 'News',       fr: 'Actualités' } },
   { href: '/admin/contacts',      icon: MessageSquare,   label: { en: 'Contacts',   fr: 'Contacts' } },
+  { href: '/admin/partners',      icon: Handshake,       label: { en: 'Partners',   fr: 'Partenaires' } },
   { href: '/admin/settings',      icon: Settings,        label: { en: 'Settings',   fr: 'Paramètres' } },
   { href: '/admin/changelog',     icon: GitBranch,       label: { en: 'Changelog',  fr: 'Historique' } },
   { href: '/admin/profile',       icon: UserCircle,      label: { en: 'My Profile', fr: 'Mon profil' } },

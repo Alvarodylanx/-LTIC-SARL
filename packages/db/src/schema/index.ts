@@ -7,3 +7,4 @@ export * from "./news";
 export * from "./settings";
 export * from "./customers";
 export * from "./admin_profile";
+export * from "./partners";

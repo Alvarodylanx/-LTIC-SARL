@@ -1,7 +1,31 @@
 {
-  "version": "1.29.0",
+  "version": "1.30.0",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.30.0",
+      "date": "2026-05-21",
+      "type": "minor",
+      "summary": "Partners marquee wired to database — admin-editable brands with logo, sector, and products",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Home page marquee: replaced hardcoded brand arrays with live useQuery fetching /api/partners — admin can add/edit/delete brands from Partners page and the home page updates instantly"
+        },
+        {
+          "type": "feature",
+          "description": "Each brand card now shows: logo image (or initial letter fallback), brand name, sector (EN/FR), and the products/marks they represent (EN/FR) — truncated if long"
+        },
+        {
+          "type": "feature",
+          "description": "Partners split evenly into two rows — even-indexed brands scroll left (row 1), odd-indexed scroll right (row 2) for the layered marquee effect"
+        },
+        {
+          "type": "feature",
+          "description": "Full admin-editable partners system: DB table, REST API (GET/POST/PATCH/DELETE), admin UI at /admin/partners with logo upload, sector EN/FR, products EN/FR, website, active toggle"
+        }
+      ]
+    },
     {
       "version": "1.29.0",
       "date": "2026-05-21",

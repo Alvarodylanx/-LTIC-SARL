@@ -11,25 +11,17 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { fadeInUp, fadeInLeft, fadeInRight, fadeIn, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
 
-const brandsRow1 = [
-  { name: 'TotalEnergies', icon: '⚡', sectorEn: 'Energy & Lubricants',    sectorFr: 'Énergie & Lubrifiants' },
-  { name: 'Shell',         icon: '🐚', sectorEn: 'Energy & Lubricants',    sectorFr: 'Énergie & Lubrifiants' },
-  { name: 'Caterpillar',   icon: '🔧', sectorEn: 'Heavy Equipment',        sectorFr: 'Équipement Lourd' },
-  { name: 'Volvo',         icon: '🚛', sectorEn: 'Transport & Equipment',  sectorFr: 'Transport & Équipement' },
-  { name: 'Komatsu',       icon: '⚙️', sectorEn: 'Industrial Equipment',   sectorFr: 'Équipement Industriel' },
-  { name: 'Maersk',        icon: '🚢', sectorEn: 'Ocean Freight',          sectorFr: 'Fret Maritime' },
-  { name: 'CMA CGM',       icon: '⚓', sectorEn: 'Shipping & Logistics',   sectorFr: 'Transport & Logistique' },
-];
 
-const brandsRow2 = [
-  { name: 'DHL',           icon: '📦', sectorEn: 'Express Logistics',      sectorFr: 'Logistique Express' },
-  { name: 'Bolloré',       icon: '🌍', sectorEn: 'Africa Logistics',       sectorFr: 'Logistique Afrique' },
-  { name: 'MTN',           icon: '📡', sectorEn: 'Telecommunications',     sectorFr: 'Télécommunications' },
-  { name: 'Orange',        icon: '📶', sectorEn: 'Telecommunications',     sectorFr: 'Télécommunications' },
-  { name: 'Eiffage',       icon: '🏗️', sectorEn: 'Construction',           sectorFr: 'Construction' },
-  { name: 'Liebherr',      icon: '🏭', sectorEn: 'Cranes & Equipment',     sectorFr: 'Grues & Équipement' },
-  { name: 'Cummins',       icon: '🔩', sectorEn: 'Engines & Generators',   sectorFr: 'Moteurs & Groupes Élec.' },
-];
+interface Partner {
+  id: number;
+  name: string;
+  logoUrl?: string;
+  sectorEn: string;
+  sectorFr: string;
+  productsEn?: string;
+  productsFr?: string;
+  website?: string;
+}
 
 const statDefs = [
   { key: 'stat_countries',  fallback: '30+',  en: 'Countries Served',      fr: 'Pays Desservis' },
@@ -100,6 +92,15 @@ export default function HomePage() {
     queryFn: () => api.get('/api/settings'),
     staleTime: 5 * 60 * 1000,
   });
+
+  const { data: partners = [] } = useQuery<Partner[]>({
+    queryKey: ['partners'],
+    queryFn: () => api.get('/api/partners'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const brandsRow1 = partners.filter((_, i) => i % 2 === 0);
+  const brandsRow2 = partners.filter((_, i) => i % 2 === 1);
 
   const stats = statDefs.map((s) => ({
     value: siteSettings?.[s.key] || s.fallback,
@@ -196,11 +197,21 @@ export default function HomePage() {
           {/* Row 1 — scrolls left */}
           <div className="flex w-max marquee-left">
             {[...brandsRow1, ...brandsRow1].map((b, i) => (
-              <div key={i} className="flex items-center gap-3 mx-4 px-6 py-3 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-default flex-shrink-0">
-                <span className="text-2xl">{b.icon}</span>
+              <div key={i} className="flex items-center gap-3 mx-4 px-5 py-3 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-default flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {b.logoUrl
+                    ? <img src={b.logoUrl} alt={b.name} className="w-full h-full object-contain p-0.5" />
+                    : <span className="text-sm font-bold text-primary">{b.name.charAt(0)}</span>
+                  }
+                </div>
                 <div>
                   <p className="font-bold text-sm text-foreground leading-none">{b.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{L({ en: b.sectorEn, fr: b.sectorFr })}</p>
+                  <p className="text-xs text-primary mt-0.5">{L({ en: b.sectorEn, fr: b.sectorFr })}</p>
+                  {(b.productsEn || b.productsFr) && (
+                    <p className="text-xs text-muted-foreground mt-0.5 max-w-[200px] truncate">
+                      {L({ en: b.productsEn || '', fr: b.productsFr || '' })}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
@@ -208,11 +219,21 @@ export default function HomePage() {
           {/* Row 2 — scrolls right */}
           <div className="flex w-max marquee-right">
             {[...brandsRow2, ...brandsRow2].map((b, i) => (
-              <div key={i} className="flex items-center gap-3 mx-4 px-6 py-3 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-default flex-shrink-0">
-                <span className="text-2xl">{b.icon}</span>
+              <div key={i} className="flex items-center gap-3 mx-4 px-5 py-3 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-default flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {b.logoUrl
+                    ? <img src={b.logoUrl} alt={b.name} className="w-full h-full object-contain p-0.5" />
+                    : <span className="text-sm font-bold text-primary">{b.name.charAt(0)}</span>
+                  }
+                </div>
                 <div>
                   <p className="font-bold text-sm text-foreground leading-none">{b.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{L({ en: b.sectorEn, fr: b.sectorFr })}</p>
+                  <p className="text-xs text-primary mt-0.5">{L({ en: b.sectorEn, fr: b.sectorFr })}</p>
+                  {(b.productsEn || b.productsFr) && (
+                    <p className="text-xs text-muted-foreground mt-0.5 max-w-[200px] truncate">
+                      {L({ en: b.productsEn || '', fr: b.productsFr || '' })}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
