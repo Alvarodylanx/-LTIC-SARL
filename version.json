@@ -1,7 +1,31 @@
 {
-  "version": "1.30.1",
+  "version": "1.30.2",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.30.2",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Fix admin login loop and brands not showing — env and DB init",
+      "changes": [
+        {
+          "type": "fix",
+          "description": ".env and .env.local: restored NEXT_PUBLIC_API_URL to http://localhost:4000 — using the USB tethering IP (192.168.42.10) caused a cross-site SameSite=Lax cookie issue where admin_jwt was never sent after login, causing an infinite login redirect loop"
+        },
+        {
+          "type": "fix",
+          "description": "db-init.service: removed multi-statement UPDATE block (one db.execute() per statement is required by node-postgres) that was crashing onModuleInit() and taking the entire API down on startup — this caused both the login failure and the brands marquee showing nothing"
+        },
+        {
+          "type": "fix",
+          "description": "partners table: added UNIQUE constraint on name column + changed seed INSERT to ON CONFLICT (name) DO UPDATE — prevents duplicate rows from being created on every API restart"
+        },
+        {
+          "type": "fix",
+          "description": "partners seed: ON CONFLICT DO UPDATE now also upserts logo_url, sector, products, and website — existing rows without logos are automatically updated on next restart"
+        }
+      ]
+    },
     {
       "version": "1.30.1",
       "date": "2026-05-21",
