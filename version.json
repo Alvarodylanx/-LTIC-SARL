@@ -1,7 +1,23 @@
 {
-  "version": "1.30.0",
+  "version": "1.30.1",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.30.1",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Seed correct official logos for all 12 partner brands via Clearbit CDN",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "db-init.service: INSERT now includes logo_url for all 12 partners (TotalEnergies, Shell, Caterpillar, Volvo, Komatsu, Cummins, Maersk, CMA CGM, DHL, Bolloré, Liebherr, Eiffage) using logo.clearbit.com CDN"
+        },
+        {
+          "type": "fix",
+          "description": "UPDATE migration runs on every restart to backfill logo_url on existing partner rows that were inserted without a logo — safe and idempotent (only updates rows where logo_url is null or empty)"
+        }
+      ]
+    },
     {
       "version": "1.30.0",
       "date": "2026-05-21",
