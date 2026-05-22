@@ -55,7 +55,7 @@ async function bootstrap() {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://res.cloudinary.com", "blob:"],
+        imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://res.cloudinary.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "blob:"],
         scriptSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         connectSrc: ["'self'"],

@@ -1,7 +1,23 @@
 {
-  "version": "1.30.2",
+  "version": "1.30.3",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.30.3",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Fix brand logos — switch from dead Clearbit CDN to Wikimedia Commons",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "All 12 partner logos now use verified Wikimedia Commons URLs (logo.clearbit.com DNS stopped resolving after HubSpot acquisition). Each filename was individually confirmed accessible via the Wikimedia Special:Redirect API at 200px width."
+        },
+        {
+          "type": "fix",
+          "description": "main.ts CSP imgSrc: replaced logo.clearbit.com with upload.wikimedia.org and commons.wikimedia.org so Helmet doesn't block logo images served from Wikimedia"
+        }
+      ]
+    },
     {
       "version": "1.30.2",
       "date": "2026-05-21",
