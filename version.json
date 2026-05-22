@@ -1,7 +1,23 @@
 {
-  "version": "1.30.4",
+  "version": "1.30.5",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.30.5",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Proxy all API calls through Next.js so the site works on any device",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Added /api/* rewrite in next.config.mjs so browser API calls go through the Next.js server instead of using a hardcoded localhost URL — logos, brands, and admin features now work on phones and any remote device"
+        },
+        {
+          "type": "fix",
+          "description": "Removed NEXT_PUBLIC_API_URL usage from all client-side files (api.ts, MediaUpload, AdminSidebar, AdminProfileContext, login, forgot-password, reset-password, changelog, profile pages) — all fetch/EventSource calls now use relative paths"
+        }
+      ]
+    },
     {
       "version": "1.30.4",
       "date": "2026-05-21",

@@ -10,14 +10,12 @@ import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAdminProfile, AdminProfile } from '@/contexts/AdminProfileContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-
 async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> || {}),
   };
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers, credentials: 'include' });
+  const res = await fetch(path, { ...options, headers, credentials: 'include' });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: 'Request failed' }));
     throw new Error(err.message || `HTTP ${res.status}`);
@@ -164,7 +162,7 @@ export default function AdminProfilePage() {
     try {
       const formData = new FormData();
       formData.append('avatar', file);
-      const res = await fetch(`${API_URL}/api/admin/profile/avatar`, {
+      const res = await fetch('/api/admin/profile/avatar', {
         method: 'POST',
         credentials: 'include',
         body: formData,

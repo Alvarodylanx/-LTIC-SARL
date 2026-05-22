@@ -13,6 +13,10 @@ const config = {
   async rewrites() {
     return [
       {
+        source: '/api/:path*',
+        destination: 'http://localhost:4000/api/:path*',
+      },
+      {
         source: '/uploads/:path*',
         destination: `${API_ORIGIN}/uploads/:path*`,
       },

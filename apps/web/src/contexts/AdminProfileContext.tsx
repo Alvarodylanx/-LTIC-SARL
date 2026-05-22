@@ -25,8 +25,7 @@ export function AdminProfileProvider({ children }: { children: React.ReactNode }
   const [profile, setProfile] = useState<AdminProfile | null>(null);
 
   const refreshProfile = useCallback(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-    fetch(`${API_URL}/api/admin/profile`, { credentials: 'include' })
+    fetch('/api/admin/profile', { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setProfile(data); })
       .catch(() => {});

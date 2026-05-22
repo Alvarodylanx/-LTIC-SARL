@@ -11,8 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-
 function LoginForm() {
   const { L } = useLanguage();
   const router = useRouter();
@@ -26,7 +24,7 @@ function LoginForm() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/admin/me`, { credentials: 'include' })
+    fetch('/api/admin/me', { credentials: 'include' })
       .then(r => r.ok ? router.replace(redirect || '/admin/dashboard') : setChecking(false))
       .catch(() => setChecking(false));
   }, [router, redirect]);
@@ -36,7 +34,7 @@ function LoginForm() {
     if (!email.trim() || !password) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

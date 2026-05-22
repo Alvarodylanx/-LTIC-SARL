@@ -12,8 +12,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-
 interface ChangeEntry {
   type: 'feature' | 'fix' | 'improvement' | 'breaking';
   description: string;
@@ -38,7 +36,7 @@ async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> || {}),
   };
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers, credentials: 'include' });
+  const res = await fetch(path, { ...options, headers, credentials: 'include' });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: 'Request failed' }));
     throw new Error(err.message || `HTTP ${res.status}`);
@@ -292,7 +290,7 @@ export default function ChangelogPage() {
   const { L } = useLanguage();
 
   const load = () => {
-    fetch(`${API_URL}/api/version`)
+    fetch('/api/version')
       .then((r) => r.json())
       .then(setData)
       .catch(() => {})

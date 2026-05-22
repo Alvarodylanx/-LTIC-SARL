@@ -5,7 +5,6 @@ import { Upload, Link2, X, Loader2, Film } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 const ACCEPTED = 'image/jpeg,image/png,image/gif,image/webp,image/svg+xml,video/mp4,video/quicktime,video/x-msvideo,video/webm,video/x-matroska';
 
 type Tab = 'upload' | 'url';
@@ -29,7 +28,7 @@ export function MediaUpload({ value, onChange }: MediaUploadProps) {
     try {
       const fd = new FormData();
       fd.append('file', file);
-      const res = await fetch(`${API_URL}/api/upload`, {
+      const res = await fetch('/api/upload', {
         method: 'POST',
         credentials: 'include',
         body: fd,
@@ -39,7 +38,7 @@ export function MediaUpload({ value, onChange }: MediaUploadProps) {
         throw new Error(err.message || 'Upload failed');
       }
       const { url } = await res.json();
-      onChange(`${API_URL}${url}`);
+      onChange(url);
       toast.success('File uploaded');
     } catch (e: any) {
       toast.error(e.message || 'Upload failed');

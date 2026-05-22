@@ -55,8 +55,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
 
     fetchCount();
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-    const es = new EventSource(`${API_URL}/api/notifications/stream`, { withCredentials: true });
+    const es = new EventSource('/api/notifications/stream', { withCredentials: true });
     es.onmessage = () => { setUnread((n) => n + 1); };
     es.onerror = () => { es.close(); };
 
