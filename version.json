@@ -1,7 +1,23 @@
 {
-  "version": "1.30.3",
+  "version": "1.30.4",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.30.4",
+      "date": "2026-05-21",
+      "type": "patch",
+      "summary": "Fix admin Partners page crash + repair malformed version.json",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Admin Partners page: fixed wrong import path 'components/ui/MediaUpload' → 'components/admin/MediaUpload' — the wrong path caused a module-not-found error that crashed the entire page on load"
+        },
+        {
+          "type": "fix",
+          "description": "version.json: removed three malformed duplicate entries (1.27.0, 1.26.1, 1.26.0) that had a broken partial object before the real entry — invalid JSON caused /api/version to crash and the admin Changelog page to show nothing"
+        }
+      ]
+    },
     {
       "version": "1.30.3",
       "date": "2026-05-21",
@@ -224,8 +240,6 @@
     },
     {
       "version": "1.27.0",
-    {
-      "version": "1.27.0",
       "date": "2026-05-21",
       "type": "minor",
       "summary": "Full website audit — production hardening, accessibility, SEO, hosting",
@@ -262,8 +276,6 @@
     },
     {
       "version": "1.26.1",
-    {
-      "version": "1.26.1",
       "date": "2026-05-21",
       "type": "patch",
       "summary": "Fix Convert to Order dialog crash — empty SelectItem value not allowed",
@@ -274,11 +286,6 @@
         }
       ]
     },
-    {
-      "version": "1.26.0",
-      "date": "2026-05-21",
-      "type": "minor",
-      "summary": "Client email notification on order creation + remove customer accounts",
     {
       "version": "1.26.0",
       "date": "2026-05-21",

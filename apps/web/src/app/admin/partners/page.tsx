@@ -7,7 +7,7 @@ import { Handshake, Plus, Trash2, Pencil, X, Save, Loader2, Globe, ToggleLeft, T
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MediaUpload } from '@/components/ui/MediaUpload';
+import { MediaUpload } from '@/components/admin/MediaUpload';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 
