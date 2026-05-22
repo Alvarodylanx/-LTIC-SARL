@@ -1,7 +1,27 @@
 {
-  "version": "1.28.3",
+  "version": "1.29.0",
   "releaseDate": "2026-05-21",
   "changelog": [
+    {
+      "version": "1.29.0",
+      "date": "2026-05-21",
+      "type": "minor",
+      "summary": "Animated brand/partner marquee section on home page",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Home page: new 'Brands We Work With' section — double-row infinite marquee with 14 partner brands (TotalEnergies, Shell, Caterpillar, Maersk, DHL, Bolloré, Komatsu, Volvo, CMA CGM, Cummins, Liebherr, Eiffage, MTN, Orange)"
+        },
+        {
+          "type": "feature",
+          "description": "Row 1 scrolls left, Row 2 scrolls right — creates a premium layered motion effect. Entire marquee pauses on hover for readability"
+        },
+        {
+          "type": "feature",
+          "description": "Each brand card shows name, emoji icon, and sector label in EN/FR — soft left/right gradient fade masks the edges for a seamless loop"
+        }
+      ]
+    },
     {
       "version": "1.28.3",
       "date": "2026-05-21",

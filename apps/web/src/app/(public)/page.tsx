@@ -11,6 +11,26 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { fadeInUp, fadeInLeft, fadeInRight, fadeIn, scaleIn, stagger, staggerFast, viewportOnce } from '@/components/motion/variants';
 
+const brandsRow1 = [
+  { name: 'TotalEnergies', icon: '⚡', sectorEn: 'Energy & Lubricants',    sectorFr: 'Énergie & Lubrifiants' },
+  { name: 'Shell',         icon: '🐚', sectorEn: 'Energy & Lubricants',    sectorFr: 'Énergie & Lubrifiants' },
+  { name: 'Caterpillar',   icon: '🔧', sectorEn: 'Heavy Equipment',        sectorFr: 'Équipement Lourd' },
+  { name: 'Volvo',         icon: '🚛', sectorEn: 'Transport & Equipment',  sectorFr: 'Transport & Équipement' },
+  { name: 'Komatsu',       icon: '⚙️', sectorEn: 'Industrial Equipment',   sectorFr: 'Équipement Industriel' },
+  { name: 'Maersk',        icon: '🚢', sectorEn: 'Ocean Freight',          sectorFr: 'Fret Maritime' },
+  { name: 'CMA CGM',       icon: '⚓', sectorEn: 'Shipping & Logistics',   sectorFr: 'Transport & Logistique' },
+];
+
+const brandsRow2 = [
+  { name: 'DHL',           icon: '📦', sectorEn: 'Express Logistics',      sectorFr: 'Logistique Express' },
+  { name: 'Bolloré',       icon: '🌍', sectorEn: 'Africa Logistics',       sectorFr: 'Logistique Afrique' },
+  { name: 'MTN',           icon: '📡', sectorEn: 'Telecommunications',     sectorFr: 'Télécommunications' },
+  { name: 'Orange',        icon: '📶', sectorEn: 'Telecommunications',     sectorFr: 'Télécommunications' },
+  { name: 'Eiffage',       icon: '🏗️', sectorEn: 'Construction',           sectorFr: 'Construction' },
+  { name: 'Liebherr',      icon: '🏭', sectorEn: 'Cranes & Equipment',     sectorFr: 'Grues & Équipement' },
+  { name: 'Cummins',       icon: '🔩', sectorEn: 'Engines & Generators',   sectorFr: 'Moteurs & Groupes Élec.' },
+];
+
 const statDefs = [
   { key: 'stat_countries',  fallback: '30+',  en: 'Countries Served',      fr: 'Pays Desservis' },
   { key: 'stat_clients',    fallback: '500+', en: 'Clients Worldwide',      fr: 'Clients Mondiaux' },
@@ -149,6 +169,59 @@ export default function HomePage() {
             ))}
           </motion.div>
         </div>
+      </section>
+
+      {/* ─── Brands / Partners ─── */}
+      <section className="relative bg-background py-16 overflow-hidden">
+        <style>{`
+          @keyframes marquee-left  { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+          @keyframes marquee-right { from { transform: translateX(-50%) } to { transform: translateX(0) } }
+          .marquee-left  { animation: marquee-left  35s linear infinite; }
+          .marquee-right { animation: marquee-right 35s linear infinite; }
+          .marquee-wrap:hover .marquee-left,
+          .marquee-wrap:hover .marquee-right { animation-play-state: paused; }
+        `}</style>
+
+        <motion.div variants={fadeInUp} initial="hidden" whileInView="show" viewport={viewportOnce}
+          className="text-center mb-10 px-4">
+          <p className="text-primary font-semibold text-sm uppercase tracking-widest mb-2">
+            {L({ en: 'Trusted Partners & Brands', fr: 'Partenaires & Marques de Confiance' })}
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            {L({ en: 'Brands We Work With', fr: 'Marques Avec Lesquelles Nous Travaillons' })}
+          </h2>
+        </motion.div>
+
+        <div className="marquee-wrap space-y-4 select-none">
+          {/* Row 1 — scrolls left */}
+          <div className="flex w-max marquee-left">
+            {[...brandsRow1, ...brandsRow1].map((b, i) => (
+              <div key={i} className="flex items-center gap-3 mx-4 px-6 py-3 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-default flex-shrink-0">
+                <span className="text-2xl">{b.icon}</span>
+                <div>
+                  <p className="font-bold text-sm text-foreground leading-none">{b.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{L({ en: b.sectorEn, fr: b.sectorFr })}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Row 2 — scrolls right */}
+          <div className="flex w-max marquee-right">
+            {[...brandsRow2, ...brandsRow2].map((b, i) => (
+              <div key={i} className="flex items-center gap-3 mx-4 px-6 py-3 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-default flex-shrink-0">
+                <span className="text-2xl">{b.icon}</span>
+                <div>
+                  <p className="font-bold text-sm text-foreground leading-none">{b.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{L({ en: b.sectorEn, fr: b.sectorFr })}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Fade edges */}
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-background to-transparent z-10" />
       </section>
 
       {/* ─── Services ─── */}
