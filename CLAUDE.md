@@ -24,7 +24,7 @@ Add a changelog entry in `version.json` describing what changed. Commit this alo
 
 ## Admin credentials
 - Login email: `alvarodylan10@gmail.com` (stored in `admin_profile` table)
-- Password: `ltic2024!` (bcrypt hash stored in DB)
+- Password: `655197772` (bcrypt hash stored in DB)
 - The admin changes email/password from the **My Profile** page — these are stored with bcrypt in `admin_profile`
 - NEVER reset or overwrite the admin email/password without the user's explicit request
 

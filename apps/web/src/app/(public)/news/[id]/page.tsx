@@ -3,30 +3,34 @@ import NewsArticleContent from './NewsArticleContent';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+async function fetchArticle(id: string) {
   try {
-    const article = await fetch(`${API_URL}/api/news/${params.id}`, {
+    const res = await fetch(`${API_URL}/api/news/${id}`, {
       next: { revalidate: 3600 },
-    }).then((r) => (r.ok ? r.json() : null));
-
-    if (!article) return { title: 'News | LTIC SARL' };
-
-    return {
-      title: `${article.titleEn} | LTIC SARL`,
-      description: article.summaryEn || '',
-      openGraph: {
-        title: `${article.titleEn} | LTIC SARL`,
-        description: article.summaryEn || '',
-        images: article.imageUrl ? [{ url: article.imageUrl }] : [],
-        type: 'article',
-        publishedTime: article.publishedAt,
-      },
-    };
+    });
+    return res.ok ? res.json() : null;
   } catch {
-    return { title: 'News | LTIC SARL' };
+    return null;
   }
 }
 
-export default function NewsArticlePage() {
-  return <NewsArticleContent />;
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const article = await fetchArticle(params.id);
+  if (!article) return { title: 'News | LTIC SARL' };
+  return {
+    title: `${article.titleEn} | LTIC SARL`,
+    description: article.summaryEn || '',
+    openGraph: {
+      title: `${article.titleEn} | LTIC SARL`,
+      description: article.summaryEn || '',
+      images: article.imageUrl ? [{ url: article.imageUrl }] : [],
+      type: 'article',
+      publishedTime: article.publishedAt,
+    },
+  };
+}
+
+export default async function NewsArticlePage({ params }: { params: { id: string } }) {
+  const article = await fetchArticle(params.id);
+  return <NewsArticleContent initialArticle={article} />;
 }

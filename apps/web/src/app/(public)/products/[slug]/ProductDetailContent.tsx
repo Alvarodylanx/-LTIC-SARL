@@ -19,13 +19,14 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export default function ProductDetailPage() {
+export default function ProductDetailPage({ initialProduct }: { initialProduct?: any }) {
   const { slug } = useParams<{ slug: string }>();
   const { L } = useLanguage();
 
   const { data: product, isLoading, isError } = useQuery<any>({
     queryKey: ['product', slug],
     queryFn: () => api.get(`/api/products/${encodeURIComponent(slug)}`),
+    initialData: initialProduct ?? undefined,
     retry: 1,
   });
 

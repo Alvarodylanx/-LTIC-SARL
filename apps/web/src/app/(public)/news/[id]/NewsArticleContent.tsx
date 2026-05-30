@@ -13,13 +13,14 @@ import { api } from '@/lib/api';
 import { format } from 'date-fns';
 import { fadeInUp, fadeInLeft, stagger, viewportOnce } from '@/components/motion/variants';
 
-export default function NewsArticlePage() {
+export default function NewsArticlePage({ initialArticle }: { initialArticle?: any }) {
   const { id } = useParams<{ id: string }>();
   const { L } = useLanguage();
 
   const { data: article, isLoading, isError } = useQuery<any>({
     queryKey: ['news', id],
     queryFn: () => api.get(`/api/news/${id}`),
+    initialData: initialArticle ?? undefined,
   });
 
   if (isLoading) {

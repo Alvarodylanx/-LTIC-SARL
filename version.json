@@ -1,7 +1,19 @@
 {
-  "version": "1.30.5",
-  "releaseDate": "2026-05-21",
+  "version": "1.30.6",
+  "releaseDate": "2026-05-29",
   "changelog": [
+    {
+      "version": "1.30.6",
+      "date": "2026-05-29",
+      "type": "patch",
+      "summary": "QA fixes: stale admin password in docs, /admin/login 404, missing SSR h1 on detail pages, Windows dev script",
+      "changes": [
+        {"type": "fix", "description": "Updated CLAUDE.md with current admin password"},
+        {"type": "fix", "description": "Created /admin/login redirect to /auth/login (was returning 404)"},
+        {"type": "fix", "description": "Product and news detail pages now pass server-fetched initialData to client components so <h1> is present in SSR HTML"},
+        {"type": "fix", "description": "Root pnpm dev script now uses concurrently so both API and web start in parallel on Windows"}
+      ]
+    },
     {
       "version": "1.30.5",
       "date": "2026-05-21",

@@ -3,29 +3,33 @@ import ProductDetailContent from './ProductDetailContent';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+async function fetchProduct(slug: string) {
   try {
-    const product = await fetch(`${API_URL}/api/products/${encodeURIComponent(params.slug)}`, {
+    const res = await fetch(`${API_URL}/api/products/${encodeURIComponent(slug)}`, {
       next: { revalidate: 3600 },
-    }).then((r) => (r.ok ? r.json() : null));
-
-    if (!product) return { title: 'Product | LTIC SARL' };
-
-    return {
-      title: `${product.nameEn} | LTIC SARL`,
-      description: product.descriptionEn || `${product.nameEn} — available from LTIC SARL, your global logistics and industrial supply partner.`,
-      openGraph: {
-        title: `${product.nameEn} | LTIC SARL`,
-        description: product.descriptionEn || '',
-        images: product.imageUrl ? [{ url: product.imageUrl }] : [],
-        type: 'website',
-      },
-    };
+    });
+    return res.ok ? res.json() : null;
   } catch {
-    return { title: 'Product | LTIC SARL' };
+    return null;
   }
 }
 
-export default function ProductDetailPage() {
-  return <ProductDetailContent />;
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const product = await fetchProduct(params.slug);
+  if (!product) return { title: 'Product | LTIC SARL' };
+  return {
+    title: `${product.nameEn} | LTIC SARL`,
+    description: product.descriptionEn || `${product.nameEn} — available from LTIC SARL, your global logistics and industrial supply partner.`,
+    openGraph: {
+      title: `${product.nameEn} | LTIC SARL`,
+      description: product.descriptionEn || '',
+      images: product.imageUrl ? [{ url: product.imageUrl }] : [],
+      type: 'website',
+    },
+  };
+}
+
+export default async function ProductDetailPage({ params }: { params: { slug: string } }) {
+  const product = await fetchProduct(params.slug);
+  return <ProductDetailContent initialProduct={product} />;
 }
